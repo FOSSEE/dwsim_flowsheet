@@ -103,16 +103,25 @@ function dwsim_flowsheet_proposal_all()
 				$approval_status = 'Dis-approved';
 				break;
 			case 3:
-				$approval_status = 'Solved';
+				$approval_status = 'Completed';
 				break;
 			default:
 				$approval_status = 'Unknown';
 				break;
 		} //$proposal_data->approval_status
+		if ($proposal_data->actual_completion_date == 0)
+		{
+			$actual_completion_date = "Not Completed";
+		} //$proposal_data->actual_completion_date == 0
+		else
+		{
+			$actual_completion_date = date('d-m-Y', $proposal_data->actual_completion_date);
+		}
 		$proposal_rows[] = array(
 			date('d-m-Y', $proposal_data->creation_date),
 			l($proposal_data->student_name, 'user/' . $proposal_data->uid),
 			$proposal_data->project_title,
+			$actual_completion_date,
 			$approval_status,
 			l('Status', 'flowsheeting-project/manage-proposal/status/' . $proposal_data->id) . ' | ' . l('Edit', 'flowsheeting-project/manage-proposal/edit/' . $proposal_data->id)
 		);
@@ -127,6 +136,7 @@ function dwsim_flowsheet_proposal_all()
 		'Date of Submission',
 		'Student Name',
 		'Title of the Lab',
+		'Date of Completion',
 		'Status',
 		'Action'
 	);
@@ -388,11 +398,11 @@ function dwsim_flowsheet_proposal_approval_form_submit($form, &$form_state)
 	} //$form_state['values']['approval'] == 1
 	else if ($form_state['values']['approval'] == 2)
 	{
-		$query = "UPDATE {dwsim_flowsheet_proposal} SET approver_uid = :uid, approval_date = :date, approval_status = 2, message = :message WHERE id = :proposal_id";
+		$query = "UPDATE {dwsim_flowsheet_proposal} SET approver_uid = :uid, approval_date = :date, approval_status = 2, dissapproval_reason = :dissapproval_reason WHERE id = :proposal_id";
 		$args = array(
 			":uid" => $user->uid,
 			":date" => time(),
-			":message" => $form_state['values']['message'],
+			":dissapproval_reason" => $form_state['values']['message'],
 			":proposal_id" => $proposal_id
 		);
 		$result = db_query($query, $args);
@@ -402,9 +412,9 @@ function dwsim_flowsheet_proposal_approval_form_submit($form, &$form_state)
 		$from = variable_get('dwsim_flowsheet_from_email', '');
 		$bcc = $user->mail . ', ' . variable_get('dwsim_flowsheet_emails', '');
 		$cc = variable_get('dwsim_flowsheet_cc_emails', '');
-		$params['dwsim_flowsheetproposal_disapproved']['proposal_id'] = $proposal_id;
-		$params['dwsim_flowsheetproposal_disapproved']['user_id'] = $proposal_data->uid;
-		$params['dwsim_flowsheetproposal_disapproved']['headers'] = array(
+		$params['dwsim_flowsheet_proposal_disapproved']['proposal_id'] = $proposal_id;
+		$params['dwsim_flowsheet_proposal_disapproved']['user_id'] = $proposal_data->uid;
+		$params['dwsim_flowsheet_proposal_disapproved']['headers'] = array(
 			'From' => $from,
 			'MIME-Version' => '1.0',
 			'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
@@ -601,7 +611,7 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		$form['completed'] = array(
 			'#type' => 'checkbox',
 			'#title' => t('Completed'),
-			'#description' => t('Check if user has provided all experiment solutions.')
+			'#description' => t('Check if user has provided all the required files and pdfs.')
 		);
 	} //$proposal_data->approval_status == 1
 	if ($proposal_data->approval_status == 2)
@@ -654,14 +664,14 @@ function dwsim_flowsheet_proposal_status_form_submit($form, &$form_state)
 	/* set the book status to completed */
 	if ($form_state['values']['completed'] == 1)
 	{
-		$up_query = "UPDATE dwsim_flowsheet_proposal SET approval_status = :approval_status , expected_completion_date = :expected_completion_date WHERE id = :proposal_id";
+		$up_query = "UPDATE dwsim_flowsheet_proposal SET approval_status = :approval_status , actual_completion_date = :expected_completion_date WHERE id = :proposal_id";
 		$args = array(
 			":approval_status" => '3',
 			":proposal_id" => $proposal_id,
 			":expected_completion_date" => time()
 		);
 		$result = db_query($up_query, $args);
-		CreateReadmeFileLabMigration($proposal_id);
+		CreateReadmeFileDWSIMFlowsheetingProject($proposal_id);
 		if (!$result)
 		{
 			drupal_set_message('Error in update status', 'error');
@@ -873,10 +883,10 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		)
 	);
 	$form['project_title'] = array(
-		'#type' => 'textfield',
+		'#type' => 'textarea',
 		'#title' => t('Title of the Flowsheet Project'),
-		'#size' => 30,
-		'#maxlength' => 50,
+		'#size' => 300,
+		'#maxlength' => 350,
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->project_title
 	);
@@ -952,69 +962,48 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	/* delete proposal */
 	if ($form_state['values']['delete_proposal'] == 1)
 	{
+		/* sending email */
+		$email_to = $user->mail;
+		$from = variable_get('dwsim_flowsheet_from_email', '');
+		$bcc = variable_get('dwsim_flowsheet_emails', '');
+		$cc = variable_get('dwsim_flowsheet_cc_emails', '');
+		$params['dwsim_flowsheet_proposal_deleted']['proposal_id'] = $proposal_id;
+		$params['dwsim_flowsheet_proposal_deleted']['user_id'] = $user->uid;
+		$params['dwsim_flowsheet_proposal_deleted']['file_name'] = $_FILES['files']['name'][$file_form_name];
+		$params['dwsim_flowsheet_proposal_deleted']['headers'] = array(
+			'From' => $from,
+			'MIME-Version' => '1.0',
+			'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+			'Content-Transfer-Encoding' => '8Bit',
+			'X-Mailer' => 'Drupal',
+			'Cc' => $cc,
+			'Bcc' => $bcc
+		);
+		if (!drupal_mail('dwsim_flowsheet', 'dwsim_flowsheet_proposal_deleted', $email_to, user_preferred_language($user), $params, $from, TRUE))
+			drupal_set_message('Error sending email message.', 'error');
+		drupal_set_message(t('DWSIM Flowsheeting proposal has been deleted.'), 'status');
 		//db_query("DELETE FROM {dwsim_flowsheet_proposal} WHERE id = %d", $proposal_id);
-		$query = db_delete('dwsim_flowsheet_proposal');
-		$query->condition('id', $proposal_id);
-		$num_deleted = $query->execute();
-		//db_query("DELETE FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d", $proposal_id);
-		$query = db_delete('dwsim_flowsheet_experiment');
-		$query->condition('proposal_id', $proposal_id);
-		$num_deleted = $query->execute();
-		drupal_set_message(t('Proposal Delete'), 'status');
-		drupal_goto('flowsheeting-project/manage-proposal');
-		return;
-	} //$form_state['values']['delete_proposal'] == 1
-	if ($form_state['values']['open_solution'] == 1)
-	{
-		// $query = "UPDATE {dwsim_flowsheet_proposal} SET solution_provider_uid = :solution_provider_uid, solution_status = :solution_status, solution_provider_name_title = '', solution_provider_name = '', solution_provider_contact_ph = '', solution_provider_department = '', solution_provider_university = '' WHERE id = :proposal_id";
-		// $args= array(
-		//    ":solution_provider_uid" => 0, 
-		//    ":solution_status" => 0,
-		//    ":proposal_id" => $proposal_id,
-		// );
-		// $result = db_query($query, $args);
-		$result = db_update('dwsim_flowsheet_proposal')->fields(array(
-			'solution_provider_uid' => 0,
-			'solution_status' => 0,
-			'solution_provider_name_title' => '',
-			'solution_provider_name' => '',
-			'solution_provider_contact_ph' => '',
-			'solution_provider_department' => '',
-			'solution_provider_university' => ''
-		))->condition('id', $proposal_id)->execute();
-		if (!$result)
+		if (rrmdir_project($proposal_id) == TRUE)
 		{
-			drupal_set_message(t('Solution already open for everyone.'), 'error');
+			$query = db_delete('dwsim_flowsheet_proposal');
+			$query->condition('id', $proposal_id);
+			$num_deleted = $query->execute();
+			//db_query("DELETE FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d", $proposal_id);
+			$query = db_delete('dwsim_flowsheet_experiment');
+			$query->condition('proposal_id', $proposal_id);
+			$num_deleted = $query->execute();
+			drupal_set_message(t('Proposal Deleted'), 'status');
+			drupal_goto('flowsheeting-project/manage-proposal');
 			return;
-		} //!$result
-	} //$form_state['values']['open_solution'] == 1
-	$solution_display = 0;
-	if ($form_state['values']['solution_display'] == 1)
-	{
-		$solution_display = 1;
-	} //$form_state['values']['solution_display'] == 1
-	else
-	{
-		$solution_display = 0;
-	}
+		} //rrmdir_project($proposal_id) == TRUE
+	} //$form_state['values']['delete_proposal'] == 1
 	/* update proposal */
 	$v = $form_state['values'];
-	//$query = "UPDATE {dwsim_flowsheet_proposal} SET name_title = :name_title, name = :name, contact_ph = :contact_ph, department = :department, university = :unversity, project_title = :project_title, solution_display = :solution_display WHERE id = :id";
-	// $args= array(    
-	//    ":name_title" => $v['name_title'],
-	//    ":name" => $v['student_name'],
-	//    "contact_ph" => $v['contact_ph'],
-	//    ":department" => $v['department'],
-	//    ":university" => $v['university'],
-	//    ":project_title" => $v['project_title'],
-	//    ":solution_display" => $solution_display,
-	//    ":id" => $proposal_id,
-	//  );
 	$project_title = $v['project_title'];
 	$proposar_name = $v['name_title'] . ' ' . $v['student_name'];
 	$university = $v['university'];
-	$directory_names = _df_dir_name($project_title, $proposar_name, $university);
-	if (LM_RenameDir($proposal_id, $directory_names))
+	$directory_names = _df_dir_name($project_title, $proposar_name);
+	if (DF_RenameDir($proposal_id, $directory_names))
 	{
 		$directory_name = $directory_names;
 	} //LM_RenameDir($proposal_id, $directory_names)
@@ -1022,224 +1011,27 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	{
 		return;
 	}
-	$query = db_update('dwsim_flowsheet_proposal')->fields(array(
-		'name_title' => $v['name_title'],
-		'student_name' => $v['student_name'],
-		'department' => $v['department'],
-		'university' => $v['university'],
-		'city' => $v['city'],
-		'pincode' => $v['pincode'],
-		'state' => $v['all_state'],
-		'project_title' => $v['project_title'],
-		'solution_display' => $solution_display,
-		'directory_name' => $directory_name
-	))->condition('id', $proposal_id);
-	$result1 = $query->execute();
-	//$result=db_query($query, $args);
-	/* updating existing experiments */
-	$query = db_select('dwsim_flowsheet_experiment');
-	$query->fields('dwsim_flowsheet_experiment');
-	$query->condition('proposal_id', $proposal_id);
-	$query->orderBy('id', 'ASC');
-	$experiment_q = $query->execute();
-	for ($counter = 1; $counter <= 15; $counter++)
-	{
-		$experiment_data = $experiment_q->fetchObject();
-		if ($experiment_data)
-		{
-			$experiment_field_name = 'lab_experiment_update' . $experiment_data->id;
-			$experiment_description = 'lab_experiment_description_update' . $experiment_data->id;
-			if (strlen(trim($form_state['values'][$experiment_field_name])) >= 1)
-			{
-				$query = "UPDATE {dwsim_flowsheet_experiment} SET title = :title, description= :description WHERE id = :id";
-				$args = array(
-					":title" => trim($form_state['values'][$experiment_field_name]),
-					":description" => trim($form_state['values'][$experiment_description]),
-					":id" => $experiment_data->id
-				);
-				$result2 = db_query($query, $args);
-				if (!$result2)
-				{
-					drupal_set_message(t('Could not update Title of the Experiment : ') . trim($form_state['values'][$experiment_field_name]), 'error');
-				} //!$result2
-			} //strlen(trim($form_state['values'][$experiment_field_name])) >= 1
-			else
-			{
-				$query = "DELETE FROM {dwsim_flowsheet_experiment} WHERE id = :id LIMIT 1";
-				$args = array(
-					":id" => $experiment_data->id
-				);
-				$result3 = db_query($query, $args);
-			}
-		} //$experiment_data
-	} //$counter = 1; $counter <= 15; $counter++
-	/* foreach ($form_state['values']['lab_experiment']['update'] as $update_id => $update_value) {
-	if (strlen(trim($update_value)) >= 1) {
-	$description= $form_state['values']['lab_experiment_description']['update']; 
-	$query = "UPDATE {dwsim_flowsheet_experiment} SET title = :title and description=:description WHERE id = :id";
+	$query = "UPDATE dwsim_flowsheet_proposal SET 
+				name_title=:name_title,
+				student_name=:student_name,
+				university=:university,
+				city=:city,
+				pincode=:pincode,
+				state=:state,
+				project_title=:project_title,
+				directory_name=:directory_name 
+				WHERE id=:proposal_id";
 	$args = array(
-	":title"=>  trim($update_value),
-	":description"=>trim($description),
-	":id"=> $update_id,
-	);
-	$result2 = db_query($query, $args);
-	if (!$result2)
-	{
-	drupal_set_message(t('Could not update Title of the Experiment : ') . trim($update_value), 'error');
-	}
-	} else {
-	$query = "DELETE FROM {dwsim_flowsheet_experiment} WHERE id = :id LIMIT 1";
-	$args = array( 
-	":id" => $update_id
-	);
-	$result3 = db_query($query, $args);
-	}
-	}*/
-	/* inserting new experiments */
-	$query = db_select('dwsim_flowsheet_experiment');
-	$query->fields('dwsim_flowsheet_experiment');
-	$query->condition('proposal_id', $proposal_id);
-	$query->orderBy('number', 'DESC');
-	$query->range(0, 1);
-	$number_q = $query->execute();
-	if ($number_data = $number_q->fetchObject())
-	{
-		$number = (int) $number_data->number;
-		$number++;
-	} //$number_data = $number_q->fetchObject()
-	else
-	{
-		$number = 1;
-	}
-	for ($counter = 1; $counter <= 15; $counter++)
-	{
-		$lab_experiment_insert = 'lab_experiment_insert' . $counter;
-		//var_dump($form_state['values'][$lab_experiment_insert]);die;
-		$lab_experiment_description_insert = 'lab_experiment_description_insert' . $counter;
-		if (!empty($form_state['values'][$lab_experiment_insert]))
-		{
-			//var_dump($form_state['values'][$lab_experiment_insert]);die;
-			$query = "INSERT INTO {dwsim_flowsheet_experiment} (proposal_id, number, title, description) VALUES (:proposal_id, :number, :title, :description)";
-			$args = array(
-				":proposal_id" => $proposal_id,
-				":number" => $number,
-				":title" => trim($form_state['values'][$lab_experiment_insert]),
-				":description" => trim($form_state['values'][$lab_experiment_description_insert])
-			);
-			$result4 = db_query($query, $args);
-			if (!$result4)
-			{
-				drupal_set_message(t('Could not insert Title of the Experiment : ') . trim($form_state['values'][$lab_experiment_insert]), 'error');
-			} //!$result4
-			else
-			{
-				$number++;
-			}
-		} //!empty($form_state['values'][$lab_experiment_insert])
-	} //$counter = 1; $counter <= 15; $counter++
-	/* $query = db_select('dwsim_flowsheet_experiment');
-	$query->fields('dwsim_flowsheet_experiment');
-	$query->condition('proposal_id', $proposal_id);
-	$query->orderBy('number', 'DESC');
-	$query->range(0, 1);
-	$number_q = $query->execute();
-	if ($number_data = $number_q->fetchObject()) {
-	$number = (int)$number_data->number;
-	$number++;
-	} else {
-	$number = 1;
-	}
-	$insertvalue = array($insert_id => $insert_value);
-	$lab_experimentinsert = $form_state['values']['lab_experiment']['insert'];
-	$lab_exp_descriptioninsert=$form_state['values']['lab_experiment_description']['insert'];
-	if (is_array($lab_experimentinsert) || is_object($lab_experimentinsert))
-	{  
-	foreach ($lab_experimentinsert as $insertvalue) {
-	//foreach ($form_state['values']['lab_experiment']['insert'] as $insert_id => $insert_value) {
-	if (strlen(trim($insert_value)) >= 1) {
-	$query = "INSERT INTO {dwsim_flowsheet_experiment} (proposal_id, number, title, description) VALUES :proposal_id, :number, :title, :description";
-	$args = array(
-	":proposal_id" => $proposal_id, 
-	":number" => $number, 
-	":title" => trim($insert_value),
-	":description"=>""
-	);
-	$result4 = db_query($query, $args);
-	if (!$result4)
-	{
-	drupal_set_message(t('Could not insert Title of the Experiment : ') . trim($insert_value), 'error');
-	} else {
-	$number++;
-	}
-	}
-	}
-	}*/
-	drupal_set_message(t('Proposal Updated'), 'status');
-}
-function CreateReadmeFileDWSIMFlowsheetingProject($proposal_id)
-{
-	$result = db_query("
-                        SELECT * from dwsim_flowsheet_proposal WHERE id = :proposal_id", array(
-		":proposal_id" => $proposal_id
-	));
-	$proposal_data = $result->fetchObject();
-	$root_path = dwsim_flowsheet_path();
-	$readme_file = fopen($root_path . $proposal_data->directory_name . "/README.txt", "w") or die("Unable to open file!");
-	$txt = "";
-	$txt .= "About the lab";
-	$txt .= "\n" . "\n";
-	$txt .= "Title Of The Flowsheet Project: " . $proposal_data->project_title . "\n";
-	$txt .= "Proposar Name: " . $proposal_data->name_title . " " . $proposal_data->student_name . "\n";
-	$txt .= "University: " . $proposal_data->university . "\n";
-	$txt .= "\n" . "\n";
-	$txt .= "DWSIM Flowsheet Project By FOSSEE, IIT Bombay" . "\n";
-	fwrite($readme_file, $txt);
-	fclose($readme_file);
-	return $txt;
-}
-function DF_RenameDir($proposal_id, $dir_name)
-{
-	$proposal_id = $proposal_id;
-	$dir_name = $dir_name;
-	$query = db_query("SELECT directory_name,id FROM dwsim_flowsheet_proposal WHERE id = :proposal_id", array(
+		':name_title' => $v['name_title'],
+		':student_name' => $v['student_name'],
+		':university' => $v['university'],
+		':city' => $v['city'],
+		':pincode' => $v['pincode'],
+		':state' => $v['all_state'],
+		':project_title' => $project_title,
+		':directory_name' => $directory_name,
 		':proposal_id' => $proposal_id
-	));
-	$result = $query->fetchObject();
-	if ($result != NULL)
-	{
-		$files = scandir(dwsim_flowsheet_path());
-		$files_id_dir = dwsim_flowsheet_path() . $result->id;
-		//var_dump($files);die;
-		$file_dir = dwsim_flowsheet_path() . $result->directory_name;
-		if (is_dir($file_dir))
-		{
-			$new_directory_name = rename(dwsim_flowsheet_path() . $result->directory_name, dwsim_flowsheet_path() . $dir_name);
-			return $new_directory_name;
-		} //is_dir($file_dir)
-		else if (is_dir($files_id_dir))
-		{
-			$new_directory_name = rename(dwsim_flowsheet_path() . $result->id, dwsim_flowsheet_path() . $dir_name);
-			return $new_directory_name;
-		} //is_dir($files_id_dir)
-		else
-		{
-			drupal_set_message('Directory not available for rename.');
-			return;
-		}
-	} //$result != NULL
-	else
-	{
-		drupal_set_message('Project names directory not present in databse');
-		return;
-	}
-	//var_dump($files);die;
-	/* if ($files != NULL)
-	{
-	$new_directory_name = rename(dwsim_flowsheet_path() . $result->directory_name, dwsim_flowsheet_path() . $dir_name) or drupal_set_message("Unable to rename folder");
-	}
-	else
-	{
-	$new_directory_name = 'Can not rename the directory. Directory not present';
-	}*/
-	return;
+	);
+	$result = db_query($query, $args);
+	drupal_set_message(t('Proposal Updated'), 'status');
 }

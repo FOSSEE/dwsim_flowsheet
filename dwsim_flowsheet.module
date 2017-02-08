@@ -234,8 +234,8 @@ function dwsim_flowsheet_menu()
 		'weight' => 1
 	);
 	$items['flowsheeting-project/abstract-code/upload'] = array(
-		'title' => 'Code Submission',
-		'description' => 'Code Submission',
+		'title' => 'Abstract Submission',
+		'description' => 'Abstract Submission',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array(
 			'dwsim_flowsheet_upload_abstract_code_form'
@@ -610,7 +610,7 @@ function dwsim_flowsheet_get_proposal()
 	$proposal_data = $proposal_q->fetchObject();
 	if (!$proposal_data)
 	{
-		drupal_set_message("You do not have any approved DWSIM Flowsheet proposal. Please check the ", 'error');
+		drupal_set_message("You do not have any approved DWSIM Flowsheet proposal. Please propose the flowsheet proposal", 'error');
 		drupal_goto('');
 	} //!$proposal_data
 	switch ($proposal_data->approval_status)
@@ -747,6 +747,21 @@ function _df_list_of_cities()
 	} //$city_list_data = $city_list->fetchObject()
 	return $city;
 }
+function _df_list_of_pincodes()
+{
+	$pincode = array(
+		0 => '-Select-'
+	);
+	$query = db_select('list_of_all_india_pincode');
+	$query->fields('list_of_all_india_pincode');
+	$query->orderBy('pincode', 'ASC');
+	$pincode_list = $query->execute();
+	while ($pincode_list_data = $pincode_list->fetchObject())
+	{
+		$pincode[$pincode_list_data->pincode] = $pincode_list_data->pincode;
+	} //$pincode_list_data = $pincode_list->fetchObject()
+	return $pincode;
+}
 function _df_list_of_departments()
 {
 	$department = array();
@@ -773,16 +788,144 @@ function _df_list_of_software_version()
 	} //$software_version_list_data = $software_version_list->fetchObject()
 	return $software_version;
 }
-function _df_dir_name($project)
+function _df_dir_name($project, $proposar_name)
 {
 	$project_title = ucname($project);
-	$proposar_name = ucname($student_name);
-	$university_name = ucname($university);
-	$dir_name = $project_title;
+	$proposar_name = ucname($proposar_name);
+	$dir_name = $project_title . ' By ' . $proposar_name;
 	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
 	return $directory_name;
 }
 function dwsim_flowsheet_document_path()
 {
 	return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'dwsim_uploads/dwsim_flowsheet_uploads/';
+}
+function DF_RenameDir($proposal_id, $dir_name)
+{
+	$proposal_id = $proposal_id;
+	$dir_name = $dir_name;
+	$query = db_query("SELECT directory_name,id FROM dwsim_flowsheet_proposal WHERE id = :proposal_id", array(
+		':proposal_id' => $proposal_id
+	));
+	$result = $query->fetchObject();
+	if ($result != NULL)
+	{
+		$files = scandir(dwsim_flowsheet_path());
+		$files_id_dir = dwsim_flowsheet_path() . $result->id;
+		//var_dump($files);die;
+		$file_dir = dwsim_flowsheet_path() . $result->directory_name;
+		if (is_dir($file_dir))
+		{
+			$new_directory_name = rename(dwsim_flowsheet_path() . $result->directory_name, dwsim_flowsheet_path() . $dir_name);
+			return $new_directory_name;
+		} //is_dir($file_dir)
+		else if (is_dir($files_id_dir))
+		{
+			$new_directory_name = rename(dwsim_flowsheet_path() . $result->id, dwsim_flowsheet_path() . $dir_name);
+			return $new_directory_name;
+		} //is_dir($files_id_dir)
+		else
+		{
+			drupal_set_message('Directory not available for rename.');
+			return;
+		}
+	} //$result != NULL
+	else
+	{
+		drupal_set_message('Project directory name not present in databse');
+		return;
+	}
+	//var_dump($files);die;
+	/* if ($files != NULL)
+	{
+	$new_directory_name = rename(dwsim_flowsheet_path() . $result->directory_name, dwsim_flowsheet_path() . $dir_name) or drupal_set_message("Unable to rename folder");
+	}
+	else
+	{
+	$new_directory_name = 'Can not rename the directory. Directory not present';
+	}*/
+	return;
+}
+function CreateReadmeFileDWSIMFlowsheetingProject($proposal_id)
+{
+	$result = db_query("
+                        SELECT * from dwsim_flowsheet_proposal WHERE id = :proposal_id", array(
+		":proposal_id" => $proposal_id
+	));
+	$proposal_data = $result->fetchObject();
+	$root_path = dwsim_flowsheet_path();
+	$readme_file = fopen($root_path . $proposal_data->directory_name . "/README.txt", "w") or die("Unable to open file!");
+	$txt = "";
+	$txt .= "About the lab";
+	$txt .= "\n" . "\n";
+	$txt .= "Title Of The Flowsheet Project: " . $proposal_data->project_title . "\n";
+	$txt .= "Proposar Name: " . $proposal_data->name_title . " " . $proposal_data->student_name . "\n";
+	$txt .= "University: " . $proposal_data->university . "\n";
+	$txt .= "\n" . "\n";
+	$txt .= "DWSIM Flowsheet Project By FOSSEE, IIT Bombay" . "\n";
+	fwrite($readme_file, $txt);
+	fclose($readme_file);
+	return $txt;
+}
+function rrmdir_project($prop_id)
+{
+	$proposal_id = $prop_id;
+	$result = db_query("
+					SELECT * from dwsim_flowsheet_proposal WHERE id = :proposal_id", array(
+		":proposal_id" => $proposal_id
+	));
+	$proposal_data = $result->fetchObject();
+	$root_path = dwsim_flowsheet_document_path();
+	$dir = $root_path . $proposal_data->directory_name;
+	if ($proposal_data->id == $prop_id)
+	{
+		if (is_dir($dir))
+		{
+			$objects = scandir($dir);
+			foreach ($objects as $object)
+			{
+				if ($object != "." && $object != "..")
+				{
+					if (filetype($dir . "/" . $object) == "dir")
+					{
+						rrmdir($dir . "/" . $object);
+					} //filetype($dir . "/" . $object) == "dir"
+					else
+					{
+						unlink($dir . "/" . $object);
+					}
+				} //$object != "." && $object != ".."
+			} //$objects as $object
+			reset($objects);
+			rmdir($dir);
+			$msg = drupal_set_message("Directory deleted successfully");
+			return $msg;
+		} //is_dir($dir)
+		$msg = drupal_set_message("Directory not present");
+		return $msg;
+	} //$proposal_data->id == $prop_id
+	else
+	{
+		$msg = drupal_set_message("Data not found");
+		return $msg;
+	}
+}
+function rrmdir($dir)
+{
+	if (is_dir($dir))
+	{
+		$objects = scandir($dir);
+		foreach ($objects as $object)
+		{
+			if ($object != "." && $object != "..")
+			{
+				if (filetype($dir . "/" . $object) == "dir")
+					rrmdir($dir . "/" . $object);
+				else
+					unlink($dir . "/" . $object);
+			} //$object != "." && $object != ".."
+		} //$objects as $object
+		reset($objects);
+		rmdir($dir);
+	} //is_dir($dir)
 }
