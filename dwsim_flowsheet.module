@@ -6,771 +6,783 @@ require_once('email.inc');
  * Implementation of hook_menu().
  */
 function dwsim_flowsheet_menu()
-  {
-    $items = array();
-    /* PROPOSAL */
-    $items['dwsim-flowsheet/proposal'] = array(
-        'title' => 'Flowsheet Proposal Form',
-        'description' => 'Flowsheet Proposal Form Proposal Form',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_proposal_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet create proposal'
-        ),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal'] = array(
-        'title' => 'Manage Flowsheet Proposals',
-        'description' => 'Manage Flowsheet Proposals',
-        'page callback' => 'dwsim_flowsheet_proposal_pending',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/pending'] = array(
-        'title' => 'Pending Proposals',
-        'description' => 'Pending dwsim flowsheet Proposals Queue',
-        'page callback' => 'dwsim_flowsheet_proposal_pending',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
-        'weight' => 1,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/pending-solution-proposal'] = array(
-        'title' => 'Pending Solution Proposals',
-        'description' => 'Pending dwsim flowsheet Solution Proposals Queue',
-        'page callback' => 'dwsim_flowsheet_solution_proposal_pending',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 2,
-        'file' => 'manage_solution_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/pending-solution'] = array(
-        'title' => 'Pending Solution',
-        'description' => 'Pending dwsim flowsheet Solution',
-        'page callback' => 'dwsim_flowsheet_proposal_pending_solution',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 3,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/all'] = array(
-        'title' => 'All Proposals',
-        'description' => 'All Proposals',
-        'page callback' => 'dwsim_flowsheet_proposal_all',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 4,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/category'] = array(
-        'title' => 'Category',
-        'description' => 'Category',
-        'page callback' => 'dwsim_flowsheet_category_all',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 5,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/category/edit'] = array(
-        'title' => 'Edit Category',
-        'description' => 'Edit category',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_category_edit_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet edit proposal'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/approve'] = array(
-        'title' => 'Approve Proposal',
-        'description' => 'Approve Proposal',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_proposal_approval_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/solution-proposal-approve'] = array(
-        'title' => 'Approve Solution Proposal',
-        'description' => 'Approve Solution Proposal',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_solution_proposal_approval_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'manage_solution_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/edit'] = array(
-        'title' => 'Edit Proposal',
-        'description' => 'Edit Proposal',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_proposal_edit_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet manage proposal'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'manage_proposal.inc'
-    );
-    $items['dwsim-flowsheet/manage-proposal/status'] = array(
-        'title' => 'Proposal Status',
-        'description' => 'Proposal Status',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_proposal_status_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet approve proposal'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'manage_proposal.inc'
-    );
-    /* SOLUTION PROPOSAL */
-    $items['dwsim-flowsheet/open-proposal'] = array(
-        'title' => 'dwsim flowsheet Solve',
-        'description' => 'dwsim flowsheet Proposal Open For Solution',
-        'page callback' => 'dwsim_flowsheet_proposal_open',
-        'access arguments' => array(
-            'dwsim flowsheet propose solution'
-        ),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'solution_proposal.inc'
-    );
-    $items['dwsim-flowsheet/show-proposal'] = array(
-        'title' => 'dwsim flowsheet Solution Proposal',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_solution_proposal_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet propose solution'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'solution_proposal.inc'
-    );
-    /* CODE REVIEW */
-    $items['dwsim-flowsheet/code-approval'] = array(
-        'title' => 'LM Manage Code Approval',
-        'description' => 'Manage Code Approval',
-        'page callback' => 'dwsim_flowsheet_code_approval',
-        'access arguments' => array(
-            'dwsim flowsheet approve code'
-        ),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'code_approval.inc'
-    );
-    $items['dwsim-flowsheet/code-approval/approve'] = array(
-        'title' => 'Code Approval',
-        'description' => 'Code Approval',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_code_approval_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet approve code'
-        ),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
-        'weight' => 1,
-        'file' => 'code_approval.inc'
-    );
-    $items['dwsim-flowsheet/code-approval/bulk'] = array(
-        'title' => 'Bulk Manage',
-        'description' => 'Bulk Mangage',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_bulk_approval_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet bulk manage code'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 2,
-        'file' => 'bulk_approval.inc'
-    );
-    $items['dwsim-flowsheet/code-approval/bulk'] = array(
-        'title' => 'Bulk Manage',
-        'description' => 'Bulk Mangage',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_bulk_approval_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet bulk manage code'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'weight' => 2,
-        'file' => 'bulk_approval.inc'
-    );
-    /*$items['dwsim_flowsheet/code_approval/dependency'] = array(
-    'title' => 'Dependency',
-    'description' => 'Dependency Mangage',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dwsim_flowsheet_dependency_approval_form'),
-    'access arguments' => array('dwsim flowsheet bulk manage code'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 3,
-    'file' => 'dependency_approval.inc',
-    );*/
-    $items['dwsim-flowsheet/code-approval/upload'] = array(
-        'title' => 'Upload Code',
-        'description' => 'Admin Upload',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_bulk_upload_code_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet bulk manage code'
-        ),
-        'type' => MENU_CALLBACK,
-        'weight' => 4,
-        'file' => 'bulk_upload_code.inc'
-    );
-    $items['dwsim-flowsheet/code-approval/notes'] = array(
-        'title' => 'Notes for Reviewers',
-        'description' => 'Notes for Reviewers',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_lab_notes_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet bulk manage code'
-        ),
-        'type' => MENU_CALLBACK,
-        'weight' => 4,
-        'file' => 'notes.inc'
-    );
-    /* CODE UPLOAD */
-    $items['dwsim-flowsheet/code'] = array(
-        'title' => 'Code Submission',
-        'description' => 'Code Submission',
-        'page callback' => 'dwsim_flowsheet_list_experiments',
-        'access callback' => 'user_access',
-        'access arguments' => array(
-            'dwsim flowsheet upload code'
-        ),
-        'file' => 'upload_code.inc'
-    );
-    $items['dwsim-flowsheet/code/list-experiments'] = array(
-        'title' => 'List Experiments',
-        'description' => 'List Experiments',
-        'page callback' => 'dwsim_flowsheet_list_experiments',
-        'access arguments' => array(
-            'dwsim flowsheet upload code'
-        ),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
-        'file' => 'upload_code.inc',
-        'weight' => 1
-    );
-    $items['dwsim-flowsheet/code/upload'] = array(
-        'title' => 'Code Submission',
-        'description' => 'Code Submission',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_upload_code_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet upload code'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'file' => 'upload_code.inc',
-        'weight' => 2
-    );
-    /* $items['dwsim_flowsheet/code/upload_dep'] = array(
-    'title' => 'Upload Dependency',
-    'description' => 'Upload Dependency Files',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dwsim_flowsheet_upload_dependency_form'),
-    'access arguments' => array('dwsim flowsheet upload code'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'dependency.inc',
-    'weight' => 3,
-    );*/
-    $items['dwsim-flowsheet/code/delete'] = array(
-        'title' => 'Delete Solution',
-        'description' => 'Delete Solution',
-        'page callback' => 'dwsim_flowsheet_upload_code_delete',
-        'access arguments' => array(
-            'dwsim flowsheet upload code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'upload_code_delete.inc'
-    );
-    /* CODE DOWNLOADS */
-    $items['dwsim-flowsheet/download/file'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_solution_file',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'download.inc'
-    );
-    /*$items['dwsim_flowsheet/download/dependency'] = array(
-    'title' => 'Code Download',
-    'description' => 'Code Download', 
-    'page callback' => 'dwsim_flowsheet_download_dependency_file',
-    'access arguments' => array('dwsim flowsheet download code'),
-    'type' => MENU_CALLBACK,
-    'file' => 'download.inc',
-    );*/
-    $items['dwsim-flowsheet/download/solution'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_solution',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'download.inc'
-    );
-    $items['dwsim-flowsheet/download/experiment'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_experiment',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'download.inc'
-    );
-    $items['dwsim-flowsheet/download/lab'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_lab',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'download.inc'
-    );
-    $items['dwsim-flowsheet/full-download/experiment'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_full_experiment',
-        'access arguments' => array(
-            'dwsim flowsheet approve code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'full_download.inc'
-    );
-    $items['dwsim-flowsheet/full-download/lab'] = array(
-        'title' => 'Code Download',
-        'description' => 'Code Download',
-        'page callback' => 'dwsim_flowsheet_download_full_lab',
-        'access arguments' => array(
-            'dwsim flowsheet approve code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'full_download.inc'
-    );
-    /* COMPLETED dwsim flowsheetS */
-    $items['dwsim-flowsheet/completed-labs'] = array(
-        'title' => 'Completed Labs',
-        'page callback' => 'dwsim_flowsheet_completed_labs_all',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'file' => 'lab_details.inc'
-    );
-    /* LABS IN PROGRESS */
-    $items['dwsim-flowsheet/labs-progress'] = array(
-        'title' => 'Labs in Progress',
-        'page callback' => 'dwsim_flowsheet_labs_progress_all',
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'file' => 'lab_details.inc'
-    );
-    /* DOWNLOAD FOR EVERYONE */
-    $items['dwsim-flowsheet/dwsim-flowsheet-run'] = array(
-        'title' => 'Download Codes',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_run_form'
-        ),
-        'access arguments' => array(
-            'dwsim flowsheet download code'
-        ),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'run.inc'
-    );
-    /*$items['dwsim_flowsheet_run'] = array(
-    'title' => 'Download Codes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
-    'access arguments' => array('access content'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'run.inc',
-    );
-    $items['dwsim_flowsheet_run_ajax'] = array(
-    'page callback' => 'dwsim_flowsheet_run_ajax',
-    'access callback' => TRUE,
-    'file' => 'run.inc',
-    );
-    $items['download_codes'] = array(
-    'title' => 'Download Codes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
-    'access arguments' => array('access content'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'run.inc',
-    );*/
-    /* LATEX SCRIPT */
-    $items['dwsim-flowsheet/generate-lab'] = array(
-        'title' => 'Generate Lab',
-        'description' => 'Generate Lab From Latex Script',
-        'page callback' => 'dwsim_flowsheet_download_lab_pdf',
-        'access arguments' => array(
-            'dwsim flowsheet generate lab'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'latex.inc'
-    );
-    $items['dwsim-flowsheet/delete-lab'] = array(
-        'title' => 'Delete Lab PDF',
-        'description' => 'Delete Lab PDF',
-        'page callback' => 'dwsim_flowsheet_delete_lab_pdf',
-        'access arguments' => array(
-            'dwsim flowsheet approve code'
-        ),
-        'type' => MENU_CALLBACK,
-        'file' => 'latex.inc'
-    );
-    /* ADMIN SETTINGS */
-    $items['admin/settings/dwsim-flowsheet'] = array(
-        'title' => 'dwsim flowsheet Settings',
-        'description' => 'dwsim flowsheet Settings',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array(
-            'dwsim_flowsheet_settings_form'
-        ),
-        'access arguments' => array(
-            'administer dwsim flowsheet'
-        ),
-        'type' => MENU_NORMAL_ITEM,
-        'file' => 'settings.inc'
-    );
-    /* AJAX REQUEST */
-    $items["lab-bulk-manage-exp/ajax"] = array(
-        "title" => "Ajax callbacks",
-        "page callback" => "lab_bulk_manage_exp_ajax",
-        "access arguments" => array(
-            "dwsim flowsheet bulk manage code"
-        ),
-        "type" => MENU_CALLBACK,
-        'file' => 'bulk_approval.inc'
-    );
-    /*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
-    "title" => "Ajax callbacks",
-    "page callback" => "dwsim_flowsheet_dependency_approval_ajax",
-    "access arguments" => array("dwsim flowsheet bulk manage code"),
-    "type" => MENU_CALLBACK,
-    'file' => 'dependency_approval.inc',
-    );*/
-    return $items;
-  }
+{
+	$items = array();
+	/* PROPOSAL */
+	$items['flowsheeting-project/proposal'] = array(
+		'title' => 'Flowsheet Proposal Form',
+		'description' => 'Flowsheet Proposal Form Proposal Form',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_proposal_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet create proposal'
+		),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal'] = array(
+		'title' => 'Manage Flowsheet Proposals',
+		'description' => 'Manage Flowsheet Proposals',
+		'page callback' => 'dwsim_flowsheet_proposal_pending',
+		'access callback' => 'user_access',
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/pending'] = array(
+		'title' => 'Pending Proposals',
+		'description' => 'Pending dwsim flowsheet Proposals Queue',
+		'page callback' => 'dwsim_flowsheet_proposal_pending',
+		'access callback' => 'user_access',
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'weight' => 1,
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/all'] = array(
+		'title' => 'All Proposals',
+		'description' => 'All Proposals',
+		'page callback' => 'dwsim_flowsheet_proposal_all',
+		'access callback' => 'user_access',
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'weight' => 4,
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/approve'] = array(
+		'title' => 'Approve Proposal',
+		'description' => 'Approve Proposal',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_proposal_approval_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/solution-proposal-approve'] = array(
+		'title' => 'Approve Solution Proposal',
+		'description' => 'Approve Solution Proposal',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_solution_proposal_approval_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'manage_solution_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/edit'] = array(
+		'title' => 'Edit Proposal',
+		'description' => 'Edit Proposal',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_proposal_edit_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/manage-proposal/status'] = array(
+		'title' => 'Proposal Status',
+		'description' => 'Proposal Status',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_proposal_status_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet approve proposal'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'manage_proposal.inc'
+	);
+	$items['flowsheeting-project/show-proposal'] = array(
+		'title' => 'dwsim flowsheet Solution Proposal',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_solution_proposal_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet propose solution'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'solution_proposal.inc'
+	);
+	/* CODE REVIEW */
+	$items['flowsheeting-project/code-approval'] = array(
+		'title' => 'LM Manage Code Approval',
+		'description' => 'Manage Code Approval',
+		'page callback' => 'dwsim_flowsheet_code_approval',
+		'access arguments' => array(
+			'dwsim flowsheet approve code'
+		),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'code_approval.inc'
+	);
+	$items['flowsheeting-project/code-approval/approve'] = array(
+		'title' => 'Code Approval',
+		'description' => 'Code Approval',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_code_approval_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet approve code'
+		),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'weight' => 1,
+		'file' => 'code_approval.inc'
+	);
+	$items['flowsheeting-project/code-approval/bulk'] = array(
+		'title' => 'Bulk Manage',
+		'description' => 'Bulk Mangage',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_bulk_approval_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet bulk manage code'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'weight' => 2,
+		'file' => 'bulk_approval.inc'
+	);
+	$items['flowsheeting-project/code-approval/bulk'] = array(
+		'title' => 'Bulk Manage',
+		'description' => 'Bulk Mangage',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_bulk_approval_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet bulk manage code'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'weight' => 2,
+		'file' => 'bulk_approval.inc'
+	);
+	/*$items['dwsim_flowsheet/code_approval/dependency'] = array(
+	'title' => 'Dependency',
+	'description' => 'Dependency Mangage',
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('dwsim_flowsheet_dependency_approval_form'),
+	'access arguments' => array('dwsim flowsheet bulk manage code'),
+	'type' => MENU_LOCAL_TASK,
+	'weight' => 3,
+	'file' => 'dependency_approval.inc',
+	);*/
+	$items['flowsheeting-project/code-approval/upload'] = array(
+		'title' => 'Upload Code',
+		'description' => 'Admin Upload',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_bulk_upload_code_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet bulk manage code'
+		),
+		'type' => MENU_CALLBACK,
+		'weight' => 4,
+		'file' => 'bulk_upload_code.inc'
+	);
+	$items['flowsheeting-project/code-approval/notes'] = array(
+		'title' => 'Notes for Reviewers',
+		'description' => 'Notes for Reviewers',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_lab_notes_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet bulk manage code'
+		),
+		'type' => MENU_CALLBACK,
+		'weight' => 4,
+		'file' => 'notes.inc'
+	);
+	/* CODE UPLOAD */
+	$items['flowsheeting-project/abstract-code'] = array(
+		'title' => 'Abstract Submission',
+		'description' => 'Abstract Submission',
+		'page callback' => 'dwsim_flowsheet_abstract',
+		'access callback' => 'user_access',
+		'access arguments' => array(
+			'dwsim flowsheet upload code'
+		),
+		'file' => 'upload_code.inc'
+	);
+	$items['flowsheeting-project/abstract-code/flowsheet-project-list'] = array(
+		'title' => 'Flowsheet project',
+		'description' => 'List Experiments',
+		'page callback' => 'dwsim_flowsheet_abstract',
+		'access arguments' => array(
+			'dwsim flowsheet upload code'
+		),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'file' => 'upload_code.inc',
+		'weight' => 1
+	);
+	$items['flowsheeting-project/abstract-code/upload'] = array(
+		'title' => 'Code Submission',
+		'description' => 'Code Submission',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_upload_abstract_code_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet upload code'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'upload_code.inc',
+		'weight' => 2
+	);
+	/* $items['dwsim_flowsheet/code/upload_dep'] = array(
+	'title' => 'Upload Dependency',
+	'description' => 'Upload Dependency Files',
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('dwsim_flowsheet_upload_dependency_form'),
+	'access arguments' => array('dwsim flowsheet upload code'),
+	'type' => MENU_LOCAL_TASK,
+	'file' => 'dependency.inc',
+	'weight' => 3,
+	);*/
+	$items['flowsheeting-project/abstract-code/delete'] = array(
+		'title' => 'Delete Solution',
+		'description' => 'Delete Solution',
+		'page callback' => 'dwsim_flowsheet_upload_code_delete',
+		'access arguments' => array(
+			'dwsim flowsheet upload code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'upload_code_delete.inc'
+	);
+	/* CODE DOWNLOADS */
+	$items['flowsheeting-project/download/file'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_solution_file',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	/*$items['dwsim_flowsheet/download/dependency'] = array(
+	'title' => 'Code Download',
+	'description' => 'Code Download', 
+	'page callback' => 'dwsim_flowsheet_download_dependency_file',
+	'access arguments' => array('dwsim flowsheet download code'),
+	'type' => MENU_CALLBACK,
+	'file' => 'download.inc',
+	);*/
+	$items['flowsheeting-project/download/solution'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_solution',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	$items['flowsheeting-project/download/experiment'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_experiment',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	$items['flowsheeting-project/download/lab'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_lab',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	$items['flowsheeting-project/full-download/experiment'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_full_experiment',
+		'access arguments' => array(
+			'dwsim flowsheet approve code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'full_download.inc'
+	);
+	$items['flowsheeting-project/full-download/lab'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_full_lab',
+		'access arguments' => array(
+			'dwsim flowsheet approve code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'full_download.inc'
+	);
+	/* COMPLETED dwsim flowsheetS */
+	$items['flowsheeting-project/completed-labs'] = array(
+		'title' => 'Completed Labs',
+		'page callback' => 'dwsim_flowsheet_completed_labs_all',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'file' => 'lab_details.inc'
+	);
+	/* LABS IN PROGRESS */
+	$items['flowsheeting-project/labs-progress'] = array(
+		'title' => 'Labs in Progress',
+		'page callback' => 'dwsim_flowsheet_labs_progress_all',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'file' => 'lab_details.inc'
+	);
+	/* DOWNLOAD FOR EVERYONE */
+	$items['flowsheeting-project/dwsim-flowsheet-run'] = array(
+		'title' => 'Download Codes',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_run_form'
+		),
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'run.inc'
+	);
+	$items['flowsheeting-project/download/user-defined-compound-file'] = array(
+		'title' => 'Download user defined compound file',
+		'description' => 'Download user defined compound',
+		'page callback' => 'dwsim_flowsheet_download_user_defined_compound',
+		'access arguments' => array(
+			'download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	/*$items['dwsim_flowsheet_run'] = array(
+	'title' => 'Download Codes',
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
+	'access arguments' => array('access content'),
+	'type' => MENU_NORMAL_ITEM,
+	'file' => 'run.inc',
+	);
+	$items['dwsim_flowsheet_run_ajax'] = array(
+	'page callback' => 'dwsim_flowsheet_run_ajax',
+	'access callback' => TRUE,
+	'file' => 'run.inc',
+	);
+	$items['download_codes'] = array(
+	'title' => 'Download Codes',
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
+	'access arguments' => array('access content'),
+	'type' => MENU_NORMAL_ITEM,
+	'file' => 'run.inc',
+	);*/
+	/* LATEX SCRIPT */
+	$items['flowsheeting-project/generate-lab'] = array(
+		'title' => 'Generate Lab',
+		'description' => 'Generate Lab From Latex Script',
+		'page callback' => 'dwsim_flowsheet_download_lab_pdf',
+		'access arguments' => array(
+			'dwsim flowsheet generate lab'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'latex.inc'
+	);
+	$items['flowsheeting-project/delete-lab'] = array(
+		'title' => 'Delete Lab PDF',
+		'description' => 'Delete Lab PDF',
+		'page callback' => 'dwsim_flowsheet_delete_lab_pdf',
+		'access arguments' => array(
+			'dwsim flowsheet approve code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'latex.inc'
+	);
+	/* ADMIN SETTINGS */
+	$items['admin/settings/dwsim-flowsheet'] = array(
+		'title' => 'dwsim flowsheet Settings',
+		'description' => 'dwsim flowsheet Settings',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'dwsim_flowsheet_settings_form'
+		),
+		'access arguments' => array(
+			'administer dwsim flowsheet'
+		),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'settings.inc'
+	);
+	/* AJAX REQUEST */
+	$items["lab-bulk-manage-exp/ajax"] = array(
+		"title" => "Ajax callbacks",
+		"page callback" => "lab_bulk_manage_exp_ajax",
+		"access arguments" => array(
+			"dwsim flowsheet bulk manage code"
+		),
+		"type" => MENU_CALLBACK,
+		'file' => 'bulk_approval.inc'
+	);
+	/*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
+	"title" => "Ajax callbacks",
+	"page callback" => "dwsim_flowsheet_dependency_approval_ajax",
+	"access arguments" => array("dwsim flowsheet bulk manage code"),
+	"type" => MENU_CALLBACK,
+	'file' => 'dependency_approval.inc',
+	);*/
+	return $items;
+}
 /**
  * Implementation of hook_perm().
  */
 function dwsim_flowsheet_permission()
-  {
-    return array(
-        'dwsim flowsheet create proposal' => array(
-            'title' => t('dwsim flowsheet create proposal'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet manage proposal' => array(
-            'title' => t('dwsim flowsheet manage proposal'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet edit proposal' => array(
-            'title' => t('dwsim flowsheet edit proposal'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet approve proposal' => array(
-            'title' => t('dwsim flowsheet approve proposal'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet propose solution' => array(
-            'title' => t('dwsim flowsheet propose solution'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet approve code' => array(
-            'title' => t('dwsim flowsheet approve code'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet bulk manage code' => array(
-            'title' => t('dwsim flowsheet bulk manage code'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet bulk delete code' => array(
-            'title' => t('dwsim flowsheet bulk delete code'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet upload code' => array(
-            'title' => t('dwsim flowsheet upload code'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet download code' => array(
-            'title' => t('dwsim flowsheet download code'),
-            'restrict access' => TRUE
-        ),
-        'administer dwsim flowsheet' => array(
-            'title' => t('administer dwsim flowsheet'),
-            'restrict access' => TRUE
-        ),
-        'dwsim flowsheet generate lab' => array(
-            'title' => t('dwsim flowsheet generate lab'),
-            'restrict access' => TRUE
-        )
-    );
-    // return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage code', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
-  }
+{
+	return array(
+		'dwsim flowsheet create proposal' => array(
+			'title' => t('dwsim flowsheet create proposal'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet manage proposal' => array(
+			'title' => t('dwsim flowsheet manage proposal'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet edit proposal' => array(
+			'title' => t('dwsim flowsheet edit proposal'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet approve proposal' => array(
+			'title' => t('dwsim flowsheet approve proposal'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet propose solution' => array(
+			'title' => t('dwsim flowsheet propose solution'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet approve code' => array(
+			'title' => t('dwsim flowsheet approve code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet bulk manage code' => array(
+			'title' => t('dwsim flowsheet bulk manage code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet bulk delete code' => array(
+			'title' => t('dwsim flowsheet bulk delete code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet upload code' => array(
+			'title' => t('dwsim flowsheet upload code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet download code' => array(
+			'title' => t('dwsim flowsheet download code'),
+			'restrict access' => TRUE
+		),
+		'administer dwsim flowsheet' => array(
+			'title' => t('administer dwsim flowsheet'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet generate lab' => array(
+			'title' => t('dwsim flowsheet generate lab'),
+			'restrict access' => TRUE
+		)
+	);
+	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage code', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
+}
 /* AJAX CALLS */
 function dwsim_flowsheet_ajax()
-  {
-    $query_type = arg(2);
-    if ($query_type == 'chapter_title')
-      {
-        $chapter_number = arg(3);
-        $preference_id = arg(4);
-        //$chapter_q = db_query("SELECT * FROM {dwsim_flowsheet_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);
-        $query = db_select('dwsim_flowsheet_chapter');
-        $query->fields('dwsim_flowsheet_chapter');
-        $query->condition('number', $chapter_number);
-        $query->condition('preference_id', $preference_id);
-        $query->range(0, 1);
-        $chapter_q = $query->execute();
-        if ($chapter_data = $chapter_q->fetchObject())
-          {
-            echo $chapter_data->name;
-            return;
-          }
-      }
-    else if ($query_type == 'example_exists')
-      {
-        $chapter_number = arg(3);
-        $preference_id = arg(4);
-        $example_number = arg(5);
-        $chapter_id = 0;
-        $query = db_select('dwsim_flowsheet_chapter');
-        $query->fields('dwsim_flowsheet_chapter');
-        $query->condition('number', $chapter_number);
-        $query->condition('preference_id', $preference_id);
-        $query->range(0, 1);
-        $chapter_q = $query->execute();
-        if (!$chapter_data = $chapter_q->fetchObject())
-          {
-            echo '';
-            return;
-          }
-        else
-          {
-            $chapter_id = $chapter_data->id;
-          }
-        $query = db_select('dwsim_flowsheet_example');
-        $query->fields('dwsim_flowsheet_example');
-        $query->condition('chapter_id', $chapter_id);
-        $query->condition('number', $example_number);
-        $query->range(0, 1);
-        $example_q = $query->execute();
-        if ($example_data = $example_q->fetchObject())
-          {
-            if ($example_data->approval_status == 1)
-                echo 'Warning! Solution already approved. You cannot upload the same solution again.';
-            else
-                echo 'Warning! Solution already uploaded. Delete the solution and reupload it.';
-            return;
-          }
-      }
-    echo '';
-  }
+{
+	$query_type = arg(2);
+	if ($query_type == 'chapter_title')
+	{
+		$chapter_number = arg(3);
+		$preference_id = arg(4);
+		//$chapter_q = db_query("SELECT * FROM {dwsim_flowsheet_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);
+		$query = db_select('dwsim_flowsheet_chapter');
+		$query->fields('dwsim_flowsheet_chapter');
+		$query->condition('number', $chapter_number);
+		$query->condition('preference_id', $preference_id);
+		$query->range(0, 1);
+		$chapter_q = $query->execute();
+		if ($chapter_data = $chapter_q->fetchObject())
+		{
+			echo $chapter_data->name;
+			return;
+		} //$chapter_data = $chapter_q->fetchObject()
+	} //$query_type == 'chapter_title'
+	else if ($query_type == 'example_exists')
+	{
+		$chapter_number = arg(3);
+		$preference_id = arg(4);
+		$example_number = arg(5);
+		$chapter_id = 0;
+		$query = db_select('dwsim_flowsheet_chapter');
+		$query->fields('dwsim_flowsheet_chapter');
+		$query->condition('number', $chapter_number);
+		$query->condition('preference_id', $preference_id);
+		$query->range(0, 1);
+		$chapter_q = $query->execute();
+		if (!$chapter_data = $chapter_q->fetchObject())
+		{
+			echo '';
+			return;
+		} //!$chapter_data = $chapter_q->fetchObject()
+		else
+		{
+			$chapter_id = $chapter_data->id;
+		}
+		$query = db_select('dwsim_flowsheet_example');
+		$query->fields('dwsim_flowsheet_example');
+		$query->condition('chapter_id', $chapter_id);
+		$query->condition('number', $example_number);
+		$query->range(0, 1);
+		$example_q = $query->execute();
+		if ($example_data = $example_q->fetchObject())
+		{
+			if ($example_data->approval_status == 1)
+				echo 'Warning! Solution already approved. You cannot upload the same solution again.';
+			else
+				echo 'Warning! Solution already uploaded. Delete the solution and reupload it.';
+			return;
+		} //$example_data = $example_q->fetchObject()
+	} //$query_type == 'example_exists'
+	echo '';
+}
 /*************************** VALIDATION FUNCTIONS *****************************/
 function dwsim_flowsheet_check_valid_filename($file_name)
-  {
-    if (!preg_match('/^[0-9a-zA-Z\.]+$/', $file_name))
-        return FALSE;
-    else if (substr_count($file_name, ".") > 1)
-        return FALSE;
-    else
-        return TRUE;
-  }
+{
+	if (!preg_match('/^[0-9a-zA-Z\.\_]+$/', $file_name))
+		return FALSE;
+	else if (substr_count($file_name, ".") > 1)
+		return FALSE;
+	else
+		return TRUE;
+}
 function dwsim_flowsheet_check_name($name = '')
-  {
-    if (!preg_match('/^[0-9a-zA-Z\ ]+$/', $name))
-        return FALSE;
-    else
-        return TRUE;
-  }
+{
+	if (!preg_match('/^[0-9a-zA-Z\ ]+$/', $name))
+		return FALSE;
+	else
+		return TRUE;
+}
 function dwsim_flowsheet_check_code_number($number = '')
-  {
-    if (!preg_match('/^[0-9]+$/', $number))
-        return FALSE;
-    else
-        return TRUE;
-  }
+{
+	if (!preg_match('/^[0-9]+$/', $number))
+		return FALSE;
+	else
+		return TRUE;
+}
 function dwsim_flowsheet_path()
-  {
-    return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'dwsim_uploads/dwsim_flowsheet_uploads/';
-  }
+{
+	return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'dwsim_uploads/dwsim_flowsheet_uploads/';
+}
 /************************* USER VERIFICATION FUNCTIONS ************************/
 function dwsim_flowsheet_get_proposal()
-  {
-    global $user;
-    //$proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE solution_provider_uid = ".$user->uid." AND solution_status = 2 ORDER BY id DESC LIMIT 1");
-    $query = db_select('dwsim_flowsheet_proposal');
-    $query->fields('dwsim_flowsheet_proposal');
-    $query->condition('solution_provider_uid', $user->uid);
-    $query->condition('solution_status', 2);
-    $query->orderBy('id', 'DESC');
-    $query->range(0, 1);
-    $proposal_q = $query->execute();
-    $proposal_data = $proposal_q->fetchObject();
-    if (!$proposal_data)
-      {
-        drupal_set_message("You do not have any approved Lab migraion solution proposal. Please check the " . l('available', 'dwsim-flowsheet/open-proposal') . " dwsim flowsheet proposal.", 'error');
-        drupal_goto('');
-      }
-    switch ($proposal_data->approval_status)
-    {
-        case 0:
-            drupal_set_message(t('Proposal is awaiting approval.'), 'status');
-            return FALSE;
-        case 1:
-            return $proposal_data;
-        case 2:
-            drupal_set_message(t('Proposal has been dis-approved.'), 'error');
-            return FALSE;
-        case 3:
-            drupal_set_message(t('Proposal has been marked as completed.'), 'status');
-            return FALSE;
-        default:
-            drupal_set_message(t('Invalid proposal state. Please contact site administrator for further information.'), 'error');
-            return FALSE;
-    }
-    return FALSE;
-  }
-/***************************** GENERAL FUNCTIONS ******************************/
-function dwsim_flowsheet_get_category_name($category_id)
-  {
-    $category_data = '';
-    switch ($category_id)
-    {
-        case 0:
-            $category_data = 'Not Selected';
-            break;
-        case 1:
-            $category_data = 'Fluid Mechanics';
-            break;
-        case 2:
-            $category_data = 'Control Theory & Control Systems';
-            break;
-        case 3:
-            $category_data = 'Chemical Engineering';
-            break;
-        case 4:
-            $category_data = 'Thermodynamics';
-            break;
-        case 5:
-            $category_data = 'Mechanical Engineering';
-            break;
-        case 6:
-            $category_data = 'Signal Processing';
-            break;
-        case 7:
-            $category_data = 'Digital Communications';
-            break;
-        case 8:
-            $category_data = 'Electrical Technology';
-            break;
-        case 9:
-            $category_data = 'Mathematics & Pure Science';
-            break;
-        case 10:
-            $category_data = 'Analog Electronics';
-            break;
-        case 11:
-            $category_data = 'Digital Electronics';
-            break;
-        case 12:
-            $category_data = 'Computer Programming';
-            break;
-        case 13:
-            $category_data = 'Others';
-            break;
-        default:
-            $category_data = 'Unknown';
-            break;
-    }
-    return $category_data;
-  }
-/*function dwsim_flowsheet_init() {
-
-drupal_add_js(drupal_get_path('module', 'dwsim_flowsheet') . '/js/dwsim_flowsheet_ajax.js', array ('scope' => 'footer'));
-}*/
+{
+	global $user;
+	//$proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE solution_provider_uid = ".$user->uid." AND solution_status = 2 ORDER BY id DESC LIMIT 1");
+	$query = db_select('dwsim_flowsheet_proposal');
+	$query->fields('dwsim_flowsheet_proposal');
+	$query->condition('uid', $user->uid);
+	$query->orderBy('id', 'DESC');
+	$query->range(0, 1);
+	$proposal_q = $query->execute();
+	$proposal_data = $proposal_q->fetchObject();
+	if (!$proposal_data)
+	{
+		drupal_set_message("You do not have any approved DWSIM Flowsheet proposal. Please check the ", 'error');
+		drupal_goto('');
+	} //!$proposal_data
+	switch ($proposal_data->approval_status)
+	{
+		case 0:
+			drupal_set_message(t('Proposal is awaiting approval.'), 'status');
+			return FALSE;
+		case 1:
+			return $proposal_data;
+		case 2:
+			drupal_set_message(t('Proposal has been dis-approved.'), 'error');
+			return FALSE;
+		case 3:
+			drupal_set_message(t('Proposal has been marked as completed.'), 'status');
+			return FALSE;
+		default:
+			drupal_set_message(t('Invalid proposal state. Please contact site administrator for further information.'), 'error');
+			return FALSE;
+	} //$proposal_data->approval_status
+	return FALSE;
+}
 /*************************************************************************/
 /***** Function To convert only first charater of string in uppercase ****/
 /*************************************************************************/
 function dwsim_flowsheet_ucname($string)
-  {
-    $string = ucwords(strtolower($string));
-    foreach (array(
-        '-',
-        '\''
-    ) as $delimiter)
-      {
-        if (strpos($string, $delimiter) !== false)
-          {
-            $string = implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
-          }
-      }
-    return $string;
-  }
- 
- function _df_list_of_dwsim_compound()
 {
-
-    $dwsim_compound = array();
-    $query = db_select('dwsim_flowsheet_compounds_from_dwsim');
-    $query->fields('dwsim_flowsheet_compounds_from_dwsim');
-    $query->orderBy('id', 'DESC');
-    $dwsim_compound_list = $query->execute();
-    while ($dwsim_compound_list_data = $dwsim_compound_list->fetchObject())
-      {
-        $dwsim_compound[$dwsim_compound_list_data->compound] = $dwsim_compound_list_data->compound;
-      }
-    return $dwsim_compound;
-} 
+	$string = ucwords(strtolower($string));
+	foreach (array(
+		'-',
+		'\''
+	) as $delimiter)
+	{
+		if (strpos($string, $delimiter) !== false)
+		{
+			$string = implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+		} //strpos($string, $delimiter) !== false
+	} //array( '-', '\'' ) as $delimiter
+	return $string;
+}
+function _df_sentence_case($string)
+{
+	$string = ucwords(strtolower($string));
+	foreach (array(
+		'-',
+		'\''
+	) as $delimiter)
+	{
+		if (strpos($string, $delimiter) !== false)
+		{
+			$string = implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+		} //strpos($string, $delimiter) !== false
+	} //array( '-', '\'' ) as $delimiter
+	return $string;
+}
+function _df_list_of_dwsim_compound()
+{
+	$dwsim_compound = array();
+	$query = db_select('dwsim_flowsheet_compounds_from_dwsim');
+	$query->fields('dwsim_flowsheet_compounds_from_dwsim');
+	$query->orderBy('compound', 'ASC');
+	$dwsim_compound_list = $query->execute();
+	while ($dwsim_compound_list_data = $dwsim_compound_list->fetchObject())
+	{
+		$dwsim_compound[$dwsim_compound_list_data->compound] = $dwsim_compound_list_data->compound;
+	} //$dwsim_compound_list_data = $dwsim_compound_list->fetchObject()
+	return $dwsim_compound;
+}
+function _df_list_of_unit_operations()
+{
+	$dwsim_unit_operations = array();
+	$query = db_select('dwsim_flowsheet_unit_operations');
+	$query->fields('dwsim_flowsheet_unit_operations');
+	$query->orderBy('id', 'ASC');
+	$dwsim_unit_operations_list = $query->execute();
+	while ($dwsim_unit_operations_list_data = $dwsim_unit_operations_list->fetchObject())
+	{
+		$dwsim_unit_operations[$dwsim_unit_operations_list_data->unit_operations] = $dwsim_unit_operations_list_data->unit_operations;
+	} //$dwsim_unit_operations_list_data = $dwsim_unit_operations_list->fetchObject()
+	return $dwsim_unit_operations;
+}
+function _df_list_of_thermodynamic_packages()
+{
+	$dwsim_thermodynamic_packages = array();
+	$query = db_select('dwsim_flowsheet_thermodynamic_packages');
+	$query->fields('dwsim_flowsheet_thermodynamic_packages');
+	$query->orderBy('id', 'ASC');
+	$dwsim_thermodynamic_packages_list = $query->execute();
+	while ($dwsim_thermodynamic_packages_list_data = $dwsim_thermodynamic_packages_list->fetchObject())
+	{
+		$dwsim_thermodynamic_packages[$dwsim_thermodynamic_packages_list_data->thermodynamic_packages] = $dwsim_thermodynamic_packages_list_data->thermodynamic_packages;
+	} //$dwsim_thermodynamic_packages_list_data = $dwsim_thermodynamic_packages_list->fetchObject()
+	return $dwsim_thermodynamic_packages;
+}
+function _df_list_of_logical_block()
+{
+	$dwsim_logical_block = array();
+	$query = db_select('dwsim_flowsheet_logical_block');
+	$query->fields('dwsim_flowsheet_logical_block');
+	$query->orderBy('id', 'ASC');
+	$dwsim_logical_block_list = $query->execute();
+	while ($dwsim_logical_block_list_data = $dwsim_logical_block_list->fetchObject())
+	{
+		$dwsim_logical_block[$dwsim_logical_block_list_data->logical_block] = $dwsim_logical_block_list_data->logical_block;
+	} //$dwsim_logical_block_list_data = $dwsim_logical_block_list->fetchObject()
+	return $dwsim_logical_block;
+}
+function _df_list_of_states()
+{
+	$states = array(
+		0 => '-Select-'
+	);
+	$query = db_select('list_states_of_india');
+	$query->fields('list_states_of_india');
+	//$query->orderBy('', '');
+	$states_list = $query->execute();
+	while ($states_list_data = $states_list->fetchObject())
+	{
+		$states[$states_list_data->state] = $states_list_data->state;
+	} //$states_list_data = $states_list->fetchObject()
+	return $states;
+}
+function _df_list_of_cities()
+{
+	$city = array(
+		0 => '-Select-'
+	);
+	$query = db_select('list_cities_of_india');
+	$query->fields('list_cities_of_india');
+	$query->orderBy('city', 'ASC');
+	$city_list = $query->execute();
+	while ($city_list_data = $city_list->fetchObject())
+	{
+		$city[$city_list_data->city] = $city_list_data->city;
+	} //$city_list_data = $city_list->fetchObject()
+	return $city;
+}
+function _df_list_of_departments()
+{
+	$department = array();
+	$query = db_select('list_of_departments');
+	$query->fields('list_of_departments');
+	$query->orderBy('id', 'DESC');
+	$department_list = $query->execute();
+	while ($department_list_data = $department_list->fetchObject())
+	{
+		$department[$department_list_data->department] = $department_list_data->department;
+	} //$department_list_data = $department_list->fetchObject()
+	return $department;
+}
+function _df_list_of_software_version()
+{
+	$software_version = array();
+	$query = db_select('dwsim_software_version');
+	$query->fields('dwsim_software_version');
+	$query->orderBy('dwsim_version', 'ASC');
+	$software_version_list = $query->execute();
+	while ($software_version_list_data = $software_version_list->fetchObject())
+	{
+		$software_version[$software_version_list_data->dwsim_version] = $software_version_list_data->dwsim_version;
+	} //$software_version_list_data = $software_version_list->fetchObject()
+	return $software_version;
+}
+function _df_dir_name($project)
+{
+	$project_title = ucname($project);
+	$proposar_name = ucname($student_name);
+	$university_name = ucname($university);
+	$dir_name = $project_title;
+	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
+	return $directory_name;
+}
+function dwsim_flowsheet_document_path()
+{
+	return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'dwsim_uploads/dwsim_flowsheet_uploads/';
+}

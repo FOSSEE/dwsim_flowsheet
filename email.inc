@@ -9,183 +9,19 @@ function dwsim_flowsheet_mail($key, &$message, $params)
     //$language = user_preferred_language($user);
     switch ($key)
     {
-        case 'solution_proposal_approved':
-            /* initializing data */
-            //$proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['solution_proposal_approved']['proposal_id']);
-            $query = db_select('dwsim_flowsheet_proposal');
-            $query->fields('dwsim_flowsheet_proposal');
-            $query->condition('id', $params['solution_proposal_approved']['proposal_id']);
-            $query->range(0, 1);
-            $proposal_q = $query->execute();
-            $proposal_data = $proposal_q->fetchObject();
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            // $experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number", $params['solution_proposal_approved']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['solution_proposal_approved']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
-            $user_data = user_load($params['solution_proposal_approved']['user_id']);
-            $message['headers'] = $params['solution_proposal_approved']['headers'];
-            $message['subject'] = t('[!site_name] DWSIM flowsheet Solution Proposal Approval', array(
-                '!site_name' => variable_get('site_name', '')
-            ), array(
-                'language' => $language->language
-            ));
-            $message['body'] = array(
-                0 => t('
-Dear !user_name,
-
-Your following DWSIM flowsheet solution proposal has been approved:
-
-Full Name : ' . $proposal_data->solution_provider_name_title . ' ' . $proposal_data->solution_provider_name . '
-Email : ' . $user_data->mail . '
-Contact No. : ' . $proposal_data->solution_provider_contact_ph . '
-Department/Branch : ' . $proposal_data->solution_provider_department . '
-University/Institute : ' . $proposal_data->solution_provider_university . '
-City : ' . $proposal_data->solution_provider_city . '
-State : ' . $proposal_data->solution_provider_state . '
-
-List of experiments : ' . $experiment_list . '
-
-Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/dwsim-flowsheet/dwsim-flowsheet-guidelines
-
-Best Wishes,
-
-!site_name Team,
-FOSSEE,IIT Bombay', array(
-                    '!site_name' => variable_get('site_name', ''),
-                    '!user_name' => $user_data->name
-                ), array(
-                    'language' => $language->language
-                ))
-            );
-            break;
-        case 'solution_proposal_disapproved':
-            $user_data = user_load($params['solution_proposal_disapproved']['user_id']);
-            $proposal_id = $params['solution_proposal_disapproved']['proposal_id'];
-            $query = db_select('dwsim_flowsheet_proposal');
-            $query->fields('dwsim_flowsheet_proposal');
-            $query->condition('id', $proposal_id);
-            $query->range(0, 1);
-            $proposal_q = $query->execute();
-            $proposal_data = $proposal_q->fetchObject();
-            
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $proposal_id);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
-            $message['headers'] = $params['solution_proposal_disapproved']['headers'];
-            $message['subject'] = t('[!site_name] DWSIM flowsheet Solution Disapproval', array(
-                '!site_name' => variable_get('site_name', '')
-            ), array(
-                'language' => $language->language
-            ));
-            $message['body'] = array(
-                'body' => t('
-Dear !user_name,
-
-We regret to inform you that your DWSIM flowsheet solution proposal has been disapproved.
-
-Title of Lab :' . $proposal_data->lab_title . '
-
-List of experiments : ' . $experiment_list . '
-
-Reason: ' . $params['solution_proposal_disapproved']['message'] . '
-
-You are welcome to submit a new proposal.
-
-Best Wishes,
-
-!site_name Team,
-FOSSEE,IIT Bombay', array(
-                    '!site_name' => variable_get('site_name', ''),
-                    '!user_name' => $user_data->name
-                ), array(
-                    'language' => $language->language
-                ))
-            );
-            break;
-        case 'proposal_received':
+       
+        case 'dwsim_flowsheet_proposal_received':
             /* initializing data */
             // $proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['proposal_received']['proposal_id']);
             // $proposal_data = $proposal_q->fetchObject();
             $query = db_select('dwsim_flowsheet_proposal');
             $query->fields('dwsim_flowsheet_proposal');
-            $query->condition('id', $params['proposal_received']['proposal_id']);
+            $query->condition('id', $params['dwsim_flowsheet_proposal_received']['proposal_id']);
             $query->range(0, 1);
             $proposal_data = $query->execute()->fetchObject();
-            /* $samplecodefilename = "";
-            if (strlen($proposal_data->samplefilepath) >= 5)
-            {
-            $samplecodefilename = substr($proposal_data->samplefilepath, strrpos($proposal_data->samplefilepath, '/') + 1);
-            }
-            else
-            {
-            $samplecodefilename = "Not provided";
-            }*/
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            if ($proposal_data->solution_provider_uid == 0)
-              {
-                $solution_provider_user = 'Open';
-              }
-            else if ($proposal_data->solution_provider_uid == $proposal_data->uid)
-              {
-                $solution_provider_user = 'Proposer';
-              }
-            else
-              {
-                $solution_provider_user = 'Unknown';
-              }
-            // $experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number",
-            //  $params['proposal_received']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['proposal_received']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
             $user_data = user_load($params['proposal_received']['user_id']);
             $message['headers'] = $params['proposal_received']['headers'];
-            $message['subject'] = t('[!site_name] Your DWSIM flowsheet proposal has been received', array(
+            $message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Chemical Process Flowsheeting Project proposal has been received', array(
                 '!site_name' => variable_get('site_name', '')
             ), array(
                 'language' => $language->language
@@ -194,7 +30,7 @@ FOSSEE,IIT Bombay', array(
                 'body' => t('
 Dear !user_name,
 
-We have received your DWSIM flowsheet proposal with the following details:
+We have received your DWSIM Chemical Process Flowsheeting Project with the following details:
 
 Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->name . '
 Email : ' . $user_data->mail . '
@@ -204,10 +40,6 @@ University/Institute : ' . $proposal_data->university . '
 City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 
-
-Solution Provided By : ' . $solution_provider_user . '
-
-List of experiments : ' . $experiment_list . '
 
 Your proposal is under review. You will soon receive an email when same has been approved/disapproved.
 
@@ -222,13 +54,13 @@ FOSSEE,IIT Bombay', array(
                 ))
             );
             break;
-        case 'proposal_disapproved':
+        case 'dwsim_flowsheet_proposal_disapproved':
             /* initializing data */
             // $proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['proposal_disapproved']['proposal_id']);
             //$proposal_data = $proposal_q->fetchObject();
             $query = db_select('dwsim_flowsheet_proposal');
             $query->fields('dwsim_flowsheet_proposal');
-            $query->condition('id', $params['proposal_disapproved']['proposal_id']);
+            $query->condition('id', $params['dwsim_flowsheet_proposal_disapproved']['proposal_id']);
             $query->range(0, 1);
             $proposal_data = $query->execute()->fetchObject();
             $samplecodefilename = "";
@@ -240,42 +72,9 @@ FOSSEE,IIT Bombay', array(
               {
                 $samplecodefilename = "Not provided";
               }
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            if ($proposal_data->solution_provider_uid == 0)
-              {
-                $solution_provider_user = 'Open';
-              }
-            else if ($proposal_data->solution_provider_uid == $proposal_data->uid)
-              {
-                $solution_provider_user = 'Proposer';
-              }
-            else
-              {
-                $solution_provider_user = 'Unknown';
-              }
-            // $experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number", $params['proposal_disapproved']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['proposal_disapproved']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
-            $user_data = user_load($params['proposal_disapproved']['user_id']);
-            $message['headers'] = $params['proposal_disapproved']['headers'];
+
+            $user_data = user_load($params['dwsim_flowsheet_proposal_disapproved']['user_id']);
+            $message['headers'] = $params['dwsim_flowsheet_proposal_disapproved']['headers'];
             $message['subject'] = t('[!site_name] Your DWSIM flowsheet proposal has been disapproved', array(
                 '!site_name' => variable_get('site_name', '')
             ), array(
@@ -285,7 +84,7 @@ FOSSEE,IIT Bombay', array(
                 'body' => t('
 Dear !user_name,
 
-We regret to inform you that all the Experiments of your Lab with following details have been dis-approved.
+We regret to inform you that DWSIM Flowsheeing Project proposal details have been dis-approved.
 
 Reason for disapproval: ' . $proposal_data->message . '
 
@@ -315,7 +114,7 @@ FOSSEE,IIT Bombay', array(
                 ))
             );
             break;
-        case 'proposal_approved':
+        case 'dwsim_flowsheet_proposal_approved':
             /* initializing data */
             // $proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['proposal_approved']['proposal_id']);
             $query = db_select('dwsim_flowsheet_proposal');
@@ -324,52 +123,11 @@ FOSSEE,IIT Bombay', array(
             $query->range(0, 1);
             $proposal_q = $query->execute();
             $proposal_data = $proposal_q->fetchObject();
-            /* $samplecodefilename = "";
-            if (strlen($proposal_data->samplefilepath) >= 5)
-            {
-            $samplecodefilename = substr($proposal_data->samplefilepath, strrpos($proposal_data->samplefilepath, '/') + 1);
-            }
-            else
-            {
-            $samplecodefilename = "Not provided";
-            }*/
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            if ($proposal_data->solution_provider_uid == 0)
-              {
-                $solution_provider_user = 'Open';
-              }
-            else if ($proposal_data->solution_provider_uid == $proposal_data->uid)
-              {
-                $solution_provider_user = 'Proposer';
-              }
-            else
-              {
-                $solution_provider_user = 'Unknown';
-              }
-            //$experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number", $params['proposal_approved']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['proposal_approved']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
+          
+
             $user_data = user_load($params['proposal_approved']['user_id']);
             $message['headers'] = $params['proposal_approved']['headers'];
-            $message['subject'] = t('[!site_name] Your DWSIM flowsheet proposal has been approved', array(
+            $message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM flowsheet proposal has been approved', array(
                 '!site_name' => variable_get('site_name', '')
             ), array(
                 'language' => $language->language
@@ -378,20 +136,18 @@ FOSSEE,IIT Bombay', array(
                 0 => t('
 Dear !user_name,
 
-Congratulations! Your DWSIM flowsheet proposal with the below details has been approved:
+Congratulations! Your DWSIM Flowsheet proposal with the below details has been approved:
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
 Email : ' . $user_data->mail . '
-Contact No. : ' . $proposal_data->contact_ph . '
-Department/Branch : ' . $proposal_data->department . '
+Month and year of award of degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '
+Project guide name : ' . $proposal_data->project_guide_name . '
+Project guide email : ' . $proposal_data->project_guide_email_id . '
 City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
+Country : ' . $proposal_data->country . '
 
-
-Solution Provided By : ' . $solution_provider_user . '
-
-List of experiments : ' . $experiment_list . '
 
 Please ensure that ALL the guidelines for coding are strictly followed:
 http://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
@@ -407,53 +163,14 @@ FOSSEE,IIT Bombay', array(
                 ))
             );
             break;
-        case 'proposal_completed':
+        case 'dwsim_flowsheet_proposal_completed':
             /* initializing data */
-            //$proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['proposal_completed']['proposal_id']);
             $query = db_select('dwsim_flowsheet_proposal');
             $query->fields('dwsim_flowsheet_proposal');
             $query->condition('id', $params['proposal_completed']['proposal_id']);
             $query->range(0, 1);
             $proposal_q = $query->execute();
             $proposal_data = $proposal_q->fetchObject();
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            if ($proposal_data->solution_provider_uid == 0)
-              {
-                $solution_provider_user = 'Open';
-              }
-            else if ($proposal_data->solution_provider_uid == $proposal_data->uid)
-              {
-                $solution_provider_user = 'Proposer';
-              }
-            else
-              {
-                $user_data = user_load($proposal_data->solution_provider_uid);
-                if (!$user_data)
-                  {
-                    $solution_provider_user = 'Unknown';
-                  }
-              }
-            //$experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number", $params['proposal_completed']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['proposal_completed']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
             $user_data = user_load($params['proposal_completed']['user_id']);
             $message['headers'] = $params['proposal_completed']['headers'];
             $message['subject'] = t('[!site_name] Congratulations for completion of the DWSIM flowsheet', array(
@@ -486,75 +203,7 @@ http://dwsim.fossee.in/dwsim-flowsheet/dwsim-flowsheet-run/' . $proposal_data->i
 
 Now you should be able to propose a new DWSIM flowsheet.
 
-Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
-
-Best Wishes,
-
-!site_name Team,
-FOSSEE,IIT Bombay', array(
-                    '!site_name' => variable_get('site_name', ''),
-                    '!user_name' => $user_data->name
-                ), array(
-                    'language' => $language->language
-                ))
-            );
-            break;
-        case 'solution_proposal_received':
-            /* initializing data */
-            //$proposal_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE id = %d LIMIT 1", $params['solution_proposal_received']['proposal_id']);
-            $query = db_select('dwsim_flowsheet_proposal');
-            $query->fields('dwsim_flowsheet_proposal');
-            $query->condition('id', $params['solution_proposal_received']['proposal_id']);
-            $query->range(0, 1);
-            $proposal_q = $query->execute();
-            $proposal_data = $proposal_q->fetchObject();
-            if ($proposal_data->solution_display == 1)
-              {
-                $solution_display = 'Yes';
-              }
-            else
-              {
-                $solution_display = 'No';
-              }
-            //$experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d ORDER BY number", $params['solution_proposal_received']['proposal_id'], 1);
-            $query = db_select('dwsim_flowsheet_experiment');
-            $query->fields('dwsim_flowsheet_experiment');
-            $query->condition('proposal_id', $params['solution_proposal_received']['proposal_id']);
-            $query->orderBy('number', 'ASC');
-            $experiment_q = $query->execute();
-            $experiment_list = '
-      	';
-            while ($experiment_data = $experiment_q->fetchObject())
-              {
-                $experiment_list .= '<p>' . $experiment_data->number . ') ' . $experiment_data->title . '<br> Description : ' . $experiment_data->description . '<br>';
-                $experiment_list .= ' ';
-                $experiment_list .= '</p>';
-              }
-            $user_data = user_load($params['solution_proposal_received']['user_id']);
-            $message['headers'] = $params['solution_proposal_received']['headers'];
-            $message['subject'] = t('[!site_name] Your DWSIM flowsheet solution proposal has been received', array(
-                '!site_name' => variable_get('site_name', '')
-            ), array(
-                'language' => $language->language
-            ));
-            $message['body'] = array(
-                'body' => t('
-Dear !user_name,
-
-We have received your proposal for providing solution for DWSIM flowsheet with the following details:
-
-List of experiments : ' . $experiment_list . '
-
-Full Name : ' . $proposal_data->solution_provider_name_title . ' ' . $proposal_data->solution_provider_name . '
-Email : ' . $user->mail . '
-Contact No. : ' . $proposal_data->solution_provider_contact_ph . '
-Department/Branch : ' . $proposal_data->department . '
-University/Institute : ' . $proposal_data->solution_provider_university . '
-
-
-Your proposal is under review. You will soon receive an email when the same has been approved / disapproved.
-
-Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
+Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting
 
 Best Wishes,
 
