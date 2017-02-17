@@ -5,7 +5,7 @@ Approval Status :
 0 - Pending
 1 - Approved
 2 - Dis-Approved
-3 - Solved
+3 - Completed
 Solution Status :
 0 - Pending
 1 - Approved
@@ -206,7 +206,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state)
 		'#required' => False,
 		'#attributes' => array(
 			'placeholder' => 'Enter pincode....'
-		)
+		),
+		'#required' => TRUE
 	);
 	/***************************************************************************/
 	$form['hr'] = array(
@@ -260,10 +261,7 @@ Ex: Ethylene (74-85-1)[You can select multiple options by holding ctrl + left ke
 	);
 	$form['ucompound'] = array(
 		'#type' => 'checkbox',
-		'#title' => t('Upload user defind compound'),
-		'#options' => array(
-			"1" => "Upload user defind compound"
-		)
+		'#title' => t('Upload user defind compound')
 	);
 	$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
 		'#type' => 'textarea',
@@ -319,7 +317,7 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 {
 	if ($form_state['values']['term_condition'] == '1')
 	{
-		form_set_error('other_state', t('Enter state name'));
+		form_set_error('term_condition', t('Please check the terms and conditions'));
 		// $form_state['values']['country'] = $form_state['values']['other_country'];
 	} //$form_state['values']['term_condition'] == '1'
 	if ($form_state['values']['country'] == 'Others')
@@ -380,43 +378,46 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	if ($form_state['values']['dwsim_database_compound_name'])
 	{
 		$dwsim_database_compound_name = implode(", ", $_POST['dwsim_database_compound_name']);
-		$form_state['values']['dwsim_database_compound_name'] = $dwsim_database_compound_name;
+		$form_state['values']['dwsim_database_compound_name'] = trim($dwsim_database_compound_name);
 	} //$form_state['values']['dwsim_database_compound_name']
-	if (isset($_FILES['files']))
+	if ($form_state['values']['ucompound'] == 1)
 	{
-		/* check if atleast one source or result file is uploaded */
-		if (!($_FILES['files']['name']['upload_user_compound']))
-			form_set_error('upload_user_compound', t('Please upload sample code main or source file.'));
-		/* check for valid filename extensions */
-		foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+		if (isset($_FILES['files']))
 		{
-			if ($file_name)
+			/* check if atleast one source or result file is uploaded */
+			if (!($_FILES['files']['name']['upload_user_compound']))
+				form_set_error('upload_user_compound', t('Please upload a file.'));
+			/* check for valid filename extensions */
+			foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
 			{
-				/* checking file type */
-				if (strstr($file_form_name, 'user_compound'))
-					$file_type = 'S';
-				else
-					$file_type = 'U';
-				$allowed_extensions_str = '';
-				switch ($file_type)
+				if ($file_name)
 				{
-					case 'S':
-						$allowed_extensions_str = variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '');
-						break;
-				} //$file_type
-				$allowed_extensions = explode(',', $allowed_extensions_str);
-				$fnames = explode('.', strtolower($_FILES['files']['name'][$file_form_name]));
-				$temp_extension = end($fnames);
-				if (!in_array($temp_extension, $allowed_extensions))
-					form_set_error($file_form_name, t('Only file with ' . $allowed_extensions_str . ' extensions can be uploaded.'));
-				if ($_FILES['files']['size'][$file_form_name] <= 0)
-					form_set_error($file_form_name, t('File size cannot be zero.'));
-				/* check if valid file name */
-				if (!textbook_companion_check_valid_filename($_FILES['files']['name'][$file_form_name]))
-					form_set_error($file_form_name, t('Invalid file name specified. Only alphabets and numbers are allowed as a valid filename.'));
-			} //$file_name
-		} //$_FILES['files']['name'] as $file_form_name => $file_name
-	} //isset($_FILES['files'])
+					/* checking file type */
+					if (strstr($file_form_name, 'user_compound'))
+						$file_type = 'S';
+					else
+						$file_type = 'U';
+					$allowed_extensions_str = '';
+					switch ($file_type)
+					{
+						case 'S':
+							$allowed_extensions_str = variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '');
+							break;
+					} //$file_type
+					$allowed_extensions = explode(',', $allowed_extensions_str);
+					$fnames = explode('.', strtolower($_FILES['files']['name'][$file_form_name]));
+					$temp_extension = end($fnames);
+					if (!in_array($temp_extension, $allowed_extensions))
+						form_set_error($file_form_name, t('Only file with ' . $allowed_extensions_str . ' extensions can be uploaded.'));
+					if ($_FILES['files']['size'][$file_form_name] <= 0)
+						form_set_error($file_form_name, t('File size cannot be zero.'));
+					/* check if valid file name */
+					if (!textbook_companion_check_valid_filename($_FILES['files']['name'][$file_form_name]))
+						form_set_error($file_form_name, t('Invalid file name specified. Only alphabets and numbers are allowed as a valid filename.'));
+				} //$file_name
+			} //$_FILES['files']['name'] as $file_form_name => $file_name
+		} //isset($_FILES['files'])
+	} //$form_state['values']['ucompound'] == 1
 	return;
 }
 function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
@@ -429,15 +430,15 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 	} //!$user->uid
 	if ($form_state['values']['version'] == 'Old version')
 	{
-		$form_state['values']['version'] = $form_state['values']['older'];
+		$form_state['values']['version'] = trim($form_state['values']['older']);
 	} //$form_state['values']['version'] == 'Old version'
 	/* inserting the user proposal */
 	$v = $form_state["values"];
-	$project_title = $v['project_title'];
+	$project_title = trim($v['project_title']);
 	$proposar_name = $v['name_title'] . ' ' . $v['student_name'];
 	$university = $v['university'];
 	$month_year_of_degree = $v['month_year_of_degree'];
-	$directory_name = _df_dir_name($project_title);
+	$directory_name = _df_dir_name($project_title, $proposar_name);
 	$result = "INSERT INTO {dwsim_flowsheet_proposal} 
     (
     uid, 
@@ -493,7 +494,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":uid" => $user->uid,
 		":approver_uid" => 0,
 		":name_title" => $v['name_title'],
-		":student_name" => _df_sentence_case($v['student_name']),
+		":student_name" => _df_sentence_case(trim($v['student_name'])),
 		":month_year_of_degree" => $month_year_of_degree,
 		":university" => _df_sentence_case($v['university']),
 		":city" => $v['city'],
@@ -502,11 +503,11 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":country" => $v['country'],
 		":version" => $v['version'],
 		":project_guide_name" => _df_sentence_case($v['project_guide_name']),
-		":project_guide_email_id" => $v['project_guide_email_id'],
-		":project_title" => _df_dir_name($v['project_title']),
+		":project_guide_email_id" => trim($v['project_guide_email_id']),
+		":project_title" => _df_sentence_case($v['project_title']),
 		":process_development_compound_name" => _df_sentence_case($v['process_development_compound_name']),
-		":dwsim_database_compound_name" => $v['dwsim_database_compound_name'],
-		":user_defined_compounds_used_in_process" => _df_sentence_case($v['user_defined_compounds_used_in_process_flowsheetcompound_name']),
+		":dwsim_database_compound_name" => trim($v['dwsim_database_compound_name']),
+		":user_defined_compounds_used_in_process" => _df_sentence_case(trim($v['user_defined_compounds_used_in_process_flowsheetcompound_name'])),
 		":approval_status" => 0,
 		":dissapproval_reason" => "NULL",
 		":creation_date" => time(),
@@ -518,43 +519,49 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 	$proposal_id = db_query($result, $args, array(
 		'return' => Database::RETURN_INSERT_ID
 	));
-	$root_path = dwsim_flowsheet_document_path();
-	$dest_path1 = $directory_name . '/';
-	$dest_path = $dest_path1 . 'user_defined_compound/';
-	$db_path = 'user_defined_compound/';
-	if (!is_dir($root_path . $dest_path1))
-		mkdir($root_path . $dest_path1);
-	if (!is_dir($root_path . $dest_path))
-		mkdir($root_path . $dest_path);
-	/* uploading files */
-	foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+	if ($form_state['values']['ucompound'] == 1)
 	{
-		if ($file_name)
+		$root_path = dwsim_flowsheet_document_path();
+		$dest_path1 = $directory_name . '/';
+		$dest_path2 = 'user_defined_compound/';
+		$dest_path = $dest_path1 . 'user_defined_compound/';
+		$db_path = 'user_defined_compound/';
+		if (!is_dir($root_path . $dest_path1))
+			mkdir($root_path . $dest_path1);
+		if (!is_dir($root_path . $dest_path))
+			mkdir($root_path . $dest_path);
+		/* uploading files */
+		foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
 		{
-			/* checking file type */
-			$file_type = 'S';
-			if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+			if ($file_name)
 			{
-				// drupal_set_message(t("Error uploading file. File !filename already exists.", array('!filename' => $_FILES['files']['name'][$file_form_name])), 'error');
-				unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
-			} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-			/* uploading file */
-			if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-			{
-				$query = "UPDATE {dwsim_flowsheet_proposal} SET user_defined_compound_filepath = :user_defined_compound_filepath WHERE id = :id";
-				$args = array(
-					":user_defined_compound_filepath" => $dest_path . $_FILES['files']['name'][$file_form_name],
-					":id" => $proposal_id
-				);
-				$updateresult = db_query($query, $args);
-				drupal_set_message($file_name . ' uploaded successfully.', 'status');
-			} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-			else
-			{
-				drupal_set_message('Error uploading file : ' . $db_path . '/' . $file_name, 'error');
-			}
-		} //$file_name
-	} //$_FILES['files']['name'] as $file_form_name => $file_name
+				/* checking file type */
+				$file_type = 'S';
+				if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+				{
+					// drupal_set_message(t("Error uploading file. File !filename already exists.", array('!filename' => $_FILES['files']['name'][$file_form_name])), 'error');
+					unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
+				} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
+				/* uploading file */
+				if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+				{
+					$query = "UPDATE {dwsim_flowsheet_proposal} SET user_defined_compound_filepath = :user_defined_compound_filepath WHERE id = :id";
+					$args = array(
+						":user_defined_compound_filepath" => $dest_path2 . $_FILES['files']['name'][$file_form_name],
+						":id" => $proposal_id
+					);
+					$updateresult = db_query($query, $args);
+					drupal_set_message($file_name . ' uploaded successfully.', 'status');
+				} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
+				else
+				{
+					drupal_set_message('Error uploading file : ' . $db_path . '/' . $file_name, 'error');
+				}
+			} //$file_name
+		} //$_FILES['files']['name'] as $file_form_name => $file_name
+	}else{
+	$file_name = "Not Uploaded";
+	}
 	if (!$proposal_id)
 	{
 		drupal_set_message(t('Error receiving your proposal. Please try again.'), 'error');
@@ -578,6 +585,6 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 	);
 	if (!drupal_mail('dwsim_flowsheet', 'dwsim_flowsheet_proposal_received', $email_to, user_preferred_language($user), $params, $from, TRUE))
 		drupal_set_message('Error sending email message.', 'error');
-	drupal_set_message(t('We have received you DWSIM Chemical Process Flowsheeting proposal. We will get back to you soon.'), 'status');
+	drupal_set_message(t('We have received your DWSIM Flowsheeting proposal. We will get back to you soon.'), 'status');
 	drupal_goto('');
 }
