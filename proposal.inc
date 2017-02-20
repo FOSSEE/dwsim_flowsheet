@@ -24,8 +24,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state)
 {
 	global $user;
 	/************************ start approve book details ************************/
-	if ($user->uid == 0)
-	{
+	if ($user->uid == 0) {
 		$msg = drupal_set_message(t('It is mandatory to ' . l('login', 'user') . ' on this website to access the lab proposal form. If you are new user please create a new account first.'), 'error');
 		//drupal_goto('dwsim-flowsheet-project');
 		drupal_goto('user');
@@ -38,10 +37,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state)
 	$query->range(0, 1);
 	$proposal_q = $query->execute();
 	$proposal_data = $proposal_q->fetchObject();
-	if ($proposal_data)
-	{
-		if ($proposal_data->approval_status == 0 || $proposal_data->approval_status == 1)
-		{
+	if ($proposal_data) {
+		if ($proposal_data->approval_status == 0 || $proposal_data->approval_status == 1) {
 			drupal_set_message(t('We have already received your proposal.'), 'status');
 			drupal_goto('');
 			return;
@@ -299,7 +296,7 @@ Ex: Ethanol (64-17-5)'),
 			)
 		)
 	);
-	$form['termconditions'] = array(
+	$form['term_condition'] = array(
 		'#type' => 'checkboxes',
 		'#title' => t('Terms And Conditions'),
 		'#options' => array(
@@ -315,121 +312,97 @@ Ex: Ethanol (64-17-5)'),
 }
 function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 {
-	if ($form_state['values']['term_condition'] == '1')
-	{
+	if ($form_state['values']['term_condition'] == '1') {
 		form_set_error('term_condition', t('Please check the terms and conditions'));
 		// $form_state['values']['country'] = $form_state['values']['other_country'];
 	} //$form_state['values']['term_condition'] == '1'
-	if ($form_state['values']['country'] == 'Others')
-	{
-		if ($form_state['values']['other_country'] == '')
-		{
+	if ($form_state['values']['country'] == 'Others') {
+		if ($form_state['values']['other_country'] == '') {
 			form_set_error('other_country', t('Enter country name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['other_country'] == ''
-		else
-		{
+		else {
 			$form_state['values']['country'] = $form_state['values']['other_country'];
 		}
-		if ($form_state['values']['other_state'] == '')
-		{
+		if ($form_state['values']['other_state'] == '') {
 			form_set_error('other_state', t('Enter state name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['other_state'] == ''
-		else
-		{
+		else {
 			$form_state['values']['all_state'] = $form_state['values']['other_state'];
 		}
-		if ($form_state['values']['other_city'] == '')
-		{
+		if ($form_state['values']['other_city'] == '') {
 			form_set_error('other_city', t('Enter city name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['other_city'] == ''
-		else
-		{
+		else {
 			$form_state['values']['city'] = $form_state['values']['other_city'];
 		}
 	} //$form_state['values']['country'] == 'Others'
-	else
-	{
-		if ($form_state['values']['country'] == '')
-		{
+	else {
+		if ($form_state['values']['country'] == '') {
 			form_set_error('country', t('Select country name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['country'] == ''
-		if ($form_state['values']['all_state'] == '')
-		{
+		if ($form_state['values']['all_state'] == '') {
 			form_set_error('all_state', t('Select state name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['all_state'] == ''
-		if ($form_state['values']['city'] == '')
-		{
+		if ($form_state['values']['city'] == '') {
 			form_set_error('city', t('Select city name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['city'] == ''
 	}
-//Validation for project title
-	$from_state['values']['project_title'] = trim($from_state['values']['project_title']);
-	if ($from_state['values']['project_title'] != '')
-	{
-		if (strlen($from_state['values']['project_title']) > 250)
-		{
+	//Validation for project title
+	$form_state['values']['project_title'] = trim($form_state['values']['project_title']);
+	if ($form_state['values']['project_title'] != '') {
+		if (strlen($form_state['values']['project_title']) > 250) {
 			form_set_error('project_title', t('Maximum charater limit is 250 charaters only, please check the length of the project title'));
-		} else  if (strlen($from_state['values']['project_title']) < 10)
-                {
-                        form_set_error('project_title', t('Minimum charater limit is 10 charaters, please check the length of the project title'));
-                }
-	} else
-	{
+		} //strlen($form_state['values']['project_title']) > 250
+		else if (strlen($form_state['values']['project_title']) < 10) {
+			form_set_error('project_title', t('Minimum charater limit is 10 charaters, please check the length of the project title'));
+		} //strlen($form_state['values']['project_title']) < 10
+	} //$form_state['values']['project_title'] != ''
+	else {
 		form_set_error('project_title', t('Project title shoud not be empty'));
 	}
-// validation for Name of compound for which process development is carried out
-	$from_state['values']['process_development_compound_name'] = trim($from_state['values']['process_development_compound_name']);
-        if ($from_state['values']['process_development_compound_name'] != '')
-        {
-                if (strlen($from_state['values']['process_development_compound_name']) >= 50)
-                {
-                        form_set_error('process_development_compound_name', t('Maximum charater limit is 50 charaters only, please check the length'));
-                } else  if (strlen($from_state['values']['project_title']) < 1)
-                {
-                        form_set_error('process_development_compound_name', t('Minimum charater limit is 1 charaters, please check the length'));
-                }
-        } else
-        {
-                form_set_error('process_development_compound_name', t('Field should not be empty'));
-        }
-	if ($form_state['values']['version'] == 'Old version')
-	{
-		if ($form_state['values']['older'] == '')
-		{
+	// validation for Name of compound for which process development is carried out
+	$form_state['values']['process_development_compound_name'] = trim($form_state['values']['process_development_compound_name']);
+	if ($form_state['values']['process_development_compound_name'] != '') {
+		if (strlen($form_state['values']['process_development_compound_name']) >= 50) {
+			form_set_error('process_development_compound_name', t('Maximum charater limit is 50 charaters only, please check the length'));
+		} //strlen($form_state['values']['process_development_compound_name']) >= 50
+		else if (strlen($form_state['values']['process_development_compound_name']) < 1) {
+			form_set_error('process_development_compound_name', t('Minimum charater limit is 1 charaters, please check the length'));
+		} //strlen($form_state['values']['process_development_compound_name']) < 1
+	} //$form_state['values']['process_development_compound_name'] != ''
+	else {
+		form_set_error('process_development_compound_name', t('Field should not be empty'));
+	}
+	if ($form_state['values']['version'] == 'Old version') {
+		if ($form_state['values']['older'] == '') {
 			form_set_error('older', t('Please provide valid version'));
 		} //$form_state['values']['older'] == ''
 	} //$form_state['values']['version'] == 'Old version'
-	if ($form_state['values']['dwsim_database_compound_name'])
-	{
+	if ($form_state['values']['dwsim_database_compound_name']) {
 		$dwsim_database_compound_name = implode(", ", $_POST['dwsim_database_compound_name']);
 		$form_state['values']['dwsim_database_compound_name'] = trim($dwsim_database_compound_name);
 	} //$form_state['values']['dwsim_database_compound_name']
-	if ($form_state['values']['ucompound'] == 1)
-	{
-		if (isset($_FILES['files']))
-		{
+	if ($form_state['values']['ucompound'] == 1) {
+		if (isset($_FILES['files'])) {
 			/* check if atleast one source or result file is uploaded */
 			if (!($_FILES['files']['name']['upload_user_compound']))
 				form_set_error('upload_user_compound', t('Please upload a file.'));
 			/* check for valid filename extensions */
-			foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
-			{
-				if ($file_name)
-				{
+			foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
+				if ($file_name) {
 					/* checking file type */
 					if (strstr($file_form_name, 'user_compound'))
 						$file_type = 'S';
 					else
 						$file_type = 'U';
 					$allowed_extensions_str = '';
-					switch ($file_type)
-					{
+					switch ($file_type) {
 						case 'S':
 							$allowed_extensions_str = variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '');
 							break;
@@ -453,13 +426,11 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 {
 	global $user;
-	if (!$user->uid)
-	{
+	if (!$user->uid) {
 		drupal_set_message('It is mandatory to login on this website to access the proposal form', 'error');
 		return;
 	} //!$user->uid
-	if ($form_state['values']['version'] == 'Old version')
-	{
+	if ($form_state['values']['version'] == 'Old version') {
 		$form_state['values']['version'] = trim($form_state['values']['older']);
 	} //$form_state['values']['version'] == 'Old version'
 	/* inserting the user proposal */
@@ -549,8 +520,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 	$proposal_id = db_query($result, $args, array(
 		'return' => Database::RETURN_INSERT_ID
 	));
-	if ($form_state['values']['ucompound'] == 1)
-	{
+	if ($form_state['values']['ucompound'] == 1) {
 		$root_path = dwsim_flowsheet_document_path();
 		$dest_path1 = $directory_name . '/';
 		$dest_path2 = 'user_defined_compound/';
@@ -561,20 +531,16 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		if (!is_dir($root_path . $dest_path))
 			mkdir($root_path . $dest_path);
 		/* uploading files */
-		foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
-		{
-			if ($file_name)
-			{
+		foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
+			if ($file_name) {
 				/* checking file type */
 				$file_type = 'S';
-				if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-				{
+				if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
 					// drupal_set_message(t("Error uploading file. File !filename already exists.", array('!filename' => $_FILES['files']['name'][$file_form_name])), 'error');
 					unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
 				} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
 				/* uploading file */
-				if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-				{
+				if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
 					$query = "UPDATE {dwsim_flowsheet_proposal} SET user_defined_compound_filepath = :user_defined_compound_filepath WHERE id = :id";
 					$args = array(
 						":user_defined_compound_filepath" => $dest_path2 . $_FILES['files']['name'][$file_form_name],
@@ -583,29 +549,28 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 					$updateresult = db_query($query, $args);
 					drupal_set_message($file_name . ' uploaded successfully.', 'status');
 				} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-				else
-				{
+				else {
 					drupal_set_message('Error uploading file : ' . $db_path . '/' . $file_name, 'error');
 				}
 			} //$file_name
 		} //$_FILES['files']['name'] as $file_form_name => $file_name
-	}else{
-	$file_name = "Not Uploaded";
+	} //$form_state['values']['ucompound'] == 1
+	else {
+		$file_name = "Not Uploaded";
 	}
-	if (!$proposal_id)
-	{
+	if (!$proposal_id) {
 		drupal_set_message(t('Error receiving your proposal. Please try again.'), 'error');
 		return;
 	} //!$proposal_id
 	/* sending email */
 	$email_to = $user->mail;
-	$from = variable_get('dwsim_flowsheet_from_email', '');
+	$form = variable_get('dwsim_flowsheet_from_email', '');
 	$bcc = variable_get('dwsim_flowsheet_emails', '');
 	$cc = variable_get('dwsim_flowsheet_cc_emails', '');
 	$params['dwsim_flowsheet_proposal_received']['proposal_id'] = $proposal_id;
 	$params['dwsim_flowsheet_proposal_received']['user_id'] = $user->uid;
 	$params['dwsim_flowsheet_proposal_received']['headers'] = array(
-		'From' => $from,
+		'From' => $form,
 		'MIME-Version' => '1.0',
 		'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
 		'Content-Transfer-Encoding' => '8Bit',
@@ -613,7 +578,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		'Cc' => $cc,
 		'Bcc' => $bcc
 	);
-	if (!drupal_mail('dwsim_flowsheet', 'dwsim_flowsheet_proposal_received', $email_to, user_preferred_language($user), $params, $from, TRUE))
+	if (!drupal_mail('dwsim_flowsheet', 'dwsim_flowsheet_proposal_received', $email_to, user_preferred_language($user), $params, $form, TRUE))
 		drupal_set_message('Error sending email message.', 'error');
 	drupal_set_message(t('We have received your DWSIM Flowsheeting proposal. We will get back to you soon.'), 'status');
 	drupal_goto('');
