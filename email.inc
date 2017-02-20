@@ -356,7 +356,7 @@ List of user defined compounds used in process flowsheet : ' . $user_defined_com
 Uploaded user defined compound  : ' . $file_name . '
 
 
-You can propose a new flowsheet project proposal.
+You can propose a new flowsheet project.
 
 Best Wishes,
 
