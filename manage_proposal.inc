@@ -969,7 +969,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 		$cc = variable_get('dwsim_flowsheet_cc_emails', '');
 		$params['dwsim_flowsheet_proposal_deleted']['proposal_id'] = $proposal_id;
 		$params['dwsim_flowsheet_proposal_deleted']['user_id'] = $user->uid;
-		$params['dwsim_flowsheet_proposal_deleted']['file_name'] = $_FILES['files']['name'][$file_form_name];
+		//$params['dwsim_flowsheet_proposal_deleted']['file_name'] = $_FILES['files']['name'][$file_form_name];
 		$params['dwsim_flowsheet_proposal_deleted']['headers'] = array(
 			'From' => $from,
 			'MIME-Version' => '1.0',
