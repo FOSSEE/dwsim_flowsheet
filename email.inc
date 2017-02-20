@@ -33,6 +33,24 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 			{
 				$file_name = basename($proposal_data->user_defined_compound_filepath);
 			}
+
+			if ($proposal_data->project_guide_name == "NULL")
+			{
+				$project_guide_name = "Not Entered";
+			} //$proposal_data->project_guide_name == NULL
+			else
+			{
+				$project_guide_name = $proposal_data->project_guide_name;
+			}
+			if ($proposal_data->project_guide_email_id == "NULL")
+			{
+				$project_guide_email_id = "Not Entered";
+			} //$proposal_data->project_guide_email_id == NULL
+			else
+			{
+				$project_guide_email_id = $proposal_data->project_guide_email_id;
+			}
+
 			$message['headers'] = $params['dwsim_flowsheet_proposal_received']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been received', array(
 				'!site_name' => variable_get('site_name', '')
@@ -53,21 +71,14 @@ City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 Country : ' . $proposal_data->country . '
 
-Project Guide  : ' . $proposal_data->project_guide_name . '
-Project Guide Email : ' . $proposal_data->project_guide_email_id . '
+Project Guide  : ' . $project_guide_name . '
+Project Guide Email : ' . $project_guide_email_id . '
 
 DWSIM Version : ' . $proposal_data->version . '
 
 Project Title  : ' . $proposal_data->project_title . '
 
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-List of compounds from DWSIM Database used in process flowsheet : ' . $proposal_data->dwsim_database_compound_name . '
-
-List of user defined compounds used in process flowsheet : ' . $user_defined_compounds_used_in_process . '
-
-Uploaded user defined compound  : ' . $file_name . '
-
 
 
 Your proposal is under review. You will soon receive an email when same has been approved/disapproved.
@@ -107,6 +118,22 @@ FOSSEE,IIT Bombay', array(
 			{
 				$file_name = basename($proposal_data->user_defined_compound_filepath);
 			}
+			if ($proposal_data->project_guide_name == "NULL")
+			{
+				$project_guide_name = "Not Entered";
+			} //$proposal_data->project_guide_name == NULL
+			else
+			{
+				$project_guide_name = $proposal_data->project_guide_name;
+			}
+			if ($proposal_data->project_guide_email_id == "NULL")
+			{
+				$project_guide_email_id = "Not Entered";
+			} //$proposal_data->project_guide_email_id == NULL
+			else
+			{
+				$project_guide_email_id = $proposal_data->project_guide_email_id;
+			}
 			$message['headers'] = $params['dwsim_flowsheet_proposal_disapproved']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been disapproved', array(
 				'!site_name' => variable_get('site_name', '')
@@ -117,7 +144,7 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-Your DWSIM Flowsheeting Project proposal with the following details has been disapproved :
+We regret to inform you that your DWSIM Flowsheeting Project proposal with following details have been disapproved:
 
 Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
 Email : ' . $user_data->mail . '
@@ -127,24 +154,20 @@ City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 Country : ' . $proposal_data->country . '
 
-Project Guide  : ' . $proposal_data->project_guide_name . '
-Project Guide Email : ' . $proposal_data->project_guide_email_id . '
+Project Guide  : ' . $project_guide_name . '
+Project Guide Email : ' . $project_guide_email_id . '
+
+DWSIM Version : ' . $proposal_data->version . '
 
 Project Title  : ' . $proposal_data->project_title . '
 
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
 
-List of compounds from DWSIM Database used in process flowsheet : ' . $proposal_data->dwsim_database_compound_name . '
 
-List of user defined compounds used in process flowsheet : ' . $user_defined_compounds_used_in_process . '
-
-Uploaded user defined compound  : ' . $file_name . '
+Reason for rejection: : ' . $proposal_data->dissapproval_reason . '
 
 
-Reason for dissapproval : ' . $proposal_data->dissapproval_reason . '
-
-
-Your are eligible to propose a new flowsheeting proposal.
+You are welcome to submit a new proposal.
 
 Best Wishes,
 
@@ -181,6 +204,22 @@ FOSSEE,IIT Bombay', array(
 			{
 				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
 			}
+			if ($proposal_data->project_guide_name == "NULL")
+			{
+				$project_guide_name = "Not Entered";
+			} //$proposal_data->project_guide_name == NULL
+			else
+			{
+				$project_guide_name = $proposal_data->project_guide_name;
+			}
+			if ($proposal_data->project_guide_email_id == "NULL")
+			{
+				$project_guide_email_id = "Not Entered";
+			} //$proposal_data->project_guide_email_id == NULL
+			else
+			{
+				$project_guide_email_id = $proposal_data->project_guide_email_id;
+			}
 			$message['headers'] = $params['dwsim_flowsheet_proposal_approved']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been approved', array(
 				'!site_name' => variable_get('site_name', '')
@@ -201,19 +240,14 @@ City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 Country : ' . $proposal_data->country . '
 
-Project Guide  : ' . $proposal_data->project_guide_name . '
-Project Guide Email : ' . $proposal_data->project_guide_email_id . '
+Project Guide  : ' . $project_guide_name . '
+Project Guide Email : ' . $project_guide_email_id . '
+
+DWSIM Version : ' . $proposal_data->version . '
 
 Project Title  : ' . $proposal_data->project_title . '
 
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-List of compounds from DWSIM Database used in process flowsheet : ' . $proposal_data->dwsim_database_compound_name . '
-
-List of user defined compounds used in process flowsheet : ' . $user_defined_compounds_used_in_process . '
-
-Uploaded user defined compound  : ' . $file_name . '
-
 
 
 You can upload your abstract using abstract submission interface.
@@ -253,6 +287,22 @@ FOSSEE,IIT Bombay', array(
 			{
 				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
 			}
+			if ($proposal_data->project_guide_name == "NULL")
+			{
+				$project_guide_name = "Not Entered";
+			} //$proposal_data->project_guide_name == NULL
+			else
+			{
+				$project_guide_name = $proposal_data->project_guide_name;
+			}
+			if ($proposal_data->project_guide_email_id == "NULL")
+			{
+				$project_guide_email_id = "Not Entered";
+			} //$proposal_data->project_guide_email_id == NULL
+			else
+			{
+				$project_guide_email_id = $proposal_data->project_guide_email_id;
+			}
 			$message['headers'] = $params['dwsim_flowsheet_proposal_approved']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been completed', array(
 				'!site_name' => variable_get('site_name', '')
@@ -263,7 +313,7 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-You have completed your DWSIM Flowsheeting Project with the following details:
+Your DWSIM flowsheet and abstract on the following process have been completed successfully.
 
 Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
 Email : ' . $user_data->mail . '
@@ -273,20 +323,14 @@ City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 Country : ' . $proposal_data->country . '
 
-Project Guide  : ' . $proposal_data->project_guide_name . '
-Project Guide Email : ' . $proposal_data->project_guide_email_id . '
+Project Guide  : ' . $project_guide_name . '
+Project Guide Email : ' . $project_guide_email_id . '
+
+DWSIM Version : ' . $proposal_data->version . '
 
 Project Title  : ' . $proposal_data->project_title . '
 
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-List of compounds from DWSIM Database used in process flowsheet : ' . $proposal_data->dwsim_database_compound_name . '
-
-List of user defined compounds used in process flowsheet : ' . $user_defined_compounds_used_in_process . '
-
-Uploaded user defined compound  : ' . $file_name . '
-
-
 Best Wishes,
 
 !site_name Team,
@@ -322,6 +366,22 @@ FOSSEE,IIT Bombay', array(
 			{
 				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
 			}
+			if ($proposal_data->project_guide_name == "NULL")
+			{
+				$project_guide_name = "Not Entered";
+			} //$proposal_data->project_guide_name == NULL
+			else
+			{
+				$project_guide_name = $proposal_data->project_guide_name;
+			}
+			if ($proposal_data->project_guide_email_id == "NULL")
+			{
+				$project_guide_email_id = "Not Entered";
+			} //$proposal_data->project_guide_email_id == NULL
+			else
+			{
+				$project_guide_email_id = $proposal_data->project_guide_email_id;
+			}
 			$message['headers'] = $params['dwsim_flowsheet_proposal_deleted']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been deleted', array(
 				'!site_name' => variable_get('site_name', '')
@@ -342,18 +402,14 @@ City : ' . $proposal_data->city . '
 State : ' . $proposal_data->state . '
 Country : ' . $proposal_data->country . '
 
-Project Guide  : ' . $proposal_data->project_guide_name . '
-Project Guide Email : ' . $proposal_data->project_guide_email_id . '
+Project Guide  : ' . $project_guide_name . '
+Project Guide Email : ' . $project_guide_email_id . '
+
+DWSIM Version : ' . $proposal_data->version . '
 
 Project Title  : ' . $proposal_data->project_title . '
 
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-List of compounds from DWSIM Database used in process flowsheet : ' . $proposal_data->dwsim_database_compound_name . '
-
-List of user defined compounds used in process flowsheet : ' . $user_defined_compounds_used_in_process . '
-
-Uploaded user defined compound  : ' . $file_name . '
 
 
 
