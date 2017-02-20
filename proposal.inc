@@ -254,8 +254,8 @@ Ex: Ethanol (64-17-5)'),
 		'#type' => 'select',
 		'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
 		'#multiple' => TRUE,
-		'#description' => t('List the compound name from DWSIM database as shown below:
-Ex: Ethylene (74-85-1)[You can select multiple options by holding ctrl + left key of mouse]'),
+		'#size' => '20',
+		'#description' => t('Select the compound name from DWSIM database as shown [You can select multiple options by holding ctrl + left key of mouse]'),
 		'#options' => _df_list_of_dwsim_compound(),
 		'#required' => TRUE
 	);
@@ -368,6 +368,36 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['city'] == ''
 	}
+//Validation for project title
+	$from_state['values']['project_title'] = trim($from_state['values']['project_title']);
+	if ($from_state['values']['project_title'] != '')
+	{
+		if (strlen($from_state['values']['project_title']) > 250)
+		{
+			form_set_error('project_title', t('Maximum charater limit is 250 charaters only, please check the length of the project title'));
+		} else  if (strlen($from_state['values']['project_title']) < 10)
+                {
+                        form_set_error('project_title', t('Minimum charater limit is 10 charaters, please check the length of the project title'));
+                }
+	} else
+	{
+		form_set_error('project_title', t('Project title shoud not be empty'));
+	}
+// validation for Name of compound for which process development is carried out
+	$from_state['values']['process_development_compound_name'] = trim($from_state['values']['process_development_compound_name']);
+        if ($from_state['values']['process_development_compound_name'] != '')
+        {
+                if (strlen($from_state['values']['process_development_compound_name']) >= 50)
+                {
+                        form_set_error('process_development_compound_name', t('Maximum charater limit is 50 charaters only, please check the length'));
+                } else  if (strlen($from_state['values']['project_title']) < 1)
+                {
+                        form_set_error('process_development_compound_name', t('Minimum charater limit is 1 charaters, please check the length'));
+                }
+        } else
+        {
+                form_set_error('process_development_compound_name', t('Field should not be empty'));
+        }
 	if ($form_state['values']['version'] == 'Old version')
 	{
 		if ($form_state['values']['older'] == '')
