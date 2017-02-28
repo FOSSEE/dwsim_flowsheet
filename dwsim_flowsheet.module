@@ -929,3 +929,30 @@ function rrmdir($dir)
 		rmdir($dir);
 	} //is_dir($dir)
 }
+function _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
+{
+	$data = "";
+	$query = db_select('dwsim_flowsheet_user_defined_compound');
+	$query->fields('dwsim_flowsheet_user_defined_compound');
+	$query->condition('proposal_id', $proposal_id, '=');
+	$query->orderBy('user_defined_compound', 'ASC');
+	$user_defined_compound_list = $query->execute();
+	$headers = array(
+		"User defined compound",
+		"CAS No."
+	);
+	$rows = array();
+	while ($row = $user_defined_compound_list->fetchObject())
+	{
+		$item = array(
+			"{$row->user_defined_compound}",
+			"{$row->cas_no}"
+		);
+		array_push($rows, $item);
+	} //$row = $user_defined_compound_list->fetchObject()
+	$data .= theme('table', array(
+		'header' => $headers,
+		'rows' => $rows
+	));
+	return $data;
+}

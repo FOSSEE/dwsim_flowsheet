@@ -34,7 +34,7 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 				$file_name = basename($proposal_data->user_defined_compound_filepath);
 			}
 
-			if ($proposal_data->project_guide_name == "NULL")
+			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
 			} //$proposal_data->project_guide_name == NULL
@@ -42,7 +42,7 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 			{
 				$project_guide_name = $proposal_data->project_guide_name;
 			}
-			if ($proposal_data->project_guide_email_id == "NULL")
+			if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
 			{
 				$project_guide_email_id = "Not Entered";
 			} //$proposal_data->project_guide_email_id == NULL
@@ -63,7 +63,7 @@ Dear !user_name,
 
 We have received your DWSIM Flowsheeting Project proposal with the following details:
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Email : ' . $user_data->mail . '
 Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '
@@ -146,7 +146,7 @@ Dear !user_name,
 
 We regret to inform you that your DWSIM Flowsheeting Project proposal with following details have been disapproved:
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Email : ' . $user_data->mail . '
 Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '
@@ -232,7 +232,7 @@ Dear !user_name,
 
 Your DWSIM Flowsheeting Project proposal with the following details has been approved:
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Email : ' . $user_data->mail . '
 Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '
@@ -315,7 +315,7 @@ Dear !user_name,
 
 Your DWSIM flowsheet and abstract on the following process have been completed successfully.
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Email : ' . $user_data->mail . '
 Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '
@@ -394,7 +394,7 @@ Dear !user_name,
 
 Your DWSIM Flowsheeting Project proposal with the following details has been deleted :
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->student_name . '
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Email : ' . $user_data->mail . '
 Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
 University/Institute : ' . $proposal_data->university . '

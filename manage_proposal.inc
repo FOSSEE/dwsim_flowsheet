@@ -14,7 +14,7 @@ function dwsim_flowsheet_proposal_pending()
 	{
 		$pending_rows[$pending_data->id] = array(
 			date('d-m-Y', $pending_data->creation_date),
-			l($pending_data->name_title . ' ' . $pending_data->student_name, 'user/' . $pending_data->uid),
+			l($pending_data->name_title . ' ' . $pending_data->contributor_name, 'user/' . $pending_data->uid),
 			$pending_data->project_title,
 			l('Approve', 'flowsheeting-project/manage-proposal/approve/' . $pending_data->id) . ' | ' . l('Edit', 'flowsheeting-project/manage-proposal/edit/' . $pending_data->id)
 		);
@@ -119,7 +119,7 @@ function dwsim_flowsheet_proposal_all()
 		}
 		$proposal_rows[] = array(
 			date('d-m-Y', $proposal_data->creation_date),
-			l($proposal_data->student_name, 'user/' . $proposal_data->uid),
+			l($proposal_data->contributor_name, 'user/' . $proposal_data->uid),
 			$proposal_data->project_title,
 			$actual_completion_date,
 			$approval_status,
@@ -178,9 +178,25 @@ function dwsim_flowsheet_proposal_approval_form($form, &$form_state)
 		drupal_goto('flowsheeting-project/manage-proposal');
 		return;
 	}
-	$form['student_name'] = array(
+	if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
+	{
+		$project_guide_name = "Not Entered";
+	} //$proposal_data->project_guide_name == NULL
+	else
+	{
+		$project_guide_name = $proposal_data->project_guide_name;
+	}
+	if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
+	{
+		$project_guide_email_id = "Not Entered";
+	} //$proposal_data->project_guide_email_id == NULL
+	else
+	{
+		$project_guide_email_id = $proposal_data->project_guide_email_id;
+	}
+	$form['contributor_name'] = array(
 		'#type' => 'item',
-		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->student_name, 'user/' . $proposal_data->uid),
+		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->contributor_name, 'user/' . $proposal_data->uid),
 		'#title' => t('Student name')
 	);
 	$form['student_email_id'] = array(
@@ -236,44 +252,53 @@ function dwsim_flowsheet_proposal_approval_form($form, &$form_state)
 	$form['project_guide_name'] = array(
 		'#type' => 'item',
 		'#title' => t('Project guide'),
-		'#markup' => $proposal_data->project_guide_name
+		'#markup' => $project_guide_name
 	);
 	$form['project_guide_email_id'] = array(
 		'#type' => 'item',
 		'#title' => t('Project guide email'),
-		'#markup' => $proposal_data->project_guide_email_id
+		'#markup' => $project_guide_email_id
 	);
 	$form['project_title'] = array(
 		'#type' => 'item',
 		'#markup' => $proposal_data->project_title,
 		'#title' => t('Title of the Flowsheet Project')
 	);
+	$headers = array(
+		"User defined compound",
+		"CAS No."
+	);
+	$rows = array();
+	$item = array(
+		"{$proposal_data->process_development_compound_name}",
+		"{$proposal_data->process_development_compound_cas_number}"
+	);
+	array_push($rows, $item);
+	$prodata = theme('table', array(
+		'header' => $headers,
+		'rows' => $rows
+	));
 	$form['process_development_compound_name'] = array(
 		'#type' => 'item',
 		'#title' => t('Name of compound for which process development is carried out'),
-		'#markup' => $proposal_data->process_development_compound_name
+		'#markup' => $prodata
 	);
+	/*
+	$form['process_development_compound_cas_number'] = array(
+	'#type' => 'item',
+	'#title' => t('CAS Number of compound for which process development is carried out'),
+	'#markup' => $proposal_data->process_development_compound_cas_number
+	);*/
 	$form['dwsim_database_compound_name'] = array(
 		'#type' => 'item',
 		'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
 		'#markup' => $proposal_data->dwsim_database_compound_name
 	);
-	if ($proposal_data->user_defined_compounds_used_in_process != "" || $proposal_data->user_defined_compounds_used_in_process != NULL)
-	{
-		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
-			'#type' => 'item',
-			'#title' => t('List of user defined compounds used in process flowsheet'),
-			'#markup' => $proposal_data->user_defined_compounds_used_in_process
-		);
-	} //$proposal_data->user_defined_compounds_used_in_process != "" || $proposal_data->user_defined_compounds_used_in_process != NULL
-	else
-	{
-		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
-			'#type' => 'item',
-			'#title' => t('List of user defined compounds used in process flowsheet'),
-			'#markup' => "Not entered"
-		);
-	}
+	$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
+		'#type' => 'item',
+		'#title' => t('List of user defined compounds used in process flowsheet'),
+		'#markup' => _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
+	);
 	if ($proposal_data->user_defined_compound_filepath != "")
 	{
 		$form['user_defined_compound_filepath'] = array(
@@ -462,9 +487,9 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		drupal_goto('flowsheeting-project/manage-proposal');
 		return;
 	}
-	$form['student_name'] = array(
+	$form['contributor_name'] = array(
 		'#type' => 'item',
-		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->student_name, 'user/' . $proposal_data->uid),
+		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->contributor_name, 'user/' . $proposal_data->uid),
 		'#title' => t('Student name')
 	);
 	$form['student_email_id'] = array(
@@ -536,6 +561,11 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		'#type' => 'item',
 		'#title' => t('Name of compound for which process development is carried out'),
 		'#markup' => $proposal_data->process_development_compound_name
+	);
+	$form['process_development_compound_cas_number'] = array(
+		'#type' => 'item',
+		'#title' => t('CAS Number of compound for which process development is carried out'),
+		'#markup' => $proposal_data->process_development_compound_cas_number
 	);
 	$form['dwsim_database_compound_name'] = array(
 		'#type' => 'item',
@@ -750,13 +780,13 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->name_title
 	);
-	$form['student_name'] = array(
+	$form['contributor_name'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Name of the Proposer'),
 		'#size' => 30,
 		'#maxlength' => 50,
 		'#required' => TRUE,
-		'#default_value' => $proposal_data->student_name
+		'#default_value' => $proposal_data->contributor_name
 	);
 	$form['student_email_id'] = array(
 		'#type' => 'item',
@@ -904,32 +934,33 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 	);
 	return $form;
 }
+/*
 function dwsim_flowsheet_proposal_edit_form_validate($form, &$form_state)
 {
-	$proposal_id = (int) arg(3);
-	/* check before delete proposal */
-	if ($form_state['values']['delete_proposal'] == 1)
-	{
-		//$experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d", $proposal_id);
-		$query = db_select('dwsim_flowsheet_experiment');
-		$query->fields('dwsim_flowsheet_experiment');
-		$query->condition('proposal_id', $proposal_id);
-		$experiment_q = $query->execute();
-		while ($experiment_data = $experiment_q->fetchObject())
-		{
-			//$solution_q = db_query("SELECT * FROM {dwsim_flowsheet_solution} WHERE experiment_id = %d", $experiment_data->id);
-			$query = db_select('dwsim_flowsheet_solution');
-			$query->fields('dwsim_flowsheet_solution');
-			$query->condition('experiment_id', $experiment_data->id);
-			$solution_q = $query->execute();
-			if ($solution_q->fetchObject())
-			{
-				form_set_error('', t('Cannot delete proposal since there are solutions already uploaded. Use the "Bulk Manage" interface to delete this proposal'));
-			} //$solution_q->fetchObject()
-		} //$experiment_data = $experiment_q->fetchObject()
-	} //$form_state['values']['delete_proposal'] == 1
-	return;
-}
+$proposal_id = (int) arg(3);
+// check before delete proposal 
+if ($form_state['values']['delete_proposal'] == 1)
+{
+//$experiment_q = db_query("SELECT * FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d", $proposal_id);
+$query = db_select('dwsim_flowsheet_user_defined_compound');
+$query->fields('dwsim_flowsheet_user_defined_compound');
+$query->condition('proposal_id', $proposal_id);
+$experiment_q = $query->execute();
+while ($experiment_data = $experiment_q->fetchObject())
+{
+//$solution_q = db_query("SELECT * FROM {dwsim_flowsheet_solution} WHERE experiment_id = %d", $experiment_data->id);
+$query = db_select('dwsim_flowsheet_user_defined_compound');
+$query->fields('dwsim_flowsheet_user_defined_compound');
+$query->condition('proposal_id', $proposal_id);
+$solution_q = $query->execute();
+if ($solution_q->fetchObject())
+{
+form_set_error('', t('Cannot delete proposal since there are solutions already uploaded. Use the "Bulk Manage" interface to delete this proposal'));
+} //$solution_q->fetchObject()
+} //$experiment_data = $experiment_q->fetchObject()
+} //$form_state['values']['delete_proposal'] == 1
+return;
+}*/
 function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 {
 	global $user;
@@ -988,10 +1019,9 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 			$query = db_delete('dwsim_flowsheet_proposal');
 			$query->condition('id', $proposal_id);
 			$num_deleted = $query->execute();
-			//db_query("DELETE FROM {dwsim_flowsheet_experiment} WHERE proposal_id = %d", $proposal_id);
-			$query = db_delete('dwsim_flowsheet_experiment');
-			$query->condition('proposal_id', $proposal_id);
-			$num_deleted = $query->execute();
+			db_query("DELETE FROM {dwsim_flowsheet_user_defined_compound} WHERE proposal_id = :proposal_id", array(
+				":proposal_id" => $proposal_id
+			));
 			drupal_set_message(t('Proposal Deleted'), 'status');
 			drupal_goto('flowsheeting-project/manage-proposal');
 			return;
@@ -1000,7 +1030,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	/* update proposal */
 	$v = $form_state['values'];
 	$project_title = $v['project_title'];
-	$proposar_name = $v['name_title'] . ' ' . $v['student_name'];
+	$proposar_name = $v['name_title'] . ' ' . $v['contributor_name'];
 	$university = $v['university'];
 	$directory_names = _df_dir_name($project_title, $proposar_name);
 	if (DF_RenameDir($proposal_id, $directory_names))
@@ -1013,7 +1043,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	}
 	$query = "UPDATE dwsim_flowsheet_proposal SET 
 				name_title=:name_title,
-				student_name=:student_name,
+				contributor_name=:contributor_name,
 				university=:university,
 				city=:city,
 				pincode=:pincode,
@@ -1023,7 +1053,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 				WHERE id=:proposal_id";
 	$args = array(
 		':name_title' => $v['name_title'],
-		':student_name' => $v['student_name'],
+		':contributor_name' => $v['contributor_name'],
 		':university' => $v['university'],
 		':city' => $v['city'],
 		':pincode' => $v['pincode'],
