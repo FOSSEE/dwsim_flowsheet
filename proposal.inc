@@ -641,8 +641,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     project_title, 
     process_development_compound_name, 
     process_development_compound_cas_number,
-    dwsim_database_compound_name, 
-    user_defined_compounds_used_in_process, 
+    dwsim_database_compound_name,
     approval_status, 
     dissapproval_reason,
     creation_date, 
@@ -669,8 +668,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     :project_title, 
     :process_development_compound_name, 
     :process_development_compound_cas_number,
-    :dwsim_database_compound_name, 
-    :user_defined_compounds_used_in_process, 
+    :dwsim_database_compound_name,
     :approval_status, 
     :dissapproval_reason,
     :creation_date, 
@@ -698,7 +696,6 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":process_development_compound_name" => _df_sentence_case($v['process_development_compound_name']),
 		":process_development_compound_cas_number" => $v['process_development_compound_cas_no'],
 		":dwsim_database_compound_name" => trim($v['dwsim_database_compound_name']),
-		":user_defined_compounds_used_in_process" => _df_sentence_case(trim($v['user_defined_compounds_used_in_process_flowsheetcompound_name'])),
 		":approval_status" => 0,
 		":dissapproval_reason" => "NULL",
 		":creation_date" => time(),
@@ -726,8 +723,8 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 	";
 				$compoundargs = array(
 					":proposal_id" => $proposal_id,
-					":user_defined_compound" => $v['udc_field1_fieldset'][$i]["compound"],
-					":cas_no" => $v['udc_field1_fieldset'][$i]["cas_no"],
+					":user_defined_compound" => trim($v['udc_field1_fieldset'][$i]["compound"]),
+					":cas_no" => trim($v['udc_field1_fieldset'][$i]["cas_no"]),
 					":compound_type" => 'U'
 				);
 				/* storing the row id in $result */
