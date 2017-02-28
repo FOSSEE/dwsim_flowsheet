@@ -265,7 +265,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#type' => 'textfield',
 		'#title' => t('Name of compound for which process development is carried out'),
 		'#size' => 50,
-		'#description' => t('Mention the compound name as shown below:
+		'#description' => t('Mention the compound name as shown:
 Ex: Ethanol'),
 		'#required' => TRUE
 	);
@@ -273,7 +273,7 @@ Ex: Ethanol'),
 		'#type' => 'textfield',
 		'#title' => t('CAS number for compound which process development is carried out'),
 		'#size' => 50,
-		'#description' => t('Mention the compound CAS No as shown below:
+		'#description' => t('Mention the compound CAS No as shown:
 Ex: 64-17-5'),
 		'#required' => TRUE
 	);
@@ -282,13 +282,13 @@ Ex: 64-17-5'),
 		'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
 		'#multiple' => TRUE,
 		'#size' => '20',
-		'#description' => t('Select the compound name from DWSIM database as shown [You can select multiple options by holding ctrl + left key of mouse]'),
+		'#description' => t('Select  all the compounds used in flowsheet which are available in above DWSIM compound list [You can select multiple options by holding ctrl + left key of mouse]'),
 		'#options' => _df_list_of_dwsim_compound(),
 		'#required' => TRUE
 	);
 	$form['ucompound'] = array(
 		'#type' => 'checkbox',
-		'#title' => t('Upload user defind compound')
+		'#title' => t('Is user defined compound used?')
 	);
 	/*$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
 	'#type' => 'textarea',
@@ -337,12 +337,12 @@ Ex: 64-17-5'),
 		$udc_temp1 = $udc_i;
 		$form['upload_u_compound']['udc_field1_fieldset'][$udc_i]["compound"] = array(
 			"#type" => "textfield",
-			"#title" => "Name of Product Compound " . ($udc_temp1 + 1),
+			"#title" => "Name of User defined compound " . ($udc_temp1 + 1),
 			"#default_value" => ""
 		);
 		$form['upload_u_compound']['udc_field1_fieldset'][$udc_i]["cas_no"] = array(
 			"#type" => "textfield",
-			"#title" => "CAS Number " . ($udc_temp1 + 1),
+			"#title" => "CAS Number of User defined compound " . ($udc_temp1 + 1),
 			"#default_value" => ""
 		);
 	} //$i = 0; $i < $form_state['step1_num_compound']; $i++
@@ -550,20 +550,6 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	} //$form_state['values']['dwsim_database_compound_name']
 	if ($form_state['values']['ucompound'] == 1)
 	{
-		/* For compounds */
-		/*
-		for ($i = 0; $i <= $v['udc_field1_fieldset']["udc_compound_count"]; $i++)
-		{
-		if ($v['udc_field1_fieldset'][$i]["compound"] == "")
-		{
-		form_set_error('compound', t('Field should not be empty'));
-		} 
-		if ($v['udc_field1_fieldset'][$i]["cas_no"] == "")
-		{
-		form_set_error('cas_no', t('Field should not be empty'));
-		} 
-		} 
-		*/
 		if (isset($_FILES['files']))
 		{
 			/* check if atleast one source or result file is uploaded */
