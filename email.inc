@@ -17,23 +17,6 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_received']['user_id']);
-			if ($proposal_data->user_defined_compounds_used_in_process == NULL)
-			{
-				$user_defined_compounds_used_in_process = "Not Entered";
-			} //$proposal_data->user_defined_compounds_used_in_process == NULL
-			else
-			{
-				$user_defined_compounds_used_in_process = $proposal_data->user_defined_compounds_used_in_process;
-			}
-			if ($proposal_data->user_defined_compound_filepath == "NULL")
-			{
-				$file_name = "File not uploaded";
-			} //$proposal_data->user_defined_compound_filepath == NULL
-			else
-			{
-				$file_name = basename($proposal_data->user_defined_compound_filepath);
-			}
-
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
@@ -102,23 +85,7 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_disapproved']['user_id']);
-			if ($proposal_data->user_defined_compounds_used_in_process == NULL)
-			{
-				$user_defined_compounds_used_in_process = "Not Entered";
-			} //$proposal_data->user_defined_compounds_used_in_process == NULL
-			else
-			{
-				$user_defined_compounds_used_in_process = $proposal_data->user_defined_compounds_used_in_process;
-			}
-			if ($proposal_data->user_defined_compound_filepath == "NULL")
-			{
-				$file_name = "File not uploaded";
-			} //$proposal_data->user_defined_compound_filepath == NULL
-			else
-			{
-				$file_name = basename($proposal_data->user_defined_compound_filepath);
-			}
-			if ($proposal_data->project_guide_name == "NULL")
+			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
 			} //$proposal_data->project_guide_name == NULL
@@ -126,7 +93,7 @@ FOSSEE,IIT Bombay', array(
 			{
 				$project_guide_name = $proposal_data->project_guide_name;
 			}
-			if ($proposal_data->project_guide_email_id == "NULL")
+			if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
 			{
 				$project_guide_email_id = "Not Entered";
 			} //$proposal_data->project_guide_email_id == NULL
@@ -188,23 +155,7 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_approved']['user_id']);
-			if ($proposal_data->user_defined_compounds_used_in_process == NULL)
-			{
-				$user_defined_compounds_used_in_process = "Not Entered";
-			} //$proposal_data->user_defined_compounds_used_in_process == NULL
-			else
-			{
-				$user_defined_compounds_used_in_process = $proposal_data->user_defined_compounds_used_in_process;
-			}
-			if ($proposal_data->user_defined_compound_filepath == "NULL")
-			{
-				$file_name = "File not uploaded";
-			} //$proposal_data->user_defined_compound_filepath == NULL
-			else
-			{
-				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
-			}
-			if ($proposal_data->project_guide_name == "NULL")
+			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
 			} //$proposal_data->project_guide_name == NULL
@@ -212,7 +163,7 @@ FOSSEE,IIT Bombay', array(
 			{
 				$project_guide_name = $proposal_data->project_guide_name;
 			}
-			if ($proposal_data->project_guide_email_id == "NULL")
+			if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
 			{
 				$project_guide_email_id = "Not Entered";
 			} //$proposal_data->project_guide_email_id == NULL
@@ -271,23 +222,7 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_approved']['user_id']);
-			if ($proposal_data->user_defined_compounds_used_in_process == NULL)
-			{
-				$user_defined_compounds_used_in_process = "Not Entered";
-			} //$proposal_data->user_defined_compounds_used_in_process == NULL
-			else
-			{
-				$user_defined_compounds_used_in_process = $proposal_data->user_defined_compounds_used_in_process;
-			}
-			if ($proposal_data->user_defined_compound_filepath == "NULL")
-			{
-				$file_name = "File not uploaded";
-			} //$proposal_data->user_defined_compound_filepath == NULL
-			else
-			{
-				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
-			}
-			if ($proposal_data->project_guide_name == "NULL")
+			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
 			} //$proposal_data->project_guide_name == NULL
@@ -295,7 +230,7 @@ FOSSEE,IIT Bombay', array(
 			{
 				$project_guide_name = $proposal_data->project_guide_name;
 			}
-			if ($proposal_data->project_guide_email_id == "NULL")
+			if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
 			{
 				$project_guide_email_id = "Not Entered";
 			} //$proposal_data->project_guide_email_id == NULL
@@ -350,23 +285,8 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_deleted']['user_id']);
-			if ($proposal_data->user_defined_compounds_used_in_process == NULL)
-			{
-				$user_defined_compounds_used_in_process = "Not Entered";
-			} //$proposal_data->user_defined_compounds_used_in_process == NULL
-			else
-			{
-				$user_defined_compounds_used_in_process = $proposal_data->user_defined_compounds_used_in_process;
-			}
-			if ($proposal_data->user_defined_compound_filepath == "NULL")
-			{
-				$file_name = "File not uploaded";
-			} //$proposal_data->user_defined_compound_filepath == NULL
-			else
-			{
-				$file_name = $params['dwsim_flowsheet_proposal_approved']['file_name'];
-			}
-			if ($proposal_data->project_guide_name == "NULL")
+			
+			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
 			} //$proposal_data->project_guide_name == NULL
@@ -374,7 +294,7 @@ FOSSEE,IIT Bombay', array(
 			{
 				$project_guide_name = $proposal_data->project_guide_name;
 			}
-			if ($proposal_data->project_guide_email_id == "NULL")
+			if ($proposal_data->project_guide_email_id == "NULL" || $proposal_data->project_guide_email_id == "")
 			{
 				$project_guide_email_id = "Not Entered";
 			} //$proposal_data->project_guide_email_id == NULL
