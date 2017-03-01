@@ -670,7 +670,7 @@ function _df_list_of_dwsim_compound()
 	$dwsim_compound = array();
 	$query = db_select('dwsim_flowsheet_compounds_from_dwsim');
 	$query->fields('dwsim_flowsheet_compounds_from_dwsim');
-	$query->orderBy('id', 'ASC');
+	$query->orderBy('compound', 'ASC');
 	$dwsim_compound_list = $query->execute();
 	while ($dwsim_compound_list_data = $dwsim_compound_list->fetchObject())
 	{

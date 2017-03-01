@@ -26,7 +26,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	/************************ start approve book details ************************/
 	if ($user->uid == 0)
 	{
-		$msg = drupal_set_message(t('It is mandatory to ' . l('login', 'user') . ' on this website to access the lab proposal form. If you are new user please create a new account first.'), 'error');
+		$msg = drupal_set_message(t('It is mandatory to ' . l('login', 'user') . ' on this website to access the flowsheet proposal form. If you are new user please create a new account first.'), 'error');
 		//drupal_goto('dwsim-flowsheet-project');
 		drupal_goto('user');
 		return $msg;
