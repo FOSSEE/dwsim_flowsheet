@@ -14,6 +14,10 @@ Solution Display :
 0 - No
 1 - Yes
 
+
+is_completed
+0 - in progress
+1 - Completed
 Tables :
 dwsim_flowsheet_solution : approval_status
 0 - Pending
@@ -628,7 +632,8 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     process_development_compound_name, 
     process_development_compound_cas_number,
     dwsim_database_compound_name,
-    approval_status, 
+    approval_status,
+    is_completed, 
     dissapproval_reason,
     creation_date, 
     approval_date, 
@@ -655,7 +660,8 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     :process_development_compound_name, 
     :process_development_compound_cas_number,
     :dwsim_database_compound_name,
-    :approval_status, 
+    :approval_status,
+    :is_completed, 
     :dissapproval_reason,
     :creation_date, 
     :approval_date, 
@@ -683,6 +689,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":process_development_compound_cas_number" => $v['process_development_compound_cas_no'],
 		":dwsim_database_compound_name" => trim($v['dwsim_database_compound_name']),
 		":approval_status" => 0,
+		":is_completed" => 0,
 		":dissapproval_reason" => "NULL",
 		":creation_date" => time(),
 		":approval_date" => 0,

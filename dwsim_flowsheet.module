@@ -337,22 +337,22 @@ function dwsim_flowsheet_menu()
 		'file' => 'full_download.inc'
 	);
 	/* COMPLETED dwsim flowsheetS */
-	$items['flowsheeting-project/completed-labs'] = array(
-		'title' => 'Completed Labs',
-		'page callback' => 'dwsim_flowsheet_completed_labs_all',
+	$items['flowsheeting-project/completed-flowsheet'] = array(
+		'title' => 'Completed Flowsheet',
+		'page callback' => 'dwsim_flowsheet_completed_proposals_all',
 		'access arguments' => array(
 			'dwsim flowsheet download code'
 		),
-		'file' => 'lab_details.inc'
+		'file' => 'flowsheet_details.inc'
 	);
 	/* LABS IN PROGRESS */
-	$items['flowsheeting-project/labs-progress'] = array(
-		'title' => 'Labs in Progress',
-		'page callback' => 'dwsim_flowsheet_labs_progress_all',
+	$items['flowsheeting-project/flowsheet-progress'] = array(
+		'title' => 'Flowsheets in Progress',
+		'page callback' => 'dwsim_flowsheet_progress_all',
 		'access arguments' => array(
 			'dwsim flowsheet download code'
 		),
-		'file' => 'lab_details.inc'
+		'file' => 'flowsheet_details.inc'
 	);
 	/* DOWNLOAD FOR EVERYONE */
 	$items['flowsheeting-project/dwsim-flowsheet-run'] = array(

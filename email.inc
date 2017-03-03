@@ -347,39 +347,31 @@ FOSSEE,IIT Bombay', array(
 			);
 			break;
 		/**************************************************************/
-		case 'solution_uploaded':
-			// $solution_q = db_query("SELECT * FROM {dwsim_flowsheet_solution} WHERE id = %d LIMIT 1", $params['solution_uploaded']['solution_id']);
-			$query = db_select('dwsim_flowsheet_solution');
-			$query->fields('dwsim_flowsheet_solution');
-			$query->condition('id', $params['solution_uploaded']['solution_id']);
+		case 'abstract_uploaded':
+			// $solution_q = db_query("SELECT * FROM {dwsim_flowsheet_solution} WHERE id = %d LIMIT 1", $params['abstract_uploaded']['solution_id']);
+			$query = db_select('dwsim_flowsheet_proposal');
+			$query->fields('dwsim_flowsheet_proposal');
+			$query->condition('id', $params['abstract_uploaded']['proposal_id']);
 			$query->range(0, 1);
-			$solution_q = $query->execute();
-			$solution_data = $solution_q->fetchObject();
-			$query = db_select('dwsim_flowsheet_experiment');
-			$query->fields('dwsim_flowsheet_experiment');
-			$query->condition('id', $solution_data->experiment_id);
-			$query->range(0, 1);
-			$experiment_q = $query->execute();
-			$experiment_data = $experiment_q->fetchObject();
-			$user_data = user_load($params['solution_uploaded']['user_id']);
-			$message['subject'] = t('[!site_name] You have uploaded DWSIM flowsheet solution', array(
+			$proposal_data = $query->execute()->fetchObject();
+			
+			$user_data = user_load($params['abstract_uploaded']['user_id']);
+			$message['subject'] = t('[!site_name][Flowsheeting Project] You have uploaded DWSIM flowsheet abstract', array(
 				'!site_name' => variable_get('site_name', '')
 			), array(
 				'language' => $language->language
 			));
-			$message['headers'] = $params['solution_uploaded']['headers'];
+			$message['headers'] = $params['abstract_uploaded']['headers'];
 			$message['body'] = array(
 				'body' => t('
 Dear !user_name,
 
-You have uploaded the following solution:
+You have uploaded the following Abstract:
 
-Experiment Title : ' . $experiment_data->title . '
+Project Title  : ' . $proposal_data->project_title . '
 
-Solution number : ' . $solution_data->code_number . '
-Caption : ' . $solution_data->caption . '
 
-The solution is under review. You will be notified when it has been approved.
+The abstract is under review. You will be notified when it has been approved.
 
 Best Wishes,
 
