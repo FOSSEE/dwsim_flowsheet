@@ -549,7 +549,7 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	} //$form_state['values']['version'] == 'Old version'
 	if ($form_state['values']['dwsim_database_compound_name'])
 	{
-		$dwsim_database_compound_name = implode(", ", $_POST['dwsim_database_compound_name']);
+		$dwsim_database_compound_name = implode("| ", $_POST['dwsim_database_compound_name']);
 		$form_state['values']['dwsim_database_compound_name'] = trim($dwsim_database_compound_name);
 	} //$form_state['values']['dwsim_database_compound_name']
 	if ($form_state['values']['ucompound'] == 1)
