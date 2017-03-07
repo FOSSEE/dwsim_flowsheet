@@ -16,12 +16,14 @@ function dwsim_flowsheet_abstract()
 	$query->fields('dwsim_flowsheet_submitted_abstracts');
 	$query->condition('proposal_id', $proposal_data->id);
 	$abstracts_q = $query->execute()->fetchObject();
+	if($abstracts_q){
 	if ($abstracts_q->is_submitted == 1)
 	{
 		drupal_set_message(t('Your abstract is under review, you can not edit exisiting abstract without reviewer permission.'), 'error', $repeat = FALSE);
 		//drupal_goto('flowsheeting-project/abstract-code');
 		//return;
 	} //$abstracts_q->is_submitted == 1
+	}
 	$query_pro = db_select('dwsim_flowsheet_proposal');
 	$query_pro->fields('dwsim_flowsheet_proposal');
 	$query_pro->condition('id', $proposal_data->id);
