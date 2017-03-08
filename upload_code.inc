@@ -175,11 +175,13 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 	$query->fields('dwsim_flowsheet_submitted_abstracts');
 	$query->condition('proposal_id', $proposal_data->id);
 	$abstracts_q = $query->execute()->fetchObject();
+	if($abstracts_q){
 	if ($abstracts_q->is_submitted == 1)
 	{
 		drupal_set_message(t('Your abstract is under review, you can not edit exisiting abstract without reviewer permission.'), 'error', $repeat = FALSE);
 		drupal_goto('flowsheeting-project/abstract-code');
 		//return;
+	}
 	} //$abstracts_q->is_submitted == 1
 	$form['project_title'] = array(
 		'#type' => 'item',
@@ -190,33 +192,38 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 		'#type' => 'item',
 		'#title' => t('DWSIM version'),
 		'#markup' => $proposal_data->version
-	);
-	if ($abstracts_q->unit_operations_used_in_dwsim)
+	);	
+	
+		if($abstracts_q == TRUE){
+ 
+		if ($abstracts_q->unit_operations_used_in_dwsim)
 	{
-		$existing_unit_operations_used_in_dwsim = default_value_for_selections("unit_operations_used_in_dwsim", $proposal_data->id);
-		$form['unit_operations_used_in_dwsim'] = array(
-			'#type' => 'select',
-			'#title' => t('Unit Operations used in DWSIM'),
-			'#options' => _df_list_of_unit_operations(),
-			'#required' => TRUE,
-			'#default_value' => $existing_unit_operations_used_in_dwsim,
-			'#size' => '20',
-			'#multiple' => TRUE,
-			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
-		);
-	} //$abstracts_q->unit_operations_used_in_dwsim
+		 $existing_unit_operations_used_in_dwsim = default_value_for_selections("unit_operations_used_in_dwsim", $proposal_data->id);
+                 $form['unit_operations_used_in_dwsim'] = array(
+                         '#type' => 'select',
+                         '#title' => t('Unit Operations used in DWSIM'),
+                         '#options' => _df_list_of_unit_operations(),
+                         '#required' => TRUE,
+                         '#default_value' => $existing_unit_operations_used_in_dwsim,
+                        '#size' => '20',
+                         '#multiple' => TRUE,
+                         '#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
+                 );		
+	} }//$abstracts_q->unit_operations_used_in_dwsim
 	else
 	{
-		$form['unit_operations_used_in_dwsim'] = array(
-			'#type' => 'select',
-			'#title' => t('Unit Operations used in DWSIM'),
-			'#options' => _df_list_of_unit_operations(),
-			'#required' => TRUE,
-			'#size' => '20',
-			'#multiple' => TRUE,
-			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
-		);
+		 $form['unit_operations_used_in_dwsim'] = array(
+                         '#type' => 'select',
+                        '#title' => t('Unit Operations used in DWSIM'),
+                         '#options' => _df_list_of_unit_operations(),
+                         '#required' => TRUE,
+                         '#size' => '20',
+                         '#multiple' => TRUE,
+                         '#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
+                 );
+
 	}
+	 if($abstracts_q == TRUE){
 	if ($abstracts_q->thermodynamic_packages_used)
 	{
 		$existing_thermodynamic_packages_used = default_value_for_selections("thermodynamic_packages_used", $proposal_data->id);
@@ -232,6 +239,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	} //$abstracts_q->thermodynamic_packages_used
+	}
 	else
 	{
 		$form['thermodynamic_packages_used'] = array(
@@ -244,6 +252,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	}
+	 if($abstracts_q == TRUE){
 	if ($abstracts_q->logical_blocks_used != "Not entered")
 	{
 		$existing_logical_blocks_used = default_value_for_selections("logical_blocks_used", $proposal_data->id);
@@ -256,6 +265,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	} //$abstracts_q->logical_blocks_used != "Not entered"
+	}
 	else
 	{
 		$form['logical_blocks_used'] = array(
@@ -265,6 +275,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#multiple' => TRUE,
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
+	
 	}
 	$headers = array(
 		"User defined compound",
@@ -309,13 +320,25 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#multiple' => TRUE
 		);
 	}
+	 
+
 	$existing_uploaded_A_file = default_value_for_uploaded_files("A", $proposal_data->id);
+	if(!$existing_uploaded_A_file){
+	$existing_uploaded_A_file= new stdClass();
+	 $existing_uploaded_A_file->filename = "No file uploaded";
+	}
 	$form['upload_an_abstract'] = array(
 		'#type' => 'file',
 		'#title' => t('Upload an abstract (brief outline) of the project.'),
 		'#description' => t('<span style="color:red;">Current File :</span> ' . $existing_uploaded_A_file->filename . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_abstract_upload_extensions', '') . '</span>'
 	);
+	
 	$existing_uploaded_S_file = default_value_for_uploaded_files("S", $proposal_data->id);
+	if(!$existing_uploaded_S_file){
+		 $existing_uploaded_S_file = new stdClass();
+
+          $existing_uploaded_S_file->filename = "No file uploaded";
+         }
 	$form['upload_flowsheet_developed_process'] = array(
 		'#type' => 'file',
 		'#title' => t('Upload the DWSIM flowsheet for the developed process.'),
@@ -342,11 +365,18 @@ function dwsim_flowsheet_upload_abstract_code_form_validate($form, &$form_state)
 		$unit_operations_used_in_dwsim = implode(", ", $_POST['unit_operations_used_in_dwsim']);
 		$form_state['values']['unit_operations_used_in_dwsim'] = $unit_operations_used_in_dwsim;
 	} //$form_state['values']['unit_operations_used_in_dwsim']
+	else{
+	form_set_error('unit_operations_used_in_dwsim', t('Please select.'));
+	}
 	if ($form_state['values']['thermodynamic_packages_used'])
 	{
 		$thermodynamic_packages_used = implode(", ", $_POST['thermodynamic_packages_used']);
 		$form_state['values']['thermodynamic_packages_used'] = $thermodynamic_packages_used;
 	} //$form_state['values']['thermodynamic_packages_used']
+	else{
+         form_set_error('thermodynamic_packages_used', t('Please select.'));
+         }
+	if($form_state['values']['logical_blocks_used']){
 	$logical_blocks_used_in = $_POST['logical_blocks_used'];
 	if ($logical_blocks_used_in != "")
 	{
@@ -360,6 +390,9 @@ function dwsim_flowsheet_upload_abstract_code_form_validate($form, &$form_state)
 	{
 		$form_state['values']['logical_blocks_used'] = "Not entered";
 	}
+	}else{
+	$form_state['values']['logical_blocks_used'] = "Not entered";
+}
 	//var_dump($form_state['values']['logical_blocks_used']);die;
 	if ($form_state['values']['list_of_compounds_from_dwsim_database_used_in_process_flowsheet'])
 	{
@@ -557,7 +590,7 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 						":uid" => $user->uid,
 						":approvar_uid" => 0,
 						":filename" => $_FILES['files']['name'][$file_form_name],
-						":filepath" => $file_path . $_FILES['files']['name'][$file_form_name],
+						":filepath" => $_FILES['files']['name'][$file_form_name],
 						":filemime" => mime_content_type($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]),
 						":filesize" => $_FILES['files']['size'][$file_form_name],
 						":filetype" => $file_type,
@@ -621,6 +654,7 @@ function default_value_for_selections($opration, $proposal_id)
 	{
 		$uouid = explode(',', $abstracts_q->unit_operations_used_in_dwsim);
 		$ui = 0;
+		$unit_item = new stdClass();
 		foreach ($uouid as $unit_item->$ui)
 		{
 			$selected_pacakege_array[$ui] = trim($unit_item->$ui);
@@ -631,6 +665,7 @@ function default_value_for_selections($opration, $proposal_id)
 	{
 		$tpuid = explode(',', $abstracts_q->thermodynamic_packages_used);
 		$tpui = 0;
+		$thermodynamic_item = new stdClass();
 		foreach ($tpuid as $thermodynamic_item->$tpui)
 		{
 			$selected_pacakege_array[$tpui] = trim($thermodynamic_item->$tpui);
@@ -641,6 +676,7 @@ function default_value_for_selections($opration, $proposal_id)
 	{
 		$lbuid = explode(',', $abstracts_q->logical_blocks_used);
 		$lbui = 0;
+		$logical_blocks = new stdClass();
 		foreach ($lbuid as $logical_blocks->$lbui)
 		{
 			$selected_pacakege_array[$logical_blocks->$lbui] = trim($logical_blocks->$lbui);
@@ -649,6 +685,7 @@ function default_value_for_selections($opration, $proposal_id)
 	} //$opration == "logical_blocks_used"
 	elseif ($opration == "dwsim_database_compound_name")
 	{
+		$dwsim_database_compound_name = new stdClass();
 		$query = db_select('dwsim_flowsheet_proposal');
 		$query->fields('dwsim_flowsheet_proposal');
 		$query->condition('id', $proposal_id);
