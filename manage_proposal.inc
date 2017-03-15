@@ -578,38 +578,6 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
 		'#markup' => $proposal_data->dwsim_database_compound_name
 	);
-	if ($proposal_data->user_defined_compounds_used_in_process != "" || $proposal_data->user_defined_compounds_used_in_process != NULL)
-	{
-		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
-			'#type' => 'item',
-			'#title' => t('List of user defined compounds used in process flowsheet'),
-			'#markup' => $proposal_data->user_defined_compounds_used_in_process
-		);
-	} //$proposal_data->user_defined_compounds_used_in_process != "" || $proposal_data->user_defined_compounds_used_in_process != NULL
-	else
-	{
-		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
-			'#type' => 'item',
-			'#title' => t('List of user defined compounds used in process flowsheet'),
-			'#markup' => "Not entered"
-		);
-	}
-	if ($proposal_data->user_defined_compound_filepath != "")
-	{
-		$form['user_defined_compound_filepath'] = array(
-			'#type' => 'item',
-			'#title' => t('Uploaded the user defined compound '),
-			'#markup' => l('Download user defined compound list', 'flowsheeting-project/download/user-defined-compound-file/' . $proposal_id) . "<br><br>"
-		);
-	} //$proposal_data->user_defined_compound_filepath != ""
-	else
-	{
-		$form['user_defined_compound_filepath'] = array(
-			'#type' => 'item',
-			'#title' => t('Uploaded the user defined compound '),
-			'#markup' => "Not uploaded<br><br>"
-		);
-	}
 	$proposal_status = '';
 	switch ($proposal_data->approval_status)
 	{
@@ -629,6 +597,38 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 			$proposal_status = t('Unkown');
 			break;
 	} //$proposal_data->approval_status
+	if (_dwsim_flowsheet_list_of_user_defined_compound($proposal_data->id) != "Not entered")
+	{
+		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
+			'#type' => 'item',
+			'#title' => t('List of user defined compounds used in process flowsheet'),
+			'#markup' => _dwsim_flowsheet_list_of_user_defined_compound($proposal_data->id)
+		);
+	} //$proposal_data->user_defined_compounds_used_in_process != "" || $proposal_data->user_defined_compounds_used_in_process != NULL
+	else
+	{
+		$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
+			'#type' => 'item',
+			'#title' => t('List of user defined compounds used in process flowsheet'),
+			'#markup' => "Not entered"
+		);
+	}
+	if ($proposal_data->user_defined_compound_filepath != "" && $proposal_data->user_defined_compound_filepath != "NULL")
+	{
+		$form['user_defined_compound_filepath'] = array(
+			'#type' => 'item',
+			'#title' => t('Uploaded the user defined compound '),
+			'#markup' => l('Download user defined compound list', 'flowsheeting-project/download/user-defined-compound-file/' . $proposal_id) . "<br><br>"
+		);
+	} //$proposal_data->user_defined_compound_filepath != ""
+	else
+	{
+		$form['user_defined_compound_filepath'] = array(
+			'#type' => 'item',
+			'#title' => t('Uploaded the user defined compound '),
+			'#markup' => "Not uploaded<br><br>"
+		);
+	}
 	$form['proposal_status'] = array(
 		'#type' => 'item',
 		'#markup' => $proposal_status,
@@ -719,9 +719,9 @@ function dwsim_flowsheet_proposal_status_form_submit($form, &$form_state)
 		$from = variable_get('dwsim_flowsheet_from_email', '');
 		$bcc = $user->mail . ', ' . variable_get('dwsim_flowsheet_emails', '');
 		$cc = variable_get('dwsim_flowsheet_cc_emails', '');
-		$params['proposal_completed']['proposal_id'] = $proposal_id;
-		$params['proposal_completed']['user_id'] = $proposal_data->uid;
-		$params['proposal_completed']['headers'] = array(
+		$params['dwsim_flowsheet_proposal_completed']['proposal_id'] = $proposal_id;
+		$params['dwsim_flowsheet_proposal_completed']['user_id'] = $proposal_data->uid;
+		$params['dwsim_flowsheet_proposal_completed']['headers'] = array(
 			'From' => $from,
 			'MIME-Version' => '1.0',
 			'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
@@ -730,11 +730,8 @@ function dwsim_flowsheet_proposal_status_form_submit($form, &$form_state)
 			'Cc' => $cc,
 			'Bcc' => $bcc
 		);
-		if (!drupal_mail('dwsim_flowsheet', 'proposal_completed', $email_to, language_default(), $params, $from, TRUE))
+		if (!drupal_mail('dwsim_flowsheet', 'dwsim_flowsheet_proposal_completed', $email_to, language_default(), $params, $from, TRUE))
 			drupal_set_message('Error sending email message.', 'error');
-		/*$email_to = $user->mail . ', ' . variable_get('dwsim_flowsheet_emails', '');;
-		if (!drupal_mail('dwsim_flowsheet', 'proposal_completed', $email_to , language_default(), $params, variable_get('dwsim_flowsheet_from_email', NULL), TRUE))
-		drupal_set_message('Error sending email message.', 'error');*/
 		drupal_set_message('Congratulations! DWSIM flowsheeting proposal has been marked as completed. User has been notified of the completion.', 'status');
 	} //$form_state['values']['completed'] == 1
 	drupal_goto('flowsheeting-project/manage-proposal');

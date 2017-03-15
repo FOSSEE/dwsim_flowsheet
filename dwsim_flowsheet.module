@@ -956,7 +956,7 @@ function _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
 		'rows' => $rows
 	));
 	}else{
-	$data .= "Not entered";
+		$data .= "Not entered";
 	}
 	return $data;
 }
