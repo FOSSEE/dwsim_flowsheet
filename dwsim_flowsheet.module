@@ -859,7 +859,7 @@ function CreateReadmeFileDWSIMFlowsheetingProject($proposal_id)
 	$txt .= "About the lab";
 	$txt .= "\n" . "\n";
 	$txt .= "Title Of The Flowsheet Project: " . $proposal_data->project_title . "\n";
-	$txt .= "Proposar Name: " . $proposal_data->name_title . " " . $proposal_data->student_name . "\n";
+	$txt .= "Proposar Name: " . $proposal_data->name_title . " " . $proposal_data->contributor_name . "\n";
 	$txt .= "University: " . $proposal_data->university . "\n";
 	$txt .= "\n" . "\n";
 	$txt .= "DWSIM Flowsheet Project By FOSSEE, IIT Bombay" . "\n";
