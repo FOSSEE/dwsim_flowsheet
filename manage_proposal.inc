@@ -205,6 +205,11 @@ function dwsim_flowsheet_proposal_approval_form($form, &$form_state)
 		'#markup' => user_load($proposal_data->uid)->mail,
 		'#title' => t('Email')
 	);
+	$form['contributor_contact_no'] = array(
+		'#title' => t('Contact No.'),
+		'#type' => 'item',
+		'#markup' => $proposal_data->contact_no,
+	);
 	$form['month_year_of_degree'] = array(
 		'#type' => 'date_popup',
 		'#title' => t('Month and year of award of degree'),
@@ -294,12 +299,13 @@ function dwsim_flowsheet_proposal_approval_form($form, &$form_state)
 		'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
 		'#markup' => $proposal_data->dwsim_database_compound_name
 	);
+
 	$form['user_defined_compounds_used_in_process_flowsheetcompound_name'] = array(
 		'#type' => 'item',
 		'#title' => t('List of user defined compounds used in process flowsheet'),
 		'#markup' => _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
 	);
-	if ($proposal_data->user_defined_compound_filepath != "")
+	if (($proposal_data->user_defined_compound_filepath != "") && ($proposal_data->user_defined_compound_filepath != 'NULL'))
 	{
 		$form['user_defined_compound_filepath'] = array(
 			'#type' => 'item',

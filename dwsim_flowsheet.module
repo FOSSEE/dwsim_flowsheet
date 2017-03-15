@@ -131,12 +131,12 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_NORMAL_ITEM,
 		'file' => 'code_approval.inc'
 	);
-	$items['flowsheeting-project/code-approval/approve'] = array(
+	$items['flowsheeting-project/abstract-approval/approve'] = array(
 		'title' => 'Code Approval',
 		'description' => 'Code Approval',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array(
-			'dwsim_flowsheet_code_approval_form'
+			'dwsim_flowsheet_abstract_approval_form'
 		),
 		'access arguments' => array(
 			'dwsim flowsheet approve code'
@@ -145,19 +145,19 @@ function dwsim_flowsheet_menu()
 		'weight' => 1,
 		'file' => 'code_approval.inc'
 	);
-	$items['flowsheeting-project/code-approval/bulk'] = array(
+	$items['flowsheeting-project/abstract-approval/bulk'] = array(
 		'title' => 'Bulk Manage',
 		'description' => 'Bulk Mangage',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array(
-			'dwsim_flowsheet_bulk_approval_form'
+			'dwsim_flowsheet_abstract_bulk_approval_form'
 		),
 		'access arguments' => array(
 			'dwsim flowsheet bulk manage code'
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 2,
-		'file' => 'bulk_approval.inc'
+		'file' => 'abstract_bulk_approval.inc'
 	);
 	$items['flowsheeting-project/code-approval/bulk'] = array(
 		'title' => 'Bulk Manage',
@@ -213,7 +213,7 @@ function dwsim_flowsheet_menu()
 	);
 	/* CODE UPLOAD */
 	$items['flowsheeting-project/abstract-code'] = array(
-		'title' => 'Abstract Submission',
+		'title' => 'Abstract and Flowsheet Submission',
 		'description' => 'Abstract Submission',
 		'page callback' => 'dwsim_flowsheet_abstract',
 		'access callback' => 'user_access',
@@ -234,7 +234,7 @@ function dwsim_flowsheet_menu()
 		'weight' => 1
 	);
 	$items['flowsheeting-project/abstract-code/upload'] = array(
-		'title' => 'Abstract Submission',
+		'title' => 'Abstract and Flowsheet Submission',
 		'description' => 'Abstract Submission',
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array(
@@ -326,10 +326,10 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'full_download.inc'
 	);
-	$items['flowsheeting-project/full-download/lab'] = array(
+	$items['flowsheeting-project/full-download/project'] = array(
 		'title' => 'Code Download',
 		'description' => 'Code Download',
-		'page callback' => 'dwsim_flowsheet_download_full_lab',
+		'page callback' => 'dwsim_flowsheet_download_full_project',
 		'access arguments' => array(
 			'dwsim flowsheet approve code'
 		),
@@ -941,6 +941,7 @@ function _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
 		"User defined compound",
 		"CAS No."
 	);
+	if($user_defined_compound_list->fetchObject()){
 	$rows = array();
 	while ($row = $user_defined_compound_list->fetchObject())
 	{
@@ -954,5 +955,8 @@ function _dwsim_flowsheet_list_of_user_defined_compound($proposal_id)
 		'header' => $headers,
 		'rows' => $rows
 	));
+	}else{
+	$data .= "Not entered";
+	}
 	return $data;
 }
