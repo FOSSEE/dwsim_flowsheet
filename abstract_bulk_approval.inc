@@ -91,6 +91,7 @@ function ajax_bulk_flowsheet_abstract_details_callback($form, $form_state)
 function dwsim_flowsheet_abstract_bulk_approval_form_submit($form, &$form_state)
 {
 	global $user;
+	$msg = '';
 	$root_path = dwsim_flowsheet_document_path();
 	if ($form_state['clicked_button']['#value'] == 'Submit')
 	{
@@ -163,7 +164,7 @@ FOSSEE,IIT Bombay', array(
 					);
 					if (!drupal_mail('dwsim_flowsheet', 'standard', $email_to, language_default(), $params, $from, TRUE))
 					{
-						drupal_set_message('Error sending email message.', 'error');
+						$msg = drupal_set_message('Error sending email message.', 'error');
 					} //!drupal_mail('dwsim_flowsheet', 'standard', $email_to, language_default(), $params, $from, TRUE)
 				} //$form_state['values']['flowsheet_actions'] == 1
 				elseif ($form_state['values']['flowsheet_actions'] == 2)
@@ -233,13 +234,13 @@ FOSSEE,IIT Bombay', array(
 					if (strlen(trim($form_state['values']['message'])) <= 30)
 					{
 						form_set_error('message', t(''));
-						drupal_set_message("Please mention the reason for disapproval. Minimum 30 character required", 'error');
-						return;
+						$msg = drupal_set_message("Please mention the reason for disapproval. Minimum 30 character required", 'error');
+						return $msg;
 					} //strlen(trim($form_state['values']['message'])) <= 30
 					if (!user_access('dwsim flowsheet bulk delete abstract'))
 					{
-						drupal_set_message(t('You do not have permission to Bulk Dis-Approved and Deleted Entire Lab.'), 'error');
-						return;
+						$msg = drupal_set_message(t('You do not have permission to Bulk Dis-Approved and Deleted Entire Lab.'), 'error');
+						return $msg;
 					} //!user_access('flowsheet bulk delete code')
 					if (dwsim_flowsheet_abstract_delete_project($form_state['values']['flowsheet_project'])) //////
 					{
@@ -276,8 +277,8 @@ FOSSEE,IIT Bombay', array(
 					if (strlen(trim($form_state['values']['message'])) <= 30)
 					{
 						form_set_error('message', t(''));
-						drupal_set_message("Please mention the reason for disapproval/deletion. Minimum 30 character required", 'error');
-						return;
+						$msg = drupal_set_message("Please mention the reason for disapproval/deletion. Minimum 30 character required", 'error');
+						return $msg;
 					} //strlen(trim($form_state['values']['message'])) <= 30
 					$query = db_select('dwsim_flowsheet_abstract_experiment');
 					$query->fields('dwsim_flowsheet_abstract_experiment');
@@ -293,8 +294,8 @@ FOSSEE,IIT Bombay', array(
 					} //$experiment_data = $experiment_q->fetchObject()
 					if (!user_access('lab migration bulk delete code'))
 					{
-						drupal_set_message(t('You do not have permission to Bulk Delete Entire Lab Including Proposal.'), 'error');
-						return;
+						$msg = drupal_set_message(t('You do not have permission to Bulk Delete Entire Lab Including Proposal.'), 'error');
+						return $msg;
 					} //!user_access('lab migration bulk delete code')
 					// check if dependency files are present 
 					$dep_q = db_query("SELECT * FROM {dwsim_flowsheet_abstract_dependency_files} WHERE proposal_id = :proposal_id", array(
@@ -302,8 +303,8 @@ FOSSEE,IIT Bombay', array(
 					));
 					if ($dep_data = $dep_q->fetchObject())
 					{
-						drupal_set_message(t("Cannot delete lab since it has dependency files that can be used by others. First delete the dependency files before deleting the lab."), 'error');
-						return;
+						$msg = drupal_set_message(t("Cannot delete lab since it has dependency files that can be used by others. First delete the dependency files before deleting the lab."), 'error');
+						return $msg ;
 					} //$dep_data = $dep_q->fetchObject()
 					if (dwsim_flowsheet_abstract_delete_lab($form_state['values']['lab']))
 					{
@@ -318,8 +319,8 @@ FOSSEE,IIT Bombay', array(
 							$res = rmdir($dir_path);
 							if (!$res)
 							{
-								drupal_set_message(t("Cannot delete Lab directory : " . $dir_path . ". Please contact administrator."), 'error');
-								return;
+								$msg = drupal_set_message(t("Cannot delete Lab directory : " . $dir_path . ". Please contact administrator."), 'error');
+								return $msg;
 							} //!$res
 						} //is_dir($dir_path)
 						else
@@ -373,15 +374,15 @@ FOSSEE,IIT Bombay', array(
 					} //dwsim_flowsheet_abstract_delete_lab($form_state['values']['lab'])
 					else
 					{
-						drupal_set_message(t('Error Dis-Approving and Deleting Entire Lab.'), 'error');
+						$msg = drupal_set_message(t('Error Dis-Approving and Deleting Entire Lab.'), 'error');
 					}
 				} //$form_state['values']['flowsheet_actions'] == 4
 				else
 				{
-					drupal_set_message(t('You do not have permission to bulk manage code.'), 'error');
+					$msg = drupal_set_message(t('You do not have permission to bulk manage code.'), 'error');
 				}
 			} //user_access('flowsheet project bulk manage code')
-		return;
+		return $msg;
 	} //$form_state['clicked_button']['#value'] == 'Submit'
 }
 /**********************************************************/
