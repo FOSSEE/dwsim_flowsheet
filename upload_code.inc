@@ -278,7 +278,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 	
 	}
 	$headers = array(
-		"User defined compound",
+		"Name of compound for which process development is carried out",
 		"CAS No."
 	);
 	$rows = array();
