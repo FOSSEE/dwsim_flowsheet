@@ -96,7 +96,7 @@ function dwsim_flowsheet_abstract_bulk_approval_form_submit($form, &$form_state)
 	{
 		if ($form_state['values']['flowsheet_project'])
 		// dwsim_flowsheet_abstract_del_lab_pdf($form_state['values']['flowsheet_project']);
-			if (user_access('flowsheet project bulk manage code'))
+			if (user_access('dwsim flowsheet bulk manage abstract'))
 			{
 				$query = db_select('dwsim_flowsheet_proposal');
 				$query->fields('dwsim_flowsheet_proposal');
@@ -236,7 +236,7 @@ FOSSEE,IIT Bombay', array(
 						drupal_set_message("Please mention the reason for disapproval. Minimum 30 character required", 'error');
 						return;
 					} //strlen(trim($form_state['values']['message'])) <= 30
-					if (!user_access('flowsheet bulk delete code'))
+					if (!user_access('dwsim flowsheet bulk delete abstract'))
 					{
 						drupal_set_message(t('You do not have permission to Bulk Dis-Approved and Deleted Entire Lab.'), 'error');
 						return;

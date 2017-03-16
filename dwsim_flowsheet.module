@@ -153,7 +153,7 @@ function dwsim_flowsheet_menu()
 			'dwsim_flowsheet_abstract_bulk_approval_form'
 		),
 		'access arguments' => array(
-			'dwsim flowsheet bulk manage code'
+			'dwsim flowsheet bulk manage abstract'
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 2,
@@ -167,7 +167,7 @@ function dwsim_flowsheet_menu()
 			'dwsim_flowsheet_bulk_approval_form'
 		),
 		'access arguments' => array(
-			'dwsim flowsheet bulk manage code'
+			'dwsim flowsheet bulk manage abstract'
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 2,
@@ -178,7 +178,7 @@ function dwsim_flowsheet_menu()
 	'description' => 'Dependency Mangage',
 	'page callback' => 'drupal_get_form',
 	'page arguments' => array('dwsim_flowsheet_dependency_approval_form'),
-	'access arguments' => array('dwsim flowsheet bulk manage code'),
+	'access arguments' => array('dwsim flowsheet bulk manage abstract'),
 	'type' => MENU_LOCAL_TASK,
 	'weight' => 3,
 	'file' => 'dependency_approval.inc',
@@ -191,7 +191,7 @@ function dwsim_flowsheet_menu()
 			'dwsim_flowsheet_bulk_upload_code_form'
 		),
 		'access arguments' => array(
-			'dwsim flowsheet bulk manage code'
+			'dwsim flowsheet bulk manage abstract'
 		),
 		'type' => MENU_CALLBACK,
 		'weight' => 4,
@@ -205,7 +205,7 @@ function dwsim_flowsheet_menu()
 			'dwsim_flowsheet_lab_notes_form'
 		),
 		'access arguments' => array(
-			'dwsim flowsheet bulk manage code'
+			'dwsim flowsheet bulk manage abstract'
 		),
 		'type' => MENU_CALLBACK,
 		'weight' => 4,
@@ -438,7 +438,7 @@ function dwsim_flowsheet_menu()
 		"title" => "Ajax callbacks",
 		"page callback" => "lab_bulk_manage_exp_ajax",
 		"access arguments" => array(
-			"dwsim flowsheet bulk manage code"
+			"dwsim flowsheet bulk manage abstract"
 		),
 		"type" => MENU_CALLBACK,
 		'file' => 'bulk_approval.inc'
@@ -446,7 +446,7 @@ function dwsim_flowsheet_menu()
 	/*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
 	"title" => "Ajax callbacks",
 	"page callback" => "dwsim_flowsheet_dependency_approval_ajax",
-	"access arguments" => array("dwsim flowsheet bulk manage code"),
+	"access arguments" => array("dwsim flowsheet bulk manage abstract"),
 	"type" => MENU_CALLBACK,
 	'file' => 'dependency_approval.inc',
 	);*/
@@ -478,23 +478,23 @@ function dwsim_flowsheet_permission()
 			'title' => t('dwsim flowsheet propose solution'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet approve code' => array(
+		'dwsim flowsheet approve abstract' => array(
 			'title' => t('dwsim flowsheet approve code'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet bulk manage code' => array(
-			'title' => t('dwsim flowsheet bulk manage code'),
+		'dwsim flowsheet bulk manage abstract' => array(
+			'title' => t('dwsim flowsheet bulk manage abstract'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet bulk delete code' => array(
+		'dwsim flowsheet bulk delete abstract' => array(
 			'title' => t('dwsim flowsheet bulk delete code'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet upload code' => array(
+		'dwsim flowsheet upload abstract' => array(
 			'title' => t('dwsim flowsheet upload code'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet download code' => array(
+		'dwsim flowsheet download abstract' => array(
 			'title' => t('dwsim flowsheet download code'),
 			'restrict access' => TRUE
 		),
@@ -502,12 +502,12 @@ function dwsim_flowsheet_permission()
 			'title' => t('administer dwsim flowsheet'),
 			'restrict access' => TRUE
 		),
-		'dwsim flowsheet generate lab' => array(
-			'title' => t('dwsim flowsheet generate lab'),
+		'dwsim flowsheet generate abstract' => array(
+			'title' => t('dwsim flowsheet generate abstract'),
 			'restrict access' => TRUE
 		)
 	);
-	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage code', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
+	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage abstract', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
 }
 /* AJAX CALLS */
 function dwsim_flowsheet_ajax()
