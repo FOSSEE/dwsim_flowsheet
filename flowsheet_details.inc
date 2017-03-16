@@ -6,7 +6,7 @@ function dwsim_flowsheet_completed_proposals_all()
 	$query = db_select('dwsim_flowsheet_proposal');
 	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('approval_status', 3);
-	$query->condition('is_completed', 1);
+	//$query->condition('is_completed', 1);
 	$result = $query->execute();
 	if ($result->rowCount() == 0)
 	{
