@@ -218,10 +218,10 @@ FOSSEE,IIT Bombay', array(
 			/* initializing data */
 			$query = db_select('dwsim_flowsheet_proposal');
 			$query->fields('dwsim_flowsheet_proposal');
-			$query->condition('id', $params['dwsim_flowsheet_proposal_approved']['proposal_id']);
+			$query->condition('id', $params['dwsim_flowsheet_proposal_completed']['proposal_id']);
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
-			$user_data = user_load($params['dwsim_flowsheet_proposal_approved']['user_id']);
+			$user_data = user_load($params['dwsim_flowsheet_proposal_completed']['user_id']);
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
@@ -238,7 +238,7 @@ FOSSEE,IIT Bombay', array(
 			{
 				$project_guide_email_id = $proposal_data->project_guide_email_id;
 			}
-			$message['headers'] = $params['dwsim_flowsheet_proposal_approved']['headers'];
+			$message['headers'] = $params['dwsim_flowsheet_proposal_completed']['headers'];
 			$message['subject'] = t('[!site_name][Flowsheeting Project] Your DWSIM Flowsheeting Project proposal has been completed', array(
 				'!site_name' => variable_get('site_name', '')
 			), array(
