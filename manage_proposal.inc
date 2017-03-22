@@ -38,47 +38,7 @@ function dwsim_flowsheet_proposal_pending()
 	));
 	return $output;
 }
-function dwsim_flowsheet_proposal_pending_solution()
-{
-	/* get pending proposals to be approved */
-	$pending_rows = array();
-	//$pending_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE approval_status = 1 ORDER BY id DESC");
-	$query = db_select('dwsim_flowsheet_proposal');
-	$query->fields('dwsim_flowsheet_proposal');
-	$query->condition('approval_status', 1);
-	$query->orderBy('id', 'DESC');
-	$pending_q = $query->execute();
-	while ($pending_data = $pending_q->fetchObject())
-	{
-		$pending_rows[$pending_data->id] = array(
-			date('d-m-Y', $pending_data->creation_date),
-			date('d-m-Y', $pending_data->approval_date),
-			l($pending_data->name, 'user/' . $pending_data->uid),
-			$pending_data->project_title,
-			$pending_data->department,
-			l('Status', 'flowsheeting-project/manage-proposal/status/' . $pending_data->id)
-		);
-	} //$pending_data = $pending_q->fetchObject()
-	/* check if there are any pending proposals */
-	if (!$pending_rows)
-	{
-		drupal_set_message(t('There are no proposals pending for solutions.'), 'status');
-		return '';
-	} //!$pending_rows
-	$pending_header = array(
-		'Date of Submission',
-		'Date of Approval',
-		'Student name',
-		'Title of the Flowsheet Project',
-		'Department',
-		'Action'
-	);
-	$output = theme('table', array(
-		'header' => $pending_header,
-		'rows' => $pending_rows
-	));
-	return $output;
-}
+
 function dwsim_flowsheet_proposal_all()
 {
 	/* get pending proposals to be approved */
@@ -135,7 +95,7 @@ function dwsim_flowsheet_proposal_all()
 	$proposal_header = array(
 		'Date of Submission',
 		'Student Name',
-		'Title of the Lab',
+		'Title of the flowsheeting project',
 		'Date of Completion',
 		'Status',
 		'Action'
