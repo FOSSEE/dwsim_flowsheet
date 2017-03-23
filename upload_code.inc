@@ -5,7 +5,8 @@ function dwsim_flowsheet_abstract()
 	global $user;
 	$return_html = "";
 	$proposal_data = dwsim_flowsheet_get_proposal();
-	if (!$proposal_data) {
+	if (!$proposal_data)
+	{
 		drupal_goto('');
 		return;
 	} //!$proposal_data
@@ -15,8 +16,10 @@ function dwsim_flowsheet_abstract()
 	$query->fields('dwsim_flowsheet_submitted_abstracts');
 	$query->condition('proposal_id', $proposal_data->id);
 	$abstracts_q = $query->execute()->fetchObject();
-	if ($abstracts_q) {
-		if ($abstracts_q->is_submitted == 1) {
+	if ($abstracts_q)
+	{
+		if ($abstracts_q->is_submitted == 1)
+		{
 			drupal_set_message(t('Your abstract is under review, you can not edit exisiting abstract without reviewer permission.'), 'error', $repeat = FALSE);
 			//drupal_goto('flowsheeting-project/abstract-code');
 			//return;
@@ -31,15 +34,19 @@ function dwsim_flowsheet_abstract()
 	$query_pdf->condition('proposal_id', $proposal_data->id);
 	$query_pdf->condition('filetype', 'A');
 	$abstracts_pdf = $query_pdf->execute()->fetchObject();
-	if ($abstracts_pdf == TRUE) {
-		if ($abstracts_pdf->filename != "NULL" || $abstracts_pdf->filename != "") {
+	if ($abstracts_pdf == TRUE)
+	{
+		if ($abstracts_pdf->filename != "NULL" || $abstracts_pdf->filename != "")
+		{
 			$abstract_filename = $abstracts_pdf->filename;
 		} //$abstracts_pdf->filename != "NULL" || $abstracts_pdf->filename != ""
-		else {
+		else
+		{
 			$abstract_filename = "File not uploaded";
 		}
 	} //$abstracts_pdf == TRUE
-	else {
+	else
+	{
 		$abstract_filename = "File not uploaded";
 	}
 	$query_process = db_select('dwsim_flowsheet_submitted_abstracts_file');
@@ -47,42 +54,55 @@ function dwsim_flowsheet_abstract()
 	$query_process->condition('proposal_id', $proposal_data->id);
 	$query_process->condition('filetype', 'S');
 	$abstracts_query_process = $query_process->execute()->fetchObject();
-	if ($abstracts_query_process == TRUE) {
-		if ($abstracts_query_process->filename != "NULL" || $abstracts_query_process->filename != "") {
+	if ($abstracts_query_process == TRUE)
+	{
+		if ($abstracts_query_process->filename != "NULL" || $abstracts_query_process->filename != "")
+		{
 			$abstracts_query_process_filename = $abstracts_query_process->filename;
 		} //$abstracts_query_process->filename != "NULL" || $abstracts_query_process->filename != ""
-		else {
+		else
+		{
 			$abstracts_query_process_filename = "File not uploaded";
 		}
-		if ($abstracts_q->is_submitted == '') {
+		if ($abstracts_q->is_submitted == '')
+		{
 			$url = l('Upload abstract', 'flowsheeting-project/abstract-code/upload');
 		} //$abstracts_q->is_submitted == ''
-		else if ($abstracts_q->is_submitted == 1) {
+		else if ($abstracts_q->is_submitted == 1)
+		{
 			$url = "";
 		} //$abstracts_q->is_submitted == 1
-		else if ($abstracts_q->is_submitted == 0) {
+		else if ($abstracts_q->is_submitted == 0)
+		{
 			$url = l('Edit abstract', 'flowsheeting-project/abstract-code/upload');
 		} //$abstracts_q->is_submitted == 0
-		if ($abstracts_q->unit_operations_used_in_dwsim == '') {
+		if ($abstracts_q->unit_operations_used_in_dwsim == '')
+		{
 			$unit_operations_used_in_dwsim = "Not entered";
 		} //$abstracts_q->unit_operations_used_in_dwsim == ''
-		else {
+		else
+		{
 			$unit_operations_used_in_dwsim = $abstracts_q->unit_operations_used_in_dwsim;
 		}
-		if ($abstracts_q->thermodynamic_packages_used == '') {
+		if ($abstracts_q->thermodynamic_packages_used == '')
+		{
 			$thermodynamic_packages_used = "Not entered";
 		} //$abstracts_q->thermodynamic_packages_used == ''
-		else {
+		else
+		{
 			$thermodynamic_packages_used = $abstracts_q->thermodynamic_packages_used;
 		}
-		if ($abstracts_q->logical_blocks_used == '') {
+		if ($abstracts_q->logical_blocks_used == '')
+		{
 			$logical_blocks_used = "Not entered";
 		} //$abstracts_q->logical_blocks_used == ''
-		else {
+		else
+		{
 			$logical_blocks_used = $abstracts_q->logical_blocks_used;
 		}
 	} //$abstracts_query_process == TRUE
-	else {
+	else
+	{
 		$url = l('Upload abstract', 'flowsheeting-project/abstract-code/upload');
 		$unit_operations_used_in_dwsim = "Not entered";
 		$thermodynamic_packages_used = "Not entered";
@@ -134,17 +154,21 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 	$query->condition('uid', $uid);
 	$query->condition('approval_status', '1');
 	$proposal_q = $query->execute();
-	if ($proposal_q) {
-		if ($proposal_data = $proposal_q->fetchObject()) {
+	if ($proposal_q)
+	{
+		if ($proposal_data = $proposal_q->fetchObject())
+		{
 			/* everything ok */
 		} //$proposal_data = $proposal_q->fetchObject()
-		else {
+		else
+		{
 			drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
 			drupal_goto('flowsheeting-project/abstract-code');
 			return;
 		}
 	} //$proposal_q
-	else {
+	else
+	{
 		drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
 		drupal_goto('flowsheeting-project/abstract-code');
 		return;
@@ -153,8 +177,10 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 	$query->fields('dwsim_flowsheet_submitted_abstracts');
 	$query->condition('proposal_id', $proposal_data->id);
 	$abstracts_q = $query->execute()->fetchObject();
-	if ($abstracts_q) {
-		if ($abstracts_q->is_submitted == 1) {
+	if ($abstracts_q)
+	{
+		if ($abstracts_q->is_submitted == 1)
+		{
 			drupal_set_message(t('Your abstract is under review, you can not edit exisiting abstract without reviewer permission.'), 'error', $repeat = FALSE);
 			drupal_goto('flowsheeting-project/abstract-code');
 			//return;
@@ -170,8 +196,10 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 		'#title' => t('DWSIM version'),
 		'#markup' => $proposal_data->version
 	);
-	if ($abstracts_q == TRUE) {
-		if ($abstracts_q->unit_operations_used_in_dwsim) {
+	if ($abstracts_q == TRUE)
+	{
+		if ($abstracts_q->unit_operations_used_in_dwsim)
+		{
 			$existing_unit_operations_used_in_dwsim = default_value_for_selections("unit_operations_used_in_dwsim", $proposal_data->id);
 			$form['unit_operations_used_in_dwsim'] = array(
 				'#type' => 'select',
@@ -185,7 +213,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			);
 		} //$abstracts_q->unit_operations_used_in_dwsim
 	} //$abstracts_q->unit_operations_used_in_dwsim
-	else {
+	else
+	{
 		$form['unit_operations_used_in_dwsim'] = array(
 			'#type' => 'select',
 			'#title' => t('Unit Operations used in DWSIM'),
@@ -196,8 +225,10 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	}
-	if ($abstracts_q == TRUE) {
-		if ($abstracts_q->thermodynamic_packages_used) {
+	if ($abstracts_q == TRUE)
+	{
+		if ($abstracts_q->thermodynamic_packages_used)
+		{
 			$existing_thermodynamic_packages_used = default_value_for_selections("thermodynamic_packages_used", $proposal_data->id);
 			$form['thermodynamic_packages_used'] = array(
 				'#type' => 'select',
@@ -211,7 +242,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			);
 		} //$abstracts_q->thermodynamic_packages_used
 	} //$abstracts_q == TRUE
-	else {
+	else
+	{
 		$form['thermodynamic_packages_used'] = array(
 			'#type' => 'select',
 			'#title' => t('Thermodynamic Packages Used'),
@@ -222,9 +254,11 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	}
-	if ($abstracts_q == TRUE) {
+	if ($abstracts_q == TRUE)
+	{
 		//var_dump($abstracts_q->logical_blocks_used);die;
-		if ($abstracts_q->logical_blocks_used != "Not entered") {
+		if ($abstracts_q->logical_blocks_used != "Not entered")
+		{
 			$existing_logical_blocks_used = default_value_for_selections("logical_blocks_used", $proposal_data->id);
 			$form['logical_blocks_used'] = array(
 				'#type' => 'select',
@@ -235,7 +269,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 				'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 			);
 		} //$abstracts_q->logical_blocks_used != "Not entered"
-		else {
+		else
+		{
 			$form['logical_blocks_used'] = array(
 				'#type' => 'select',
 				'#title' => t('Logical Blocks used (If any)'),
@@ -245,7 +280,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			);
 		}
 	} //$abstracts_q == TRUE
-	else {
+	else
+	{
 		$form['logical_blocks_used'] = array(
 			'#type' => 'select',
 			'#title' => t('Logical Blocks used (If any)'),
@@ -273,7 +309,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 		'#title' => t('Name of compound for which process development is carried out'),
 		'#markup' => $prodata
 	);
-	if ($proposal_data->dwsim_database_compound_name) {
+	if ($proposal_data->dwsim_database_compound_name)
+	{
 		$existing_dwsim_database_compound_name = default_value_for_selections("dwsim_database_compound_name", $proposal_data->id);
 		$form['list_of_compounds_from_dwsim_database_used_in_process_flowsheet'] = array(
 			'#type' => 'select',
@@ -285,7 +322,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			'#description' => t('[You can select multiple options by holding ctrl + left key of mouse]')
 		);
 	} //$proposal_data->dwsim_database_compound_name
-	else {
+	else
+	{
 		$form['list_of_compounds_from_dwsim_database_used_in_process_flowsheet'] = array(
 			'#type' => 'slect',
 			'#title' => t('List of compounds from DWSIM Database used in process flowsheet'),
@@ -307,11 +345,13 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 		'#prefix' => '<div id="user-defined-compounds-fieldset-wrapper">',
 		'#suffix' => '</div>'
 	);
-	if ($num_of_user_defined_compounds_results != 0) {
+	if ($num_of_user_defined_compounds_results != 0)
+	{
 		$form_state['num_user_defined_compounds'] = $num_of_user_defined_compounds_results;
 		$temp = 0;
 		$i = 0;
-		while ($row_udc = $result_u->fetchObject()) {
+		while ($row_udc = $result_u->fetchObject())
+		{
 			$temp = $i;
 			$form['user_defined_compound_fieldset'][$i]["s_text"] = array(
 				"#type" => "item",
@@ -337,40 +377,49 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			"#type" => "hidden",
 			"#value" => $temp
 		);
-		/*
-		
 		$form['user_defined_compound_fieldset']['add_user_defined_compounds'] = array(
-		'#type' => 'submit',
-		'#value' => t('Add more compounds'),
-		'#limit_validation_errors' => array(),
-		'#submit' => array(
-		'user_defined_compounds_add_more_add_one'
-		),
-		'#ajax' => array(
-		'callback' => 'user_defined_compounds_add_more_callback',
-		'wrapper' => 'user-defined-compounds-fieldset-wrapper'
-		)
+			'#type' => 'submit',
+			'#value' => t('Add more compounds'),
+			'#limit_validation_errors' => array(),
+			'#submit' => array(
+				'user_defined_compounds_add_more_add_one'
+			),
+			'#ajax' => array(
+				'callback' => 'user_defined_compounds_add_more_callback',
+				'wrapper' => 'user-defined-compounds-fieldset-wrapper'
+			)
 		);
-		*/
 		////////////////////////////
 		$existing_uploaded_udc_file = default_value_for_uploaded_files("UDC", $proposal_data->id);
-		if (!$existing_uploaded_udc_file) {
+		if (!$existing_uploaded_udc_file)
+		{
 			$existing_uploaded_udc_file = new stdClass();
 			$existing_uploaded_udc_file->filename = "No file uploaded";
 		} //!$existing_uploaded_udc_file
+		if (basename($existing_uploaded_udc_file->user_defined_compound_filepath) == 'NULL' || basename($existing_uploaded_udc_file->user_defined_compound_filepath) == '')
+		{
+			$udcfilename = 'No file uploaded';
+		} //basename($existing_uploaded_udc_file->user_defined_compound_filepath) == 'NULL' || basename($existing_uploaded_udc_file->user_defined_compound_filepath) == ''
+		else
+		{
+			$udcfilename = basename($existing_uploaded_udc_file->user_defined_compound_filepath);
+		}
 		$form['upload_an_udc'] = array(
 			'#type' => 'file',
 			'#title' => t('Upload an user defiend compound.'),
-			'#description' => t('<span style="color:red;">Current File :</span> ' . basename($existing_uploaded_udc_file->user_defined_compound_filepath) . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '') . '</span>'
+			'#description' => t('<span style="color:red;">Current File :</span> ' . $udcfilename . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '') . '</span>'
 		);
 		/////////////////////////////
 	} //$num_of_user_defined_compounds_results != 0
-	else {
-		if (empty($form_state['num_user_defined_compounds'])) {
+	else
+	{
+		if (empty($form_state['num_user_defined_compounds']))
+		{
 			$form_state['num_user_defined_compounds'] = 1;
 		} //empty($form_state['num_user_defined_compounds'])
 		$temp = 0;
-		for ($i = 0; $i < $form_state['num_user_defined_compounds']; $i++) {
+		for ($i = 0; $i < $form_state['num_user_defined_compounds']; $i++)
+		{
 			$temp = $i;
 			$form['user_defined_compound_fieldset'][$i]["s_text"] = array(
 				"#type" => "item",
@@ -407,7 +456,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 				'wrapper' => 'user-defined-compounds-fieldset-wrapper'
 			)
 		);
-		if ($form_state['num_user_defined_compounds'] > 1) {
+		if ($form_state['num_user_defined_compounds'] > 1)
+		{
 			$form['user_defined_compound_fieldset']['remove_user_defined_compounds'] = array(
 				'#type' => 'submit',
 				'#value' => t('Remove compounds'),
@@ -422,17 +472,28 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			);
 		} //$form_state['num_user_defined_compounds'] > 1
 		$existing_uploaded_udc_file = default_value_for_uploaded_files("UDC", $proposal_data->id);
-		if (!$existing_uploaded_udc_file) {
+		if (!$existing_uploaded_udc_file)
+		{
 			$existing_uploaded_udc_file = new stdClass();
 			$existing_uploaded_udc_file->filename = "No file uploaded";
 		} //!$existing_uploaded_udc_file
+		if (basename($existing_uploaded_udc_file->user_defined_compound_filepath) == 'NULL' || basename($existing_uploaded_udc_file->user_defined_compound_filepath) == '')
+		{
+			$udcfilename = 'No file uploaded';
+		} //basename($existing_uploaded_udc_file->user_defined_compound_filepath) == 'NULL' || basename($existing_uploaded_udc_file->user_defined_compound_filepath) == ''
+		else
+		{
+			$udcfilename = basename($existing_uploaded_udc_file->user_defined_compound_filepath);
+		}
 		$form['upload_an_udc'] = array(
 			'#type' => 'file',
 			'#title' => t('Upload an user defiend compound.'),
-			'#description' => t('<span style="color:red;">Current File :</span> ' . basename($existing_uploaded_udc_file->user_defined_compound_filepath) . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '') . '</span>'
+			'#description' => t('<span style="color:red;">Current File :</span> ' . $udcfilename . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_user_defind_compound_source_extensions', '') . '</span>'
 		);
-		if ($no_js_use) {
-			if (!empty($form['user_defined_compound_fieldset']['remove_user_defined_compounds']['#ajax'])) {
+		if ($no_js_use)
+		{
+			if (!empty($form['user_defined_compound_fieldset']['remove_user_defined_compounds']['#ajax']))
+			{
 				unset($form['user_defined_compound_fieldset']['remove_user_defined_compounds']['#ajax']);
 			} //!empty($form['user_defined_compound_fieldset']['remove_user_defined_compounds']['#ajax'])
 			unset($form['user_defined_compound_fieldset']['add_user_defined_compounds']['#ajax']);
@@ -440,7 +501,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 	}
 	//////////////////////////////////////////////////////
 	$existing_uploaded_A_file = default_value_for_uploaded_files("A", $proposal_data->id);
-	if (!$existing_uploaded_A_file) {
+	if (!$existing_uploaded_A_file)
+	{
 		$existing_uploaded_A_file = new stdClass();
 		$existing_uploaded_A_file->filename = "No file uploaded";
 	} //!$existing_uploaded_A_file
@@ -450,7 +512,8 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 		'#description' => t('<span style="color:red;">Current File :</span> ' . $existing_uploaded_A_file->filename . '<br />Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('dwsim_flowsheet_abstract_upload_extensions', '') . '</span>'
 	);
 	$existing_uploaded_S_file = default_value_for_uploaded_files("S", $proposal_data->id);
-	if (!$existing_uploaded_S_file) {
+	if (!$existing_uploaded_S_file)
+	{
 		$existing_uploaded_S_file = new stdClass();
 		$existing_uploaded_S_file->filename = "No file uploaded";
 	} //!$existing_uploaded_S_file
@@ -489,7 +552,8 @@ function user_defined_compounds_add_more_add_one($form, &$form_state)
 }
 function user_defined_compounds_add_more_remove_one($form, &$form_state)
 {
-	if ($form_state['num_user_defined_compounds'] > 1) {
+	if ($form_state['num_user_defined_compounds'] > 1)
+	{
 		$form_state['num_user_defined_compounds']--;
 	} //$form_state['num_user_defined_compounds'] > 1
 	$form_state['rebuild'] = TRUE;
@@ -497,60 +561,77 @@ function user_defined_compounds_add_more_remove_one($form, &$form_state)
 ///////////////////////////////////////////////////////////////
 function dwsim_flowsheet_upload_abstract_code_form_validate($form, &$form_state)
 {
-	if ($form_state['values']['unit_operations_used_in_dwsim']) {
+	if ($form_state['values']['unit_operations_used_in_dwsim'])
+	{
 		$unit_operations_used_in_dwsim = implode(", ", $_POST['unit_operations_used_in_dwsim']);
 		$form_state['values']['unit_operations_used_in_dwsim'] = $unit_operations_used_in_dwsim;
 	} //$form_state['values']['unit_operations_used_in_dwsim']
-	else {
+	else
+	{
 		form_set_error('unit_operations_used_in_dwsim', t('Please select.'));
 	}
-	if ($form_state['values']['thermodynamic_packages_used']) {
+	if ($form_state['values']['thermodynamic_packages_used'])
+	{
 		$thermodynamic_packages_used = implode(", ", $_POST['thermodynamic_packages_used']);
 		$form_state['values']['thermodynamic_packages_used'] = $thermodynamic_packages_used;
 	} //$form_state['values']['thermodynamic_packages_used']
-	else {
+	else
+	{
 		form_set_error('thermodynamic_packages_used', t('Please select.'));
 	}
-	if ($form_state['values']['logical_blocks_used'] != "") {
+	if ($form_state['values']['logical_blocks_used'] != "")
+	{
 		$logical_blocks_used_in = $_POST['logical_blocks_used'];
-		if ($logical_blocks_used_in != "") {
-			if ($logical_blocks_used_in) {
+		if ($logical_blocks_used_in != "")
+		{
+			if ($logical_blocks_used_in)
+			{
 				$logical_blocks_used = implode(", ", $logical_blocks_used_in);
 				$form_state['values']['logical_blocks_used'] = $logical_blocks_used;
 			} //$form_state['values']['logical_blocks_used']
 		} //$logical_blocks_used_in != ""
-		else {
+		else
+		{
 			$form_state['values']['logical_blocks_used'] = "Not entered";
 		}
 	} //$form_state['values']['logical_blocks_used']
-	else {
+	else
+	{
 		$form_state['values']['logical_blocks_used'] = "Not entered";
 	}
-	if ($form_state['values']['list_of_compounds_from_dwsim_database_used_in_process_flowsheet']) {
+	if ($form_state['values']['list_of_compounds_from_dwsim_database_used_in_process_flowsheet'])
+	{
 		$list_of_compounds_from_dwsim_database_used_in_process_flowsheet = implode("| ", $_POST['list_of_compounds_from_dwsim_database_used_in_process_flowsheet']);
 		$form_state['values']['list_of_compounds_from_dwsim_database_used_in_process_flowsheet'] = $list_of_compounds_from_dwsim_database_used_in_process_flowsheet;
 	} //$form_state['values']['list_of_compounds_from_dwsim_database_used_in_process_flowsheet']
-	if (isset($_FILES['files'])) {
+	if (isset($_FILES['files']))
+	{
 		/* check if file is uploaded */
 		$existing_uploaded_A_file = default_value_for_uploaded_files("A", $form_state['values']['prop_id']);
 		$existing_uploaded_S_file = default_value_for_uploaded_files("S", $form_state['values']['prop_id']);
 		$existing_uploaded_udc_file = default_value_for_uploaded_files("UDC", $form_state['values']['prop_id']);
-		if (!$existing_uploaded_S_file) {
+		if (!$existing_uploaded_S_file)
+		{
 			if (!($_FILES['files']['name']['upload_flowsheet_developed_process']))
 				form_set_error('upload_flowsheet_developed_process', t('Please upload the file.'));
 		} //!$existing_uploaded_S_file
-		if (!$existing_uploaded_A_file) {
+		if (!$existing_uploaded_A_file)
+		{
 			if (!($_FILES['files']['name']['upload_an_abstract']))
 				form_set_error('upload_an_abstract', t('Please upload the file.'));
 		} //!$existing_uploaded_A_file
-		if (!$existing_uploaded_udc_file) {
+		if (!$existing_uploaded_udc_file)
+		{
 			if (!($_FILES['files']['name']['upload_an_udc']))
 				form_set_error('upload_an_udc', t('Please upload the file.'));
 		} //!$existing_uploaded_udc_file
 		/* check for valid filename extensions */
-		if ($_FILES['files']['name']['upload_an_udc'] || $_FILES['files']['name']['upload_an_abstract'] || $_FILES['files']['name']['upload_flowsheet_developed_process']) {
-			foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
-				if ($file_name) {
+		if ($_FILES['files']['name']['upload_an_udc'] || $_FILES['files']['name']['upload_an_abstract'] || $_FILES['files']['name']['upload_flowsheet_developed_process'])
+		{
+			foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+			{
+				if ($file_name)
+				{
 					/* checking file type */
 					if (strstr($file_form_name, 'upload_flowsheet_developed_process'))
 						$file_type = 'S';
@@ -561,7 +642,8 @@ function dwsim_flowsheet_upload_abstract_code_form_validate($form, &$form_state)
 					else
 						$file_type = 'U';
 					$allowed_extensions_str = '';
-					switch ($file_type) {
+					switch ($file_type)
+					{
 						case 'S':
 							$allowed_extensions_str = variable_get('dwsim_flowsheet_flowsheet_developed_process_source_extensions', '');
 							break;
@@ -596,7 +678,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 	$root_path = dwsim_flowsheet_path();
 	$proposal_data = dwsim_flowsheet_get_proposal();
 	$proposal_id = $proposal_data->id;
-	if (!$proposal_data) {
+	if (!$proposal_data)
+	{
 		drupal_goto('');
 		return;
 	} //!$proposal_data
@@ -607,7 +690,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 	$dest_path_udc = $proposal_directory . '/user_defined_compound/';
 	if (!is_dir($root_path . $dest_path))
 		mkdir($root_path . $dest_path);
-	if ($proposal_data) {
+	if ($proposal_data)
+	{
 		$query = "UPDATE {dwsim_flowsheet_proposal} SET 
 
 	dwsim_database_compound_name =  :dwsim_database_compound_name
@@ -628,7 +712,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 		":proposal_id" => $proposal_id
 	);
 	$query_s_result = db_query($query_s, $args_s)->fetchObject();
-	if (!$query_s_result) {
+	if (!$query_s_result)
+	{
 		/* creating solution database entry */
 		$query = "INSERT INTO {dwsim_flowsheet_submitted_abstracts} (
 	proposal_id,
@@ -657,7 +742,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 		));
 		drupal_set_message('Abstract uploaded successfully.', 'status');
 	} //!$query_s_result
-	else {
+	else
+	{
 		$query = "UPDATE {dwsim_flowsheet_submitted_abstracts} SET 
 
 	unit_operations_used_in_dwsim=  :unit_operations_used_in_dwsim,
@@ -682,10 +768,13 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 	}
 	// For editing user defiend compounds
 	$user_defined_compoundupload = 0;
-	for ($i = 0; $i <= $v['user_defined_compound_fieldset']["user_defined_compound_count"]; $i++) {
+	for ($i = 0; $i <= $v['user_defined_compound_fieldset']["user_defined_compound_count"]; $i++)
+	{
 		$udc_id = $v['user_defined_compound_fieldset'][$i]["udc_id"];
-		if ($udc_id != "") {
-			if ($v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != "") {
+		if ($udc_id != "")
+		{
+			if ($v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != "")
+			{
 				$query = db_update('dwsim_flowsheet_user_defined_compound');
 				$query->fields(array(
 					'user_defined_compound' => $v['user_defined_compound_fieldset'][$i]["user_defined_compound"],
@@ -693,13 +782,16 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 				));
 				$query->condition('id', $v['user_defined_compound_fieldset'][$i]["udc_id"]);
 				$result = $query->execute();
-				if ($result != 0) {
+				if ($result != 0)
+				{
 					$user_defined_compoundupload++;
 				} //$result != 0
 			} //$v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != ""
 		} //$udc_id != ""
-		else {
-			if ($v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != "") {
+		else
+		{
+			if ($v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != "")
+			{
 				$user_defined_compoundquery = "
 	INSERT INTO dwsim_flowsheet_user_defined_compound
 	(proposal_id,user_defined_compound,cas_no)
@@ -715,38 +807,48 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 				$user_defined_compoundresult = db_query($user_defined_compoundquery, $user_defined_compoundargs, array(
 					'return' => Database::RETURN_INSERT_ID
 				));
-				if ($user_defined_compoundresult != 0) {
+				if ($user_defined_compoundresult != 0)
+				{
 					$user_defined_compoundupload++;
 				} //$user_defined_compoundresult != 0
 			} //$v['user_defined_compound_fieldset'][$i]["user_defined_compound"] != ""
 		}
 	} //$i = 0; $i <= $v["user_defined_compound_count"]; $i++
 	/* uploading files */
-	foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
-		if ($file_name) {
+	foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+	{
+		if ($file_name)
+		{
 			/* checking file type */
-			if (strstr($file_form_name, 'upload_flowsheet_developed_process')) {
+			if (strstr($file_form_name, 'upload_flowsheet_developed_process'))
+			{
 				$file_type = 'S';
 			} //strstr($file_form_name, 'upload_flowsheet_developed_process')
-			else if (strstr($file_form_name, 'upload_an_abstract')) {
+			else if (strstr($file_form_name, 'upload_an_abstract'))
+			{
 				$file_type = 'A';
 			} //strstr($file_form_name, 'upload_an_abstract')
-			else if (strstr($file_form_name, 'upload_an_udc')) {
+			else if (strstr($file_form_name, 'upload_an_udc'))
+			{
 				$file_type = 'UDC';
 			} //strstr($file_form_name, 'upload_an_udc')
-			else {
+			else
+			{
 				$file_type = 'U';
 			}
-			switch ($file_type) {
+			switch ($file_type)
+			{
 				case 'S':
-					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
+					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					{
 						unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
 						drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
 							'!filename' => $_FILES['files']['name'][$file_form_name]
 						)), 'error');
 					} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
 					/* uploading file */
-					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
+					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					{
 						/* for uploaded files making an entry in the database */
 						$query_ab_f = "SELECT * FROM dwsim_flowsheet_submitted_abstracts_file WHERE proposal_id = :proposal_id AND filetype = 
 				:filetype";
@@ -755,7 +857,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							":filetype" => $file_type
 						);
 						$query_ab_f_result = db_query($query_ab_f, $args_ab_f)->fetchObject();
-						if (!$query_ab_f_result) {
+						if (!$query_ab_f_result)
+						{
 							$query = "INSERT INTO {dwsim_flowsheet_submitted_abstracts_file} (submitted_abstract_id, proposal_id, uid, approvar_uid, filename, filepath, filemime, filesize, filetype, timestamp)
           VALUES (:submitted_abstract_id, :proposal_id, :uid, :approvar_uid, :filename, :filepath, :filemime, :filesize, :filetype, :timestamp)";
 							$args = array(
@@ -773,7 +876,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							db_query($query, $args);
 							drupal_set_message($file_name . ' uploaded successfully.', 'status');
 						} //!$query_ab_f_result
-						else {
+						else
+						{
 							unlink($root_path . $dest_path . $query_ab_f_result->filename);
 							$query = "UPDATE {dwsim_flowsheet_submitted_abstracts_file} SET filename = :filename, filepath=:filepath, filemime=:filemime, filesize=:filesize, timestamp=:timestamp WHERE proposal_id = :proposal_id AND filetype = :filetype";
 							$args = array(
@@ -789,19 +893,22 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							drupal_set_message($file_name . ' file updated successfully.', 'status');
 						}
 					} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-					else {
+					else
+					{
 						drupal_set_message('Error uploading file : ' . $dest_path . $file_name, 'error');
 					}
 					break;
 				case 'A':
-					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
+					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					{
 						unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
 						drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
 							'!filename' => $_FILES['files']['name'][$file_form_name]
 						)), 'error');
 					} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
 					/* uploading file */
-					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
+					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					{
 						/* for uploaded files making an entry in the database */
 						$query_ab_f = "SELECT * FROM dwsim_flowsheet_submitted_abstracts_file WHERE proposal_id = :proposal_id AND filetype = 
 				:filetype";
@@ -810,7 +917,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							":filetype" => $file_type
 						);
 						$query_ab_f_result = db_query($query_ab_f, $args_ab_f)->fetchObject();
-						if (!$query_ab_f_result) {
+						if (!$query_ab_f_result)
+						{
 							$query = "INSERT INTO {dwsim_flowsheet_submitted_abstracts_file} (submitted_abstract_id, proposal_id, uid, approvar_uid, filename, filepath, filemime, filesize, filetype, timestamp)
           VALUES (:submitted_abstract_id, :proposal_id, :uid, :approvar_uid, :filename, :filepath, :filemime, :filesize, :filetype, :timestamp)";
 							$args = array(
@@ -828,7 +936,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							db_query($query, $args);
 							drupal_set_message($file_name . ' uploaded successfully.', 'status');
 						} //!$query_ab_f_result
-						else {
+						else
+						{
 							unlink($root_path . $dest_path . $query_ab_f_result->filename);
 							$query = "UPDATE {dwsim_flowsheet_submitted_abstracts_file} SET filename = :filename, filepath=:filepath, filemime=:filemime, filesize=:filesize, timestamp=:timestamp WHERE proposal_id = :proposal_id AND filetype = :filetype";
 							$args = array(
@@ -844,20 +953,23 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							drupal_set_message($file_name . ' file updated successfully.', 'status');
 						}
 					} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-					else {
+					else
+					{
 						drupal_set_message('Error uploading file : ' . $dest_path . $file_name, 'error');
 					}
 					break;
 				case 'UDC':
 					if (!is_dir($root_path . $dest_path_udc))
 						mkdir($root_path . $dest_path_udc);
-					if (file_exists($root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name])) {
+					if (file_exists($root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name]))
+					{
 						unlink($root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name]);
 						drupal_set_message(t("File !filename already exists directory hence overwirtten the exisitng file ", array(
 							'!filename' => $_FILES['files']['name'][$file_form_name]
 						)), 'error');
 					} //file_exists($root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name])
-					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name])) {
+					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name]))
+					{
 						//////////////////////////////////
 						/* for uploaded files making an entry in the database */
 						$query_udc_f = "SELECT * FROM dwsim_flowsheet_proposal WHERE id = :proposal_id";
@@ -865,7 +977,8 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							":proposal_id" => $proposal_id
 						);
 						$query_udc_f_result = db_query($query_udc_f, $args_udc_f)->fetchObject();
-						if ($query_udc_f_result) {
+						if ($query_udc_f_result)
+						{
 							unlink($root_path . $dest_path_udc . $query_ab_f_result->user_defined_compound_filepath);
 							$user_defined_compound_filepath = "user_defined_compound/" . $_FILES['files']['name'][$file_form_name];
 							$query_udc_f = "UPDATE dwsim_flowsheet_proposal SET user_defined_compound_filepath = :user_defined_compound_filepath WHERE id= :proposal_id";
@@ -876,12 +989,14 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 							db_query($query_udc_f, $args_udc_f);
 							drupal_set_message($file_name . ' uploaded successfully.', 'status');
 						} //!$query_ab_f_result
-						else {
+						else
+						{
 							drupal_set_message('Invalid proposal', 'error');
 						}
 						//////////////////////////////////
 					} //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path_udc . $_FILES['files']['name'][$file_form_name])
-					else {
+					else
+					{
 						drupal_set_message($file_name . " unable to move.");
 					}
 					break;
@@ -916,34 +1031,41 @@ function default_value_for_selections($opration, $proposal_id)
 	$query->condition('proposal_id', $proposal_id);
 	$abstracts_q = $query->execute()->fetchObject();
 	$selected_pacakege_array = array();
-	if ($opration == "unit_operations_used_in_dwsim") {
+	if ($opration == "unit_operations_used_in_dwsim")
+	{
 		$uouid = explode(',', $abstracts_q->unit_operations_used_in_dwsim);
 		$ui = 0;
 		$unit_item = new stdClass();
-		foreach ($uouid as $unit_item->$ui) {
+		foreach ($uouid as $unit_item->$ui)
+		{
 			$selected_pacakege_array[$ui] = trim($unit_item->$ui);
 			$ui++;
 		} //$uouid as $unit_item->$ui
 	} //$opration == "unit_operations_used_in_dwsim"
-	elseif ($opration == "thermodynamic_packages_used") {
+	elseif ($opration == "thermodynamic_packages_used")
+	{
 		$tpuid = explode(',', $abstracts_q->thermodynamic_packages_used);
 		$tpui = 0;
 		$thermodynamic_item = new stdClass();
-		foreach ($tpuid as $thermodynamic_item->$tpui) {
+		foreach ($tpuid as $thermodynamic_item->$tpui)
+		{
 			$selected_pacakege_array[$tpui] = trim($thermodynamic_item->$tpui);
 			$tpui++;
 		} //$tpuid as $thermodynamic_item->$tpui
 	} //$opration == "thermodynamic_packages_used"
-		elseif ($opration == "logical_blocks_used") {
+	elseif ($opration == "logical_blocks_used")
+	{
 		$lbuid = explode(',', $abstracts_q->logical_blocks_used);
 		$lbui = 0;
 		$logical_blocks = new stdClass();
-		foreach ($lbuid as $logical_blocks->$lbui) {
+		foreach ($lbuid as $logical_blocks->$lbui)
+		{
 			$selected_pacakege_array[$logical_blocks->$lbui] = trim($logical_blocks->$lbui);
 			$lbui++;
 		} //$lbuid as $logical_blocks->$lbui
 	} //$opration == "logical_blocks_used"
-		elseif ($opration == "dwsim_database_compound_name") {
+	elseif ($opration == "dwsim_database_compound_name")
+	{
 		$dwsim_database_compound_name = new stdClass();
 		$query = db_select('dwsim_flowsheet_proposal');
 		$query->fields('dwsim_flowsheet_proposal');
@@ -951,12 +1073,14 @@ function default_value_for_selections($opration, $proposal_id)
 		$proposal_q = $query->execute()->fetchObject();
 		$ddcm = explode('| ', $proposal_q->dwsim_database_compound_name);
 		$ddcmi = 0;
-		foreach ($ddcm as $dwsim_database_compound_name->$ddcmi) {
+		foreach ($ddcm as $dwsim_database_compound_name->$ddcmi)
+		{
 			$selected_pacakege_array[$dwsim_database_compound_name->$ddcmi] = trim($dwsim_database_compound_name->$ddcmi);
 			$ddcmi++;
 		} //$ddcm as $dwsim_database_compound_name->$ddcmi
 	} //$opration == "dwsim_database_compound_name"
-	else {
+	else
+	{
 		return $selected_pacakege_array;
 	}
 	return $selected_pacakege_array;
@@ -967,24 +1091,28 @@ function default_value_for_uploaded_files($filetype, $proposal_id)
 	$query->fields('dwsim_flowsheet_submitted_abstracts_file');
 	$query->condition('proposal_id', $proposal_id);
 	$selected_files_array = "";
-	if ($filetype == "A") {
+	if ($filetype == "A")
+	{
 		$query->condition('filetype', $filetype);
 		$filetype_q = $query->execute()->fetchObject();
 		return $filetype_q;
 	} //$filetype == "A"
-	elseif ($filetype == "S") {
+	elseif ($filetype == "S")
+	{
 		$query->condition('filetype', $filetype);
 		$filetype_q = $query->execute()->fetchObject();
 		return $filetype_q;
 	} //$filetype == "S"
-		elseif ($filetype == "UDC") {
+	elseif ($filetype == "UDC")
+	{
 		$query = db_select('dwsim_flowsheet_proposal');
 		$query->fields('dwsim_flowsheet_proposal');
 		$query->condition('id', $proposal_id);
 		$filetype_q = $query->execute()->fetchObject();
 		return $filetype_q;
 	} //$filetype == "S"
-	else {
+	else
+	{
 		return;
 	}
 	return;
