@@ -377,7 +377,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 			"#type" => "hidden",
 			"#value" => $temp
 		);
-		$form['user_defined_compound_fieldset']['add_user_defined_compounds'] = array(
+		/*$form['user_defined_compound_fieldset']['add_user_defined_compounds'] = array(
 			'#type' => 'submit',
 			'#value' => t('Add more compounds'),
 			'#limit_validation_errors' => array(),
@@ -388,7 +388,7 @@ function dwsim_flowsheet_upload_abstract_code_form($form, &$form_state)
 				'callback' => 'user_defined_compounds_add_more_callback',
 				'wrapper' => 'user-defined-compounds-fieldset-wrapper'
 			)
-		);
+		);*/
 		////////////////////////////
 		$existing_uploaded_udc_file = default_value_for_uploaded_files("UDC", $proposal_data->id);
 		if (!$existing_uploaded_udc_file)
