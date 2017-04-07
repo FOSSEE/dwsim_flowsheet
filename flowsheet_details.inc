@@ -10,11 +10,11 @@ function dwsim_flowsheet_completed_proposals_all()
 	$result = $query->execute();
 	if ($result->rowCount() == 0)
 	{
-		$output .= "Work has been completed for the following flowsheets under Flowsheeting Project<hr>";
+		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<hr>";
 	} //$result->rowCount() == 0
 	else
 	{
-		$output .= "Work has been completed for the following flowsheets under Flowsheeting Project <hr>";
+		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
@@ -22,7 +22,7 @@ function dwsim_flowsheet_completed_proposals_all()
 			$approval_date = date("Y", $row->approval_date);
 			$preference_rows[] = array(
 				$i,
-				l($row->project_title, "flowsheeting-project/dwsim-flowsheet-run/" . $row->id),
+				l($row->project_title, "flowsheeting-project/dwsim-flowsheet-run/" . $row->id, array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))),
 				$row->university,
 				$approval_date
 			);
