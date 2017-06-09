@@ -44,7 +44,7 @@ function dwsim_flowsheet_run_form($form, &$form_state)
 		);
 		$form['selected_flowsheet'] = array(
 			'#type' => 'item',
-			'#markup' => '<div id="ajax_selected_flowsheet">' . l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_value) . '</div>'
+			'#markup' => '<div id="ajax_selected_flowsheet">' . l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_value,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))) . '</div>'
 		);
 	}
 	return $form;
@@ -58,7 +58,7 @@ function dwsim_flowsheet_project_details_callback($form, $form_state)
 		$flowsheet_details = _flowsheet_information($flowsheet_default_value);
 		$provider = user_load($flowsheet_details->uid);
 		if ($flowsheet_details->uid > 0) {
-			$commands[] = ajax_command_html('#ajax_selected_flowsheet', l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_value));
+			$commands[] = ajax_command_html('#ajax_selected_flowsheet', l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_valuei,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))));
 		} //$flowsheet_details->uid > 0
 		else {
 			$commands[] = ajax_command_html('#ajax_selected_flowsheet', '');
@@ -137,7 +137,7 @@ function _flowsheet_details($flowsheet_default_value)
 {
 	$flowsheet_details = _flowsheet_information($flowsheet_default_value);
 	if ($flowsheet_default_value != 0) {
-		$form['flowsheet_details']['#markup'] = '<span style="color: rgb(128, 0, 0);"><strong>About the Flowsheet</strong></span></td><td style="width: 35%;"><br />' . '<ul>' . '<li><strong>Proposer Name:</strong> ' . $flowsheet_details->name_title . ' ' . $flowsheet_details->contributor_name . '</li>' . '<li><strong>Title of the Flowhseet:</strong> ' . $flowsheet_details->project_title . '</li>' . '<li><strong>University:</strong> ' . $flowsheet_details->university . '</li>' . '</ul>';
+		$form['flowsheet_details']['#markup'] = '<span style="color: rgb(128, 0, 0);"><strong>About the Flowsheet</strong></span></td><td style="width: 35%;"><br />' . '<ul>' . '<li><strong>Proposer Name:</strong> ' . $flowsheet_details->name_title . ' ' . $flowsheet_details->contributor_name . '</li>' . '<li><strong>Title of the Flowhseet:</strong> ' . l($flowsheet_details->project_title,'flowsheeting-project/full-download/project/' . $flowsheet_default_value,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))) . '</li>' . '<li><strong>University:</strong> ' . $flowsheet_details->university . '</li>' . '</ul>';
 		$details = $form['flowsheet_details']['#markup'];
 		return $details;
 	} //$flowsheet_default_value != 0

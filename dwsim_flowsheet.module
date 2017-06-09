@@ -331,14 +331,14 @@ function dwsim_flowsheet_menu()
 		'description' => 'Code Download',
 		'page callback' => 'dwsim_flowsheet_download_full_project',
 		'access arguments' => array(
-			'dwsim flowsheet approve code'
+			'dwsim flowsheet download code'
 		),
 		'type' => MENU_CALLBACK,
 		'file' => 'full_download.inc'
 	);
 	/* COMPLETED dwsim flowsheetS */
 	$items['flowsheeting-project/completed-flowsheet'] = array(
-		'title' => 'Completed Flowsheet',
+		'title' => 'Completed Flowsheets',
 		'page callback' => 'dwsim_flowsheet_completed_proposals_all',
 		'access arguments' => array(
 			'dwsim flowsheet download code'

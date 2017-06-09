@@ -244,6 +244,15 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#description' => t('Maximum character limit is 250'),
 		'#required' => TRUE
 	);
+	$form['reference'] = array(
+		'#type' => 'textarea',
+		'#title' => t('Reference'),
+		'#required' => TRUE,
+		'#size' => 10000,
+		'#attributes' => array(
+			'placeholder' => 'Links of must be provided....'
+		)
+	);
 	$form['version'] = array(
 		'#type' => 'select',
 		'#title' => t('Version'),
@@ -638,7 +647,8 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     creation_date, 
     approval_date, 
     directory_name,
-    user_defined_compound_filepath
+    user_defined_compound_filepath,
+    reference
     ) VALUES
     (
     :uid, 
@@ -666,7 +676,8 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     :creation_date, 
     :approval_date, 
     :directory_name,
-    :user_defined_compound_filepath
+    :user_defined_compound_filepath,
+    :reference
     )";
 	$args = array(
 		":uid" => $user->uid,
@@ -695,6 +706,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":approval_date" => 0,
 		":directory_name" => $directory_name,
 		":user_defined_compound_filepath" => "NULL"
+		":reference" => $['reference']
 	);
 	//var_dump($args);die;
 	$proposal_id = db_query($result, $args, array(
