@@ -705,7 +705,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":creation_date" => time(),
 		":approval_date" => 0,
 		":directory_name" => $directory_name,
-		":user_defined_compound_filepath" => "NULL"
+		":user_defined_compound_filepath" => "NULL",
 		":reference" => $['reference']
 	);
 	//var_dump($args);die;
