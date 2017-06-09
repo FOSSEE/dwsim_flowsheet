@@ -523,6 +523,15 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		'#markup' => $proposal_data->project_title,
 		'#title' => t('Title of the Flowsheet Project')
 	);
+	/************************** reference link filter *******************/
+	$url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+	$reference = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $proposal_data->reference);
+	/******************************/
+	$form['reference'] = array(
+		'#type' => 'item',
+		'#markup' => $reference,
+		'#title' => t('References')
+	);
 	$form['process_development_compound_name'] = array(
 		'#type' => 'item',
 		'#title' => t('Name of compound for which process development is carried out'),
@@ -890,7 +899,7 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#size' => 10000,
 		'#attributes' => array(
 			'placeholder' => 'Links of must be provided....'
-		)
+		),
 		'#default_value' => $proposal_data->reference
 	);
 	$form['delete_proposal'] = array(

@@ -137,7 +137,13 @@ function _flowsheet_details($flowsheet_default_value)
 {
 	$flowsheet_details = _flowsheet_information($flowsheet_default_value);
 	if ($flowsheet_default_value != 0) {
-		$form['flowsheet_details']['#markup'] = '<span style="color: rgb(128, 0, 0);"><strong>About the Flowsheet</strong></span></td><td style="width: 35%;"><br />' . '<ul>' . '<li><strong>Proposer Name:</strong> ' . $flowsheet_details->name_title . ' ' . $flowsheet_details->contributor_name . '</li>' . '<li><strong>Title of the Flowhseet:</strong> ' . l($flowsheet_details->project_title,'flowsheeting-project/full-download/project/' . $flowsheet_default_value,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))) . '</li>' . '<li><strong>University:</strong> ' . $flowsheet_details->university . '</li>' . '</ul>';
+		if($flowsheet_details->reference != NULL){
+		$url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+	        $reference = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $flowsheet_details->reference);
+		}else{
+		$reference = 'Not provided';
+		}
+		$form['flowsheet_details']['#markup'] = '<span style="color: rgb(128, 0, 0);"><strong>About the Flowsheet</strong></span></td><td style="width: 35%;"><br />' . '<ul>' . '<li><strong>Proposer Name:</strong> ' . $flowsheet_details->name_title . ' ' . $flowsheet_details->contributor_name . '</li>' . '<li><strong>Title of the Flowhseet:</strong> ' . l($flowsheet_details->project_title,'flowsheeting-project/full-download/project/' . $flowsheet_default_value,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))) . '</li>' . '<li><strong>University:</strong> ' . $flowsheet_details->university . '</li>' . '<li>'.'<strong>Reference:</strong> ' . $reference .'</li>'.'</ul>';
 		$details = $form['flowsheet_details']['#markup'];
 		return $details;
 	} //$flowsheet_default_value != 0

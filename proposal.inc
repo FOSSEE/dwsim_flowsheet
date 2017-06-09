@@ -103,9 +103,9 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#default_value' => '',
 		'#date_format' => 'M-Y',
 		'#date_increment' => 0,
-		'#date_year_range' => '1960:+0',
+		'#date_year_range' => '1960:2100',
 		'#datepicker_options' => array(
-			'maxDate' => 0
+			'maxDate' => 3000
 		),
 		'#required' => TRUE
 	);
@@ -133,7 +133,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/ Institute'),
-		'#size' => 80,
+		'#size' => 200,
 		'#maxlength' => 200,
 		'#required' => TRUE,
 		'#attributes' => array(
@@ -168,7 +168,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['other_state'] = array(
 		'#type' => 'textfield',
-		'#title' => t('State other than India'),
+		'#title' => t('State other than India '. '<span class="form-required">*</span>'),
 		'#size' => 100,
 		'#attributes' => array(
 			'placeholder' => t('Enter your state/region name')
@@ -183,7 +183,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['other_city'] = array(
 		'#type' => 'textfield',
-		'#title' => t('City other than India'),
+		'#title' => t('City other than India '. '<span class="form-required">*</span>'),
 		'#size' => 100,
 		'#attributes' => array(
 			'placeholder' => t('Enter your city name')
@@ -198,7 +198,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['all_state'] = array(
 		'#type' => 'select',
-		'#title' => t('State'),
+		'#title' => t('State '. '<span class="form-required">*</span>'),
 		'#options' => _df_list_of_states(),
 		'#validated' => TRUE,
 		'#states' => array(
@@ -211,7 +211,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['city'] = array(
 		'#type' => 'select',
-		'#title' => t('City'),
+		'#title' => t('City '.'<span class="form-required">*</span>'),
 		'#options' => _df_list_of_cities(),
 		'#states' => array(
 			'visible' => array(
