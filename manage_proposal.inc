@@ -930,7 +930,7 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#size' => 10000,
 		'#attributes' => array(
 			'placeholder' => 'Links of must be provided....'
-		)
+		),
 		'#default_value' => $proposal_data->reference
 	);
 	$form['delete_proposal'] = array(
