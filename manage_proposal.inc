@@ -923,6 +923,16 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->project_title
 	);
+	$form['reference'] = array(
+		'#type' => 'textarea',
+		'#title' => t('Reference'),
+		'#required' => TRUE,
+		'#size' => 10000,
+		'#attributes' => array(
+			'placeholder' => 'Links of must be provided....'
+		)
+		'#default_value' => $proposal_data->reference
+	);
 	$form['delete_proposal'] = array(
 		'#type' => 'checkbox',
 		'#title' => t('Delete Proposal')
@@ -1052,6 +1062,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 				pincode=:pincode,
 				state=:state,
 				project_title=:project_title,
+				reference=:reference,
 				directory_name=:directory_name 
 				WHERE id=:proposal_id";
 	$args = array(
@@ -1062,6 +1073,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 		':pincode' => $v['pincode'],
 		':state' => $v['all_state'],
 		':project_title' => $project_title,
+		':reference' => $v['reference'],
 		':directory_name' => $directory_name,
 		':proposal_id' => $proposal_id
 	);
