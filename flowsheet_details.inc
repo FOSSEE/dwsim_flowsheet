@@ -10,11 +10,12 @@ function dwsim_flowsheet_completed_proposals_all()
 	$result = $query->execute();
 	if ($result->rowCount() == 0)
 	{
-		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<hr>";
+		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<br>"."<h4>"."If you are looking for flowsheeting project ideas, ".l("click here","http://dwsim.fossee.in/flowsheeting-ideas",array('attributes' => array('class' => array('flash_content'))))."</h4>"."<hr>";
+
 	} //$result->rowCount() == 0
 	else
 	{
-		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<hr>";
+		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("http://dwsim.fossee.in/flowsheeting-project","http://dwsim.fossee.in/flowsheeting-project")."<br>"."<h4>"."If you are looking for flowsheeting project ideas, ".l("click here","http://dwsim.fossee.in/flowsheeting-ideas",array('attributes' => array('class' => array('flash_content'))))."</h4>"."<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
