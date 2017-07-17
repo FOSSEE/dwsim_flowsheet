@@ -793,7 +793,7 @@ function _df_dir_name($project, $proposar_name)
 	$project_title = ucname($project);
 	$proposar_name = ucname($proposar_name);
 	$dir_name = $project_title . ' By ' . $proposar_name;
-	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
+	$directory_name = str_replace("__", "_", str_replace(" ", "_", str_replace("/","_", trim($dir_name))));
 	return $directory_name;
 }
 function dwsim_flowsheet_document_path()
