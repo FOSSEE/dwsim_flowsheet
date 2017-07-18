@@ -539,7 +539,18 @@ function dwsim_flowsheet_permission()
 		'dwsim flowsheet generate abstract' => array(
 			'title' => t('dwsim flowsheet generate abstract'),
 			'restrict access' => TRUE
+		),
+		"list flowsheet certificates" => array(
+			"title" => t("list the certificates"),
+			"description" => t("list the certificates"),
+			'restrict access' => TRUE
+		),
+		"verify certificates" => array(
+			"title" => t("verify the certificates"),
+			"description" => t("verify the certificates"),
+			'restrict access' => TRUE
 		)
+
 	);
 	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage abstract', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
 }
