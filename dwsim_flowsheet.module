@@ -443,6 +443,40 @@ function dwsim_flowsheet_menu()
 		"type" => MENU_CALLBACK,
 		'file' => 'bulk_approval.inc'
 	);
+	$items['flowsheeting-project/certificates'] = array(
+		'title' => 'List of Flowsheet Certificates',
+		'description' => 'List of flowsheet Certificates',
+		'page callback' => '_list_flowsheet_certificates',
+		'access arguments' => array(
+			'list flowsheet certificates'
+		),
+		'file' => 'pdf/list_flowsheet_certificate.inc'
+	);
+	$items['flowsheeting-project/certificates/generate-pdf'] = array(
+		'title' => 'Download Certificate',
+		'description' => 'Download Certificate',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'generate_pdf'
+		),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array(
+			'generate pdf'
+		),
+		'file' => 'pdf/cert_new.inc'
+	);
+	$items['flowsheeting-project/certificates/verify'] = array(
+		"title" => "Certificate Verification",
+		"page callback" => "verify_certificates",
+'page arguments' => array(
+			'verify_certificates'
+		),
+		"access arguments" => array(
+			"verify certificates"
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'pdf/verify_certificates.inc'
+	);
 	/*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
 	"title" => "Ajax callbacks",
 	"page callback" => "dwsim_flowsheet_dependency_approval_ajax",
@@ -793,7 +827,7 @@ function _df_dir_name($project, $proposar_name)
 	$project_title = ucname($project);
 	$proposar_name = ucname($proposar_name);
 	$dir_name = $project_title . ' By ' . $proposar_name;
-	$directory_name = str_replace("__", "_", str_replace(" ", "_", str_replace("/","_", trim($dir_name))));
+	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
 	return $directory_name;
 }
 function dwsim_flowsheet_document_path()
