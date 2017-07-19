@@ -841,7 +841,7 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 				case 'S':
 					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
 					{
-						unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
+						//unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
 						drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
 							'!filename' => $_FILES['files']['name'][$file_form_name]
 						)), 'error');

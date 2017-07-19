@@ -443,6 +443,40 @@ function dwsim_flowsheet_menu()
 		"type" => MENU_CALLBACK,
 		'file' => 'bulk_approval.inc'
 	);
+	$items['flowsheeting-project/certificates'] = array(
+		'title' => 'List of Flowsheet Certificates',
+		'description' => 'List of flowsheet Certificates',
+		'page callback' => '_list_flowsheet_certificates',
+		'access arguments' => array(
+			'list flowsheet certificates'
+		),
+		'file' => 'pdf/list_flowsheet_certificate.inc'
+	);
+	$items['flowsheeting-project/certificates/generate-pdf'] = array(
+		'title' => 'Download Certificate',
+		'description' => 'Download Certificate',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'generate_pdf'
+		),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array(
+			'generate pdf'
+		),
+		'file' => 'pdf/cert_new.inc'
+	);
+	$items['flowsheeting-project/certificates/verify'] = array(
+		"title" => "Certificate Verification",
+		"page callback" => "verify_certificates",
+'page arguments' => array(
+			'verify_certificates'
+		),
+		"access arguments" => array(
+			"verify certificates"
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'pdf/verify_certificates.inc'
+	);
 	/*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
 	"title" => "Ajax callbacks",
 	"page callback" => "dwsim_flowsheet_dependency_approval_ajax",
@@ -505,7 +539,18 @@ function dwsim_flowsheet_permission()
 		'dwsim flowsheet generate abstract' => array(
 			'title' => t('dwsim flowsheet generate abstract'),
 			'restrict access' => TRUE
+		),
+		"list flowsheet certificates" => array(
+			"title" => t("list the certificates"),
+			"description" => t("list the certificates"),
+			'restrict access' => TRUE
+		),
+		"verify certificates" => array(
+			"title" => t("verify the certificates"),
+			"description" => t("verify the certificates"),
+			'restrict access' => TRUE
 		)
+
 	);
 	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage abstract', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
 }
