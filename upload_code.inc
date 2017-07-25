@@ -847,7 +847,7 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 						)), 'error');
 					} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
 					/* uploading file */
-					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					else if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
 					{
 						/* for uploaded files making an entry in the database */
 						$query_ab_f = "SELECT * FROM dwsim_flowsheet_submitted_abstracts_file WHERE proposal_id = :proposal_id AND filetype = 
@@ -901,13 +901,13 @@ function dwsim_flowsheet_upload_abstract_code_form_submit($form, &$form_state)
 				case 'A':
 					if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
 					{
-						unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
+						//unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
 						drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
 							'!filename' => $_FILES['files']['name'][$file_form_name]
 						)), 'error');
 					} //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
 					/* uploading file */
-					if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+					else if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
 					{
 						/* for uploaded files making an entry in the database */
 						$query_ab_f = "SELECT * FROM dwsim_flowsheet_submitted_abstracts_file WHERE proposal_id = :proposal_id AND filetype = 
