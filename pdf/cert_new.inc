@@ -7,15 +7,14 @@ function generate_pdf()
 	global $user;
 	$x                 = $user->uid;
 	$proposal_id       = arg(3);
-	$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid AND id=:proposal_id", array(
-		':uid' => $user->uid,
-		':proposal_id'=>$proposal_id
-	));
-	$data3             = $query3->fetchObject();
-	/*$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid", array(
+	$query2 = db_query("SELECT id FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid", array(
 		':uid' => $user->uid
 	));
-	$data3             = $query3->fetchObject();*/
+	$data2             = $query2->fetchObject();
+	$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid", array(
+		':uid' => $user->uid
+	));
+	$data3             = $query3->fetchObject();
 	if($data3){
 	if($data3->uid != $x){
 		drupal_set_message('Certificate is not available','error');
@@ -217,7 +216,7 @@ function generate_pdf()
 	} //!feof($fp)
 	fclose($fp);
 	unlink($file);
-	drupal_goto('certificate');
+	drupal_goto('flowsheeting-project/certificates');
 	return;
 }
 function generateRandomString($length = 5)
