@@ -103,9 +103,9 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#default_value' => '',
 		'#date_format' => 'M-Y',
 		'#date_increment' => 0,
-		'#date_year_range' => '1960:2100',
+		'#date_year_range' => '1960:+0',
 		'#datepicker_options' => array(
-			'maxDate' => 3000
+			'maxDate' => 0
 		),
 		'#required' => TRUE
 	);
@@ -133,7 +133,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/ Institute'),
-		'#size' => 200,
+		'#size' => 80,
 		'#maxlength' => 200,
 		'#required' => TRUE,
 		'#attributes' => array(
@@ -168,7 +168,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['other_state'] = array(
 		'#type' => 'textfield',
-		'#title' => t('State other than India '. '<span class="form-required">*</span>'),
+		'#title' => t('State other than India'),
 		'#size' => 100,
 		'#attributes' => array(
 			'placeholder' => t('Enter your state/region name')
@@ -183,7 +183,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['other_city'] = array(
 		'#type' => 'textfield',
-		'#title' => t('City other than India '. '<span class="form-required">*</span>'),
+		'#title' => t('City other than India'),
 		'#size' => 100,
 		'#attributes' => array(
 			'placeholder' => t('Enter your city name')
@@ -198,7 +198,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['all_state'] = array(
 		'#type' => 'select',
-		'#title' => t('State '. '<span class="form-required">*</span>'),
+		'#title' => t('State'),
 		'#options' => _df_list_of_states(),
 		'#validated' => TRUE,
 		'#states' => array(
@@ -211,7 +211,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	);
 	$form['city'] = array(
 		'#type' => 'select',
-		'#title' => t('City '.'<span class="form-required">*</span>'),
+		'#title' => t('City'),
 		'#options' => _df_list_of_cities(),
 		'#states' => array(
 			'visible' => array(
@@ -243,15 +243,6 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#size' => 250,
 		'#description' => t('Maximum character limit is 250'),
 		'#required' => TRUE
-	);
-	$form['reference'] = array(
-		'#type' => 'textarea',
-		'#title' => t('Reference'),
-		'#required' => TRUE,
-		'#size' => 10000,
-		'#attributes' => array(
-			'placeholder' => 'Links of must be provided....'
-		)
 	);
 	$form['version'] = array(
 		'#type' => 'select',
@@ -647,8 +638,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     creation_date, 
     approval_date, 
     directory_name,
-    user_defined_compound_filepath,
-    reference
+    user_defined_compound_filepath
     ) VALUES
     (
     :uid, 
@@ -676,8 +666,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     :creation_date, 
     :approval_date, 
     :directory_name,
-    :user_defined_compound_filepath,
-    :reference
+    :user_defined_compound_filepath
     )";
 	$args = array(
 		":uid" => $user->uid,
@@ -705,8 +694,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":creation_date" => time(),
 		":approval_date" => 0,
 		":directory_name" => $directory_name,
-		":user_defined_compound_filepath" => "NULL",
-		":reference" => $v['reference']
+		":user_defined_compound_filepath" => "NULL"
 	);
 	//var_dump($args);die;
 	$proposal_id = db_query($result, $args, array(

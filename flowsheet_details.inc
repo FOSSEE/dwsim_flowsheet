@@ -32,7 +32,7 @@ function dwsim_flowsheet_completed_proposals_all()
 		$preference_header = array(
 			'No',
 			'Flowsheet Project',
-			'Institute',
+			'Institution',
 			'Year'
 		);
 		$output .= theme('table', array(

@@ -38,7 +38,47 @@ function dwsim_flowsheet_proposal_pending()
 	));
 	return $output;
 }
-
+function dwsim_flowsheet_proposal_pending_solution()
+{
+	/* get pending proposals to be approved */
+	$pending_rows = array();
+	//$pending_q = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE approval_status = 1 ORDER BY id DESC");
+	$query = db_select('dwsim_flowsheet_proposal');
+	$query->fields('dwsim_flowsheet_proposal');
+	$query->condition('approval_status', 1);
+	$query->orderBy('id', 'DESC');
+	$pending_q = $query->execute();
+	while ($pending_data = $pending_q->fetchObject())
+	{
+		$pending_rows[$pending_data->id] = array(
+			date('d-m-Y', $pending_data->creation_date),
+			date('d-m-Y', $pending_data->approval_date),
+			l($pending_data->name, 'user/' . $pending_data->uid),
+			$pending_data->project_title,
+			$pending_data->department,
+			l('Status', 'flowsheeting-project/manage-proposal/status/' . $pending_data->id)
+		);
+	} //$pending_data = $pending_q->fetchObject()
+	/* check if there are any pending proposals */
+	if (!$pending_rows)
+	{
+		drupal_set_message(t('There are no proposals pending for solutions.'), 'status');
+		return '';
+	} //!$pending_rows
+	$pending_header = array(
+		'Date of Submission',
+		'Date of Approval',
+		'Student name',
+		'Title of the Flowsheet Project',
+		'Department',
+		'Action'
+	);
+	$output = theme('table', array(
+		'header' => $pending_header,
+		'rows' => $pending_rows
+	));
+	return $output;
+}
 function dwsim_flowsheet_proposal_all()
 {
 	/* get pending proposals to be approved */
@@ -95,7 +135,7 @@ function dwsim_flowsheet_proposal_all()
 	$proposal_header = array(
 		'Date of Submission',
 		'Student Name',
-		'Title of the flowsheeting project',
+		'Title of the Lab',
 		'Date of Completion',
 		'Status',
 		'Action'
@@ -523,15 +563,6 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 		'#markup' => $proposal_data->project_title,
 		'#title' => t('Title of the Flowsheet Project')
 	);
-	/************************** reference link filter *******************/
-	$url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
-	$reference = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $proposal_data->reference);
-	/******************************/
-	$form['reference'] = array(
-		'#type' => 'item',
-		'#markup' => $reference,
-		'#title' => t('References')
-	);
 	$form['process_development_compound_name'] = array(
 		'#type' => 'item',
 		'#title' => t('Name of compound for which process development is carried out'),
@@ -760,6 +791,13 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->contributor_name
 	);
+	$form['version'] = array(
+		'#type' => 'select',
+		'#title' => t('Version'),
+		'#required' => TRUE,
+		'#default_value' => $proposal_data->version,
+		'#options' => _df_list_of_software_version()
+	);
 	$form['student_email_id'] = array(
 		'#type' => 'item',
 		'#title' => t('Email'),
@@ -782,8 +820,8 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/Institute'),
-		'#size' => 200,
-		'#maxlength' => 200,
+		'#size' => 30,
+		'#maxlength' => 50,
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->university
 	);
@@ -891,16 +929,6 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#maxlength' => 350,
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->project_title
-	);
-	$form['reference'] = array(
-		'#type' => 'textarea',
-		'#title' => t('Reference'),
-		'#required' => TRUE,
-		'#size' => 10000,
-		'#attributes' => array(
-			'placeholder' => 'Links of must be provided....'
-		),
-		'#default_value' => $proposal_data->reference
 	);
 	$form['delete_proposal'] = array(
 		'#type' => 'checkbox',
@@ -1026,23 +1054,23 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	$query = "UPDATE dwsim_flowsheet_proposal SET 
 				name_title=:name_title,
 				contributor_name=:contributor_name,
+				version = :version,
 				university=:university,
 				city=:city,
 				pincode=:pincode,
 				state=:state,
 				project_title=:project_title,
-				reference=:reference,
 				directory_name=:directory_name 
 				WHERE id=:proposal_id";
 	$args = array(
 		':name_title' => $v['name_title'],
 		':contributor_name' => $v['contributor_name'],
+		':version' => $v['version'],
 		':university' => $v['university'],
 		':city' => $v['city'],
 		':pincode' => $v['pincode'],
 		':state' => $v['all_state'],
 		':project_title' => $project_title,
-		':reference' => $v['reference'],
 		':directory_name' => $directory_name,
 		':proposal_id' => $proposal_id
 	);

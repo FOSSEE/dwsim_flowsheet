@@ -465,12 +465,9 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/cert_new.inc'
 	);
-	$items['flowsheeting-project/certificates/verify'] = array(
+	$items["flowsheeting-project/certificates/verify"] = array(
 		"title" => "Certificate Verification",
 		"page callback" => "verify_certificates",
-'page arguments' => array(
-			'verify_certificates'
-		),
 		"access arguments" => array(
 			"verify certificates"
 		),
@@ -539,18 +536,7 @@ function dwsim_flowsheet_permission()
 		'dwsim flowsheet generate abstract' => array(
 			'title' => t('dwsim flowsheet generate abstract'),
 			'restrict access' => TRUE
-		),
-		"list flowsheet certificates" => array(
-			"title" => t("list the certificates"),
-			"description" => t("list the certificates"),
-			'restrict access' => TRUE
-		),
-		"verify certificates" => array(
-			"title" => t("verify the certificates"),
-			"description" => t("verify the certificates"),
-			'restrict access' => TRUE
 		)
-
 	);
 	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage abstract', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');
 }
@@ -715,7 +701,7 @@ function _df_list_of_dwsim_compound()
 	$dwsim_compound = array();
 	$query = db_select('dwsim_flowsheet_compounds_from_dwsim');
 	$query->fields('dwsim_flowsheet_compounds_from_dwsim');
-	$query->orderBy('compound', 'ASC');
+	$query->orderBy('id', 'ASC');
 	$dwsim_compound_list = $query->execute();
 	while ($dwsim_compound_list_data = $dwsim_compound_list->fetchObject())
 	{
@@ -741,7 +727,7 @@ function _df_list_of_thermodynamic_packages()
 	$dwsim_thermodynamic_packages = array();
 	$query = db_select('dwsim_flowsheet_thermodynamic_packages');
 	$query->fields('dwsim_flowsheet_thermodynamic_packages');
-	$query->orderBy('id', 'ASC');
+	$query->orderBy('thermodynamic_packages', 'ASC');
 	$dwsim_thermodynamic_packages_list = $query->execute();
 	while ($dwsim_thermodynamic_packages_list_data = $dwsim_thermodynamic_packages_list->fetchObject())
 	{
@@ -825,7 +811,7 @@ function _df_list_of_software_version()
 	$software_version = array();
 	$query = db_select('dwsim_software_version');
 	$query->fields('dwsim_software_version');
-	$query->orderBy('dwsim_version', 'ASC');
+	$query->orderBy('id', 'ASC');
 	$software_version_list = $query->execute();
 	while ($software_version_list_data = $software_version_list->fetchObject())
 	{
@@ -838,7 +824,7 @@ function _df_dir_name($project, $proposar_name)
 	$project_title = ucname($project);
 	$proposar_name = ucname($proposar_name);
 	$dir_name = $project_title . ' By ' . $proposar_name;
-	$directory_name = str_replace("__", "_", str_replace(" ", "_", str_replace("/","_", trim($dir_name))));
+	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
 	return $directory_name;
 }
 function dwsim_flowsheet_document_path()
@@ -901,7 +887,7 @@ function CreateReadmeFileDWSIMFlowsheetingProject($proposal_id)
 	$root_path = dwsim_flowsheet_path();
 	$readme_file = fopen($root_path . $proposal_data->directory_name . "/README.txt", "w") or die("Unable to open file!");
 	$txt = "";
-	$txt .= "About the lab";
+	$txt .= "About the flowsheet";
 	$txt .= "\n" . "\n";
 	$txt .= "Title Of The Flowsheet Project: " . $proposal_data->project_title . "\n";
 	$txt .= "Proposar Name: " . $proposal_data->name_title . " " . $proposal_data->contributor_name . "\n";
