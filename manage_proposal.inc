@@ -930,6 +930,14 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->project_title
 	);
+	$form['reference'] = array(
+		'#type' => 'textarea',
+		'#title' => t('Reference of the Flowsheet Project'),
+		'#size' => 300,
+		'#maxlength' => 350,
+		'#required' => TRUE,
+		'#default_value' => $proposal_data->reference
+	);
 	$form['delete_proposal'] = array(
 		'#type' => 'checkbox',
 		'#title' => t('Delete Proposal')

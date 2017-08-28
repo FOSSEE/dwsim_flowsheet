@@ -24,6 +24,7 @@ function dwsim_flowsheet_completed_proposals_all()
 			$preference_rows[] = array(
 				$i,
 				l($row->project_title, "flowsheeting-project/dwsim-flowsheet-run/" . $row->id, array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))),
+				$row->contributor_name,
 				$row->university,
 				$approval_date
 			);
@@ -32,6 +33,7 @@ function dwsim_flowsheet_completed_proposals_all()
 		$preference_header = array(
 			'No',
 			'Flowsheet Project',
+			'Contributor Name',
 			'Institution',
 			'Year'
 		);
