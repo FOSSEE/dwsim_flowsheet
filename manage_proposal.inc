@@ -820,8 +820,8 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/Institute'),
-		'#size' => 30,
-		'#maxlength' => 50,
+		'#size' => 80,
+		'#maxlength' => 200,
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->university
 	);
