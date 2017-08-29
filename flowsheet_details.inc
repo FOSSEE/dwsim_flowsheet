@@ -59,15 +59,32 @@ function dwsim_flowsheet_progress_all()
 	} //$result->rowCount() == 0
 	else
 	{
-		$page_content .= "Work is in progress for the following flowsheets under Flowsheeting Project<hr>";
-		$page_content .= "<ol>";
+		$page_content .= "Work is in progress for the following flowsheets under Flowsheeting Project<hr>";;
+		$preference_rows = array();
+		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$page_content .= "<li>";
-			$page_content .= $row->project_title;
-			$page_content .= "</li>";
+			$approval_date = date("Y", $row->approval_date);
+			$preference_rows[] = array(
+				$i,
+				$row->project_title,
+				$row->contributor_name,
+				$row->university,
+				$approval_date
+			);
+			$i++;
 		} //$row = $result->fetchObject()
-		$page_content .= "</ol>";
+		$preference_header = array(
+			'No',
+			'Flowsheet Project',
+			'Contributor Name',
+			'Institution',
+			'Year'
+		);
+		$page_content .= theme('table', array(
+			'header' => $preference_header,
+			'rows' => $preference_rows
+		));
 	}
 	return $page_content;
 }
