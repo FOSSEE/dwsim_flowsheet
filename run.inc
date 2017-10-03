@@ -58,7 +58,7 @@ function dwsim_flowsheet_project_details_callback($form, $form_state)
 		$flowsheet_details = _flowsheet_information($flowsheet_default_value);
 		$provider = user_load($flowsheet_details->uid);
 		if ($flowsheet_details->uid > 0) {
-			$commands[] = ajax_command_html('#ajax_selected_flowsheet', l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_valuei,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))));
+			$commands[] = ajax_command_html('#ajax_selected_flowsheet', l('Download Flowsheet', 'flowsheeting-project/full-download/project/' . $flowsheet_default_value,array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))));
 		} //$flowsheet_details->uid > 0
 		else {
 			$commands[] = ajax_command_html('#ajax_selected_flowsheet', '');
