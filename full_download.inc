@@ -23,7 +23,7 @@ function dwsim_flowsheet_download_full_project()
 	while ($flowsheet_udc_row = $flowsheet_udc_q->fetchObject()) {
 		if ($flowsheet_udc_row->user_defined_compound_filepath || $flowsheet_udc_row->user_defined_compound_filepath != 'NULL') {
 			$USER_DEFINED_PATH = 'user_defined_compound/';
-			$zip->addFile($root_path . $FLOWSHEET_PATH . '/' . $flowsheet_udc_row->user_defined_compound_filepath, $USER_DEFINED_PATH . str_replace(' ', '_', basename($flowsheet_udc_row->user_defined_compound_filepath)));
+			$zip->addFile($root_path . $FLOWSHEET_PATH . '/' . $flowsheet_udc_row->user_defined_compound_filepath, $FLOWSHEET_PATH . $USER_DEFINED_PATH . str_replace(' ', '_', basename($flowsheet_udc_row->user_defined_compound_filepath)));
 		} //$flowsheet_udc_row->user_defined_compound_filepath || $flowsheet_udc_row->user_defined_compound_filepath != 'NULL'
 	} //$flowsheet_udc_row = $flowsheet_udc_q->fetchObject()
 	$query = db_select('dwsim_flowsheet_submitted_abstracts_file');
@@ -31,7 +31,8 @@ function dwsim_flowsheet_download_full_project()
 	$query->condition('proposal_id', $flowsheet_id);
 	$flowsheet_f_q = $query->execute();
 	while ($flowsheet_f_row = $flowsheet_f_q->fetchObject()) {
-		$zip->addFile($root_path . $FLOWSHEET_PATH . '/' . $flowsheet_f_row->filepath, str_replace(' ', '_', basename($flowsheet_f_row->filename)));
+		
+		$zip->addFile($root_path . $FLOWSHEET_PATH . '/' . $flowsheet_f_row->filepath, $FLOWSHEET_PATH . str_replace(' ', '_', basename($flowsheet_f_row->filename)));
 	} //$flowsheet_f_row = $flowsheet_f_q->fetchObject()
 	$zip_file_count = $zip->numFiles;
 	$zip->close();
