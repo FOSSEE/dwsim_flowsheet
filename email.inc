@@ -16,6 +16,7 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 			$query->condition('id', $params['dwsim_flowsheet_proposal_received']['proposal_id']);
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
+			$phpdate = time( $proposal_data->creation_date );
 			$user_data = user_load($params['dwsim_flowsheet_proposal_received']['user_id']);
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
@@ -44,27 +45,17 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 				'body' => t('
 Dear !user_name,
 
-We have received your DWSIM Flowsheeting Project proposal with the following details:
+Thank you for submitting proposal for the DWSIM Flowsheeting Project. The details of your proposal are as below.
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
-Email : ' . $user_data->mail . '
-Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
-University/Institute : ' . $proposal_data->university . '
-City : ' . $proposal_data->city . '
-State : ' . $proposal_data->state . '
-Country : ' . $proposal_data->country . '
+Full Name: ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
+Email: ' . $user_data->mail . '
+University/Institute: ' . $proposal_data->university . '
+City: ' . $proposal_data->city . '
+Project Title: ' . $proposal_data->project_title . '
+Name of compound for which process development is carried out: ' . $proposal_data->process_development_compound_name . '
 
-Project Guide  : ' . $project_guide_name . '
-Project Guide Email : ' . $project_guide_email_id . '
+Your proposal is under review. You will be notified via email about the approval/disapproval within ten working days.
 
-DWSIM Version : ' . $proposal_data->version . '
-
-Project Title  : ' . $proposal_data->project_title . '
-
-Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-
-Your proposal is under review. You will soon receive an email when same has been approved/disapproved.
 
 Best Wishes,
 
@@ -84,6 +75,7 @@ FOSSEE,IIT Bombay', array(
 			$query->condition('id', $params['dwsim_flowsheet_proposal_disapproved']['proposal_id']);
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
+			$phpdate = time( $proposal_data->creation_date );
 			$user_data = user_load($params['dwsim_flowsheet_proposal_disapproved']['user_id']);
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
@@ -111,30 +103,17 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-We regret to inform you that your DWSIM Flowsheeting Project proposal with following details have been disapproved:
+We regret to inform you that your DWSIM Flowsheeting Project proposal with following details have been disapproved.
 
-Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
-Email : ' . $user_data->mail . '
-Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
-University/Institute : ' . $proposal_data->university . '
-City : ' . $proposal_data->city . '
-State : ' . $proposal_data->state . '
-Country : ' . $proposal_data->country . '
+Full Name: ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
+Project Title: ' . $proposal_data->project_title . '
+Name of compound for which process development is carried out: ' . $proposal_data->process_development_compound_name . '
+Reason(s) / Feedback: ' . $proposal_data->dissapproval_reason . '
 
-Project Guide  : ' . $project_guide_name . '
-Project Guide Email : ' . $project_guide_email_id . '
+Please note that any files that were uploaded along with the proposal form will be deleted from all our database(s).
 
-DWSIM Version : ' . $proposal_data->version . '
+Thank you for participating in the DWSIM Flowsheeting Project. You are welcome to submit a new proposal.
 
-Project Title  : ' . $proposal_data->project_title . '
-
-Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
-
-
-Reason for rejection: : ' . $proposal_data->dissapproval_reason . '
-
-
-You are welcome to submit a new proposal.
 
 Best Wishes,
 
@@ -155,6 +134,7 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_approved']['user_id']);
+			$url = 'http://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting';
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
@@ -181,25 +161,13 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-Your DWSIM Flowsheeting Project proposal with the following details has been approved:
+Congratulations! Your proposal for DWSIM Flowsheeting Project with the following details is approved.
 
 Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
-Email : ' . $user_data->mail . '
-Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
-University/Institute : ' . $proposal_data->university . '
-City : ' . $proposal_data->city . '
-State : ' . $proposal_data->state . '
-Country : ' . $proposal_data->country . '
-
-Project Guide  : ' . $project_guide_name . '
-Project Guide Email : ' . $project_guide_email_id . '
-
-DWSIM Version : ' . $proposal_data->version . '
-
 Project Title  : ' . $proposal_data->project_title . '
-
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
 
+Please ensure that ALL the guidelines for coding at http://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting are strictly followed. Refer http://dwsim.fossee.in/flowsheeting-project/flowsheeting-internship for the further procedure for submission of the project. Kindly ensure that the flowsheet and abstract are submitted within 1 month.
 
 You can upload your abstract using abstract submission interface.
 
@@ -248,24 +216,19 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-Your DWSIM flowsheet and abstract on the following process have been completed successfully.
+Your DWSIM flowsheet and abstract on the following process have been published successfully.
 
 Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
-Email : ' . $user_data->mail . '
-Month and Year of Award of Degree : ' . $proposal_data->month_year_of_degree . '
-University/Institute : ' . $proposal_data->university . '
-City : ' . $proposal_data->city . '
-State : ' . $proposal_data->state . '
-Country : ' . $proposal_data->country . '
-
-Project Guide  : ' . $project_guide_name . '
-Project Guide Email : ' . $project_guide_email_id . '
-
-DWSIM Version : ' . $proposal_data->version . '
-
 Project Title  : ' . $proposal_data->project_title . '
 
-Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
+Kindly access this link to download the same.
+http://dwsim.fossee.in/flowsheeting-project/completed-flowsheet
+
+You can now download your e-certificate after logging into the DWSIM website: dwsim.fossee.in.  On the left-hand side panel, go to User Dashboard > Flowsheet Certificates > Download. In case of any difficulties, kindly let us know.
+
+Thank you for participating in the DWSIM Flowsheeting Project. You are welcome to propose a new flowsheet.
+
+
 Best Wishes,
 
 !site_name Team,
@@ -366,12 +329,13 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-You have uploaded the following Abstract:
+You have successfully uploaded your DWSIM flowsheet and abstract with the following details.
 
+Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_name . '
 Project Title  : ' . $proposal_data->project_title . '
+Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
 
-
-The abstract is under review. You will be notified when it has been approved.
+You shall be notified via email after the flowsheet and abstract are reviewed and approved / disapproved. This may take upto 30 working days.
 
 Best Wishes,
 
