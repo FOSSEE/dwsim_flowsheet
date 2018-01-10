@@ -134,9 +134,17 @@ function dwsim_flowsheet_abstract_bulk_approval_form_submit($form, &$form_state)
 
 Dear !user_name,
 
-Your uploaded abstract for the flowsheeting project has been approved:
+Congratulations!
+Your DWSIM flowsheet and abstract with the following details have been approved.
 
-Title of flowsheeting project  : ' . $user_info->project_title . '
+Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
+Project Title: ' . $user_info->project_title . '
+Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
+
+Kindly send us the internship forms as early as possible for processing your honorarium on time. In case you have already sent these forms, please share the the consignment number or tracking id with us.
+
+Note: It will take upto 30 days from the time we receive your forms, to process your honorarium.
+
 
 Best Wishes,
 
@@ -259,8 +267,11 @@ FOSSEE,IIT Bombay', array(
 
 Dear !user_name,
 
-Your all the uploaded flowsheet for the whole flowsheeting project Title : ' . $user_info->project_title . ' have been marked as dis-approved.
+We regret to inform you that your DWSIM flowsheet and abstract with the following details have been disapproved:
 
+Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
+Project Title: ' . $user_info->project_title . '
+Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
 Reason for dis-approval: ' . $form_state['values']['message'] . '
 
 Best Wishes,
