@@ -134,7 +134,7 @@ FOSSEE,IIT Bombay', array(
 			$query->range(0, 1);
 			$proposal_data = $query->execute()->fetchObject();
 			$user_data = user_load($params['dwsim_flowsheet_proposal_approved']['user_id']);
-			$url = 'http://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting';
+			$url = 'https://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting';
 			if ($proposal_data->project_guide_name == "NULL" || $proposal_data->project_guide_name == "")
 			{
 				$project_guide_name = "Not Entered";
@@ -167,7 +167,7 @@ Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_n
 Project Title  : ' . $proposal_data->project_title . '
 Name of compound for which process development is carried out  : ' . $proposal_data->process_development_compound_name . '
 
-Please ensure that ALL the guidelines for coding at http://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting are strictly followed. Refer http://dwsim.fossee.in/flowsheeting-project/flowsheeting-internship for the further procedure for submission of the project. Kindly ensure that the flowsheet and abstract are submitted within 1 month.
+Please ensure that ALL the guidelines for coding at https://dwsim.fossee.in/flowsheeting-project/coding-guidelines-flowsheeting are strictly followed. Refer https://dwsim.fossee.in/flowsheeting-project/flowsheeting-internship for the further procedure for submission of the project. Kindly ensure that the flowsheet and abstract are submitted within 1 month.
 
 You can upload your abstract using abstract submission interface.
 
@@ -222,7 +222,7 @@ Full Name : ' . $proposal_data->name_title . ' ' . $proposal_data->contributor_n
 Project Title  : ' . $proposal_data->project_title . '
 
 Kindly access this link to download the same.
-http://dwsim.fossee.in/flowsheeting-project/completed-flowsheet
+https://dwsim.fossee.in/flowsheeting-project/completed-flowsheet
 
 You can now download your e-certificate after logging into the DWSIM website: dwsim.fossee.in.  On the left-hand side panel, go to User Dashboard > Flowsheet Certificates > Download. In case of any difficulties, kindly let us know.
 
@@ -380,7 +380,7 @@ Experiment Title : ' . $experiment_data->title . '
 Solution number : ' . $solution_data->code_number . '
 Caption : ' . $solution_data->caption . '
 
-Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
+Please ensure that ALL the codes follow guidelines at https://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
 
 Best Wishes,
 
@@ -472,7 +472,7 @@ Dear !user_name,
 You have uploaded following dependency files :
     ' . $dependency_files . '
 
-Please ensure that ALL the codes follow guidelines at http://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
+Please ensure that ALL the codes follow guidelines at https://dwsim.fossee.in/dwsim-flowsheet-project/dwsim-flowsheet-guidelines
 
 Best Wishes,
 
