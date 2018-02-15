@@ -465,9 +465,40 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/cert_new.inc'
 	);
+	$items['flowsheeting-project/certificates_custom'] = array(
+		'title' => 'List of Flowsheet Custom Certificates',
+		'description' => 'List of flowsheet Custom Certificates',
+		'page callback' => '_list_flowsheet_custom_certificates',
+		'access arguments' => array(
+			'list flowsheet custom certificates'
+		),
+		'file' => 'pdf/list_mentor_certificates.inc'
+	);
+	$items['flowsheeting-project/certificates_custom/pdf'] = array(
+		'title' => 'Download Certificate',
+		'description' => 'Download Certificate',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'generate_pdf'
+		),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array(
+			'generate pdf'
+		),
+		'file' => 'pdf/mentor_cert_pdf.inc'
+	);
 	$items["flowsheeting-project/certificates/verify"] = array(
 		"title" => "Certificate Verification",
 		"page callback" => "verify_certificates",
+		"access arguments" => array(
+			"verify certificates"
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'pdf/verify_certificates.inc'
+	);
+	/*$items["flowsheeting-project/certificates_custom/verify"] = array(
+		"title" => "Certificate Verification",
+		"page callback" => "verify_custom_certificates",
 		"access arguments" => array(
 			"verify certificates"
 		),
@@ -536,6 +567,18 @@ function dwsim_flowsheet_permission()
 		'dwsim flowsheet generate abstract' => array(
 			'title' => t('dwsim flowsheet generate abstract'),
 			'restrict access' => TRUE
+		),
+		"list flowsheet certificates" => array(
+			"title" => t("list flowsheet certificates"),
+			"description" => t("Allows users to list flowsheet certificates.")
+		),
+		"list flowsheet custom certificates" => array(
+			"title" => t("list flowsheet custom certificates"),
+			"description" => t("Allows users to list flowsheet custom certificates.")
+		),
+		"generate pdf" => array(
+			"title" => t("Generate pdf"),
+			"description" => t("Allows users to Generate pdf.")
 		)
 	);
 	// return array('dwsim flowsheet create proposal', 'dwsim flowsheet manage proposal', 'dwsim flowsheet edit proposal', 'dwsim flowsheet approve proposal', 'dwsim flowsheet propose solution', 'dwsim flowsheet approve code', 'dwsim flowsheet bulk manage abstract', 'dwsim flowsheet bulk delete code', 'dwsim flowsheet upload code', 'dwsim flowsheet download code', 'administer dwsim flowsheet', 'dwsim flowsheet generate lab');

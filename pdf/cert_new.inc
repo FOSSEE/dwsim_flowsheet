@@ -11,30 +11,13 @@ function generate_pdf()
 		':uid' => $user->uid,
 		':proposal_id'=>$proposal_id
 	));
-	$data3             = $query3->fetchObject();
-	/*$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid", array(
-		':uid' => $user->uid
-	));
-	$data3             = $query3->fetchObject();*/
+	$data3 = $query3->fetchObject();
 	if($data3){
 	if($data3->uid != $x){
 		drupal_set_message('Certificate is not available','error');
 		return;
 	}
 	}
-	/*$query4            = db_query("SELECT COUNT( tce.id ) AS example_count FROM textbook_companion_example tce
-						LEFT JOIN textbook_companion_chapter tcc ON tce.chapter_id = tcc.id
-						LEFT JOIN textbook_companion_preference tcpe ON tcc.preference_id = tcpe.id
-						LEFT JOIN textbook_companion_proposal tcpo ON tcpe.proposal_id = tcpo.id
-						WHERE tcpo.proposal_status =3 AND tce.approval_status =1 AND tce.approval_status=1 AND tcpo.id = :prop_id", array(
-		':prop_id' => $proposal_id
-	));
-	$data4             = $query4->fetchObject();
-	if($data4->example_count == 0) {
-		drupal_set_message('Certificate is not available','error');
-		return;
-	}
-	$number_of_example = $data4->example_count;*/
 	$gender            = array(
 		'salutation' => 'Mr. /Ms.',
 		'gender' => 'He/She'
@@ -60,20 +43,11 @@ function generate_pdf()
 	$pdf->AddPage();
 	$image_bg = $mpath . "/pdf/images/bg_cert.png";
 	$pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
-	//$pdf->Rect(5, 5, 267, 207, 'D');
 	$pdf->SetMargins(18, 1, 18);
-	//$pdf->Line(7.0, 7.0, 270.0, 7.0);
-	//$pdf->Line(7.0, 7.0, 7.0, 210.0);
-	//$pdf->Line(270.0, 210.0, 270.0, 7.0);
-	//$pdf->Line(7.0, 210.0, 270.0, 210.0);
 	$path   = drupal_get_path('module', 'dwsim_flowsheet');
-	//$image1 = $mpath . "/pdf/images/dwsim_logo.png";
 	$pdf->Ln(15);
-	//$pdf->Cell(200, 8, $pdf->Image($image1, 105, 15, 0, 28), 0, 1, 'C');
 	$pdf->Ln(20);
 	$pdf->SetFont('Arial', 'BI', 25);
-	//$pdf->SetTextColor(139, 69, 19);
-	//$pdf->Cell(240, 8, 'Certificate of Participation', '0', 1, 'C');
 	$pdf->Ln(26);
 	$pdf->SetFont('Arial', 'BI', 12);
 	$pdf->SetTextColor(0, 0, 0);
@@ -86,7 +60,6 @@ function generate_pdf()
 	$pdf->SetFont('Arial', 'I', 12);
 	if (strtolower($data3->branch) != "others") {
 		$pdf->SetTextColor(0, 0, 0);
-		//$pdf->Cell(240, 8, 'from ' . $data3->university . ' has successfully', '0', '1', 'C');
 		$pdf->MultiCell(240, 8, 'from ' . $data3->university . ' has successfully', '0','C');
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, 'completed Internship under DWSIM Flowsheeting Project.', '0', '1', 'C');
@@ -99,13 +72,10 @@ function generate_pdf()
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, ' using DWSIM .The work done is available at', '0', '1', 'C');
 		$pdf->Cell(240, 4, '', '0', '1', 'C');
-	$pdf->SetX(120);
+		$pdf->SetX(120);
 		$pdf->SetFont('', 'U');
 		$pdf->SetTextColor(139, 69, 19);
-		$pdf->write(0, 'http://dwsim.fossee.in/', 'http://dwsim.fossee.in/');
-		//$pdf->Ln(0);
-		//$pdf->Cell(240, 8, 'Book: ' . $data2->book . ', Author: ' . $data2->author . '.', '0', '1', 'C');
-		//$pdf->MultiCell(240, 8, 'Book: ' . $data2->book . ', Author: ' . $data2->author . '.', '0','C');
+		$pdf->write(0, 'https://dwsim.fossee.in/', 'https://dwsim.fossee.in/');
 		$pdf->Ln(0);
 	} //strtolower($data3->branch) != "others"
 	else {
@@ -114,10 +84,6 @@ function generate_pdf()
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, 'completed Internship under DWSIM Flowsheeting Project', '0', '1', 'C');
 		$pdf->Ln(0);
-		//$pdf->Cell(240, 8, 'He/she has coded ' . $number_of_example . ' solved examples using DWSIM from the', '0', '1', 'C');
-		//$pdf->Ln(0);
-		//$pdf->Cell(240, 8, 'Book: ' . $data2->book . ', Author: ' . $data2->author . '.', '0', '1', 'C');
-		//$pdf->Ln(0);
 	}
 	$proposal_get_id = 0;
 	$UniqueString    = "";
@@ -133,13 +99,14 @@ function generate_pdf()
 		$UniqueString = generateRandomString();
 		$query        = "
 				INSERT INTO dwsim_flowsheet_qr_code
-				(proposal_id,qr_code)
+				(proposal_id,qr_code,custom_qr_code)
 				VALUES
-				(:proposal_id,:qr_code)
+				(:proposal_id,:qr_code,:custom_qr_code)
 				";
 		$args         = array(
 			":proposal_id" => $proposal_id,
-			":qr_code" => $UniqueString
+			":qr_code" => $UniqueString,
+			":custom_qr_code" => NULL
 		);
 		$result       = db_query($query, $args, array(
 			'return' => Database::RETURN_INSERT_ID
@@ -148,20 +115,12 @@ function generate_pdf()
 	else {
 		$UniqueString = $DBString;
 	}
-	$codeContents        = "http://dwsim.fossee.in/flowsheeting-project/certificates/verify/" . $UniqueString;
+	$codeContents        = "https://dwsim.fossee.in/flowsheeting-project/certificates/verify/" . $UniqueString;
 	$fileName            = 'generated_qrcode.png';
 	$pngAbsoluteFilePath = $tempDir . $fileName;
 	$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
 	QRcode::png($codeContents, $pngAbsoluteFilePath);
-	/*$pdf->Cell(240, 4, '', '0', '1', 'C');
-	$pdf->SetX(88);
-	$pdf->write(0, 'The work done is available at ');
-	$pdf->SetFont('', 'U');
-	$pdf->SetTextColor(139, 69, 19);
-	$pdf->write(0, 'http://dwsim.fossee.in/', 'http://dwsim.fossee.in/');
-	$pdf->SetFont('', '');*/
 	$pdf->SetTextColor(0, 0, 0);
-	//$pdf->write(0, '.', '.');
 	$pdf->Ln(30);
 	$pdf->SetX(198);
 	$pdf->SetFont('', '');
@@ -169,8 +128,6 @@ function generate_pdf()
 	$pdf->SetY(-85);
 	$pdf->SetX(200);
 	$pdf->Ln(16);
-	//$sign = $path . "/pdf/images/sign.png";
-	//$pdf->Image($sign, $pdf->GetX(), $pdf->GetY() - 20, 50, 0);
 	$pdf->Cell(240, 8, 'Prof. Kannan M. Moudgalya', 0, 1, 'R');
 	$pdf->SetX(199);
 	$pdf->SetFont('Arial', '', 10);
@@ -186,7 +143,6 @@ function generate_pdf()
 	$pdf->SetX(29);
 	$pdf->SetY(-50);
 	$image4 = $path . "/pdf/images/bottom_line.png";
-	//$pdf->Image($image4, $pdf->GetX(), $pdf->GetY(), 20, 0);
 	$pdf->SetY(-50);
 	$pdf->SetX(80);
 	$image3 = $path . "/pdf/images/iitb.png";
@@ -217,7 +173,7 @@ function generate_pdf()
 	} //!feof($fp)
 	fclose($fp);
 	unlink($file);
-	drupal_goto('flowsheeting-project/certificate');
+	//drupal_goto('flowsheeting-project/certificate');
 	return;
 }
 function generateRandomString($length = 5)
