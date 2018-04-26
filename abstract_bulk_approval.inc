@@ -253,36 +253,54 @@ FOSSEE,IIT Bombay', array(
 					if (dwsim_flowsheet_abstract_delete_project($form_state['values']['flowsheet_project'])) //////
 					{
 						drupal_set_message(t('Dis-Approved and Deleted Entire Flowsheeting project.'), 'status');
+						$email_subject = t('[!site_name][Flowsheeting Project] Your uploaded flowsheeting project have been marked as dis-approved', array(
+						'!site_name' => variable_get('site_name', '')
+						));
+						$email_body = array(
+						0 => t('
+
+						Dear !user_name,
+
+						We regret to inform you that your DWSIM flowsheet and abstract with the following details have been disapproved:
+
+						Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
+						Project Title: ' . $user_info->project_title . '
+						Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
+						Reason for dis-approval: ' . $form_state['values']['message'] . '
+
+						Best Wishes,
+
+						!site_name Team,
+						FOSSEE,IIT Bombay', array(
+													'!site_name' => variable_get('site_name', ''),
+													'!user_name' => $user_data->name
+												))
+											);
+						$email_to = $user_data->mail;
+					$from = variable_get('dwsim_flowsheet_from_email', '');
+					$bcc = variable_get('dwsim_flowsheet_emails', '');
+					$cc = variable_get('dwsim_flowsheet_cc_emails', '');
+					$params['standard']['subject'] = $email_subject;
+					$params['standard']['body'] = $email_body;
+					$params['standard']['headers'] = array(
+						'From' => $from,
+						'MIME-Version' => '1.0',
+						'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+						'Content-Transfer-Encoding' => '8Bit',
+						'X-Mailer' => 'Drupal',
+						'Cc' => $cc,
+						'Bcc' => $bcc
+					);
+					if (!drupal_mail('dwsim_flowsheet', 'standard', $email_to, language_default(), $params, $from, TRUE))
+					{
+						drupal_set_message('Error sending email message.', 'error');
+					} 
 					} //dwsim_flowsheet_abstract_delete_project($form_state['values']['flowsheet_project'])
-					else
+				else
 					{
 						drupal_set_message(t('Error Dis-Approving and Deleting Entire flowsheeting project.'), 'error');
 					}
-					// email 
-					$email_subject = t('[!site_name][Flowsheeting Project] Your uploaded flowsheeting project have been marked as dis-approved', array(
-						'!site_name' => variable_get('site_name', '')
-					));
-					$email_body = array(
-						0 => t('
-
-Dear !user_name,
-
-We regret to inform you that your DWSIM flowsheet and abstract with the following details have been disapproved:
-
-Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
-Project Title: ' . $user_info->project_title . '
-Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
-Reason for dis-approval: ' . $form_state['values']['message'] . '
-
-Best Wishes,
-
-!site_name Team,
-FOSSEE,IIT Bombay', array(
-							'!site_name' => variable_get('site_name', ''),
-							'!user_name' => $user_data->name
-						))
-					);
-				} //$form_state['values']['flowsheet_actions'] == 3
+				}//$form_state['values']['flowsheet_actions'] == 3
 				elseif ($form_state['values']['flowsheet_actions'] == 4)
 				{
 					if (strlen(trim($form_state['values']['message'])) <= 30)

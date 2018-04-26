@@ -22,18 +22,15 @@ WHERE dfsa.id = :abstract_id", array(
 	$query->fields('dwsim_flowsheet_submitted_abstracts_file');
 	$query->condition('submitted_abstract_id', $abstract_id);
 	$abstract_f_q = $query->execute();
-	$delete_project_folder = FALSE;
+	
 	while ($abstract_f_data = $abstract_f_q->fetchObject())
 	{
-		$delete_project_folder = TRUE;
-		if (!_dwsim_flowsheet_delete_abstract_file($abstract_f_data->id))
-			$status = FALSE;
-	} //$abstract_f_data = $abstract_f_q->fetchObject()
-	if (!$delete_project_folder)
-	{
-		return TRUE;
-	} //!$delete_project_folder
-	if ($status)
+		unlink($root_path . $abstract_data->directory_name . '/' . $abstract_f_data->filepath);
+
+	} 
+	//$abstract_f_data = $abstract_f_q->fetchObject()
+	//!$delete_project_folder
+	/*if ($status)
 	{
 		$dir_path_udc = $root_path . $abstract_f_data->directory_name . '/user_defined_compound';
 		if (is_dir($dir_path_udc))
@@ -46,7 +43,7 @@ WHERE dfsa.id = :abstract_id", array(
 					'!folder' => $abstract_f_data->directory_name
 				)), 'error');
 				/* sending email to admins */
-				$email_to = variable_get('dwsim_flowsheet_emails', '');
+		/*		$email_to = variable_get('dwsim_flowsheet_emails', '');
 				$from = variable_get('dwsim_flowsheet_from_email', '');
 				$bcc = "";
 				$cc = variable_get('dwsim_flowsheet_cc_emails', '');
@@ -70,8 +67,8 @@ WHERE dfsa.id = :abstract_id", array(
 				return TRUE;
 			}
 		} //is_dir($dir_path_udc)
-	} //$status
-	return FALSE;
+	} */ //$status
+	return True;
 }
 function dwsim_flowsheet_abstract_delete_project($proposal_id)
 {
@@ -99,7 +96,6 @@ function dwsim_flowsheet_abstract_delete_project($proposal_id)
 			$status = FALSE;
 		} //!dwsim_flowsheet_delete_abstract_file($abstract_data->id)
 	} //$abstract_data = $abstract_q->fetchObject()
-	db_delete('dwsim_flowsheet_submitted_abstracts')->condition('proposal_id', $proposal_data->id)->execute();
 	$dir_path_udc = $root_path . $proposal_data->directory_name . '/user_defined_compound';
 	if (is_dir($dir_path_udc))
 	{
@@ -107,13 +103,16 @@ function dwsim_flowsheet_abstract_delete_project($proposal_id)
 		$res = rmdir($dir_path_udc);
 	} //is_dir($dir_path_udc)
 	$dir_main_path = $root_path . $proposal_data->directory_name;
+	//var_dump($dir_main_path);die;
 	if (is_dir($dir_main_path))
 	{
 		$res_main = rmdir($dir_main_path);
 	} //is_dir($dir_main_path)
 	db_delete('dwsim_flowsheet_proposal')->condition('id', $proposal_data->id)->execute();
+	db_delete('dwsim_flowsheet_submitted_abstracts')->condition('proposal_id', $proposal_data->id)->execute();
+	db_delete('dwsim_flowsheet_submitted_abstracts_file')->condition('id', $abstract_f_data->id)->execute();
 	return $status;
-}
+}/*
 function _dwsim_flowsheet_delete_abstract_file($abstract_id)
 {
 	global $user;
@@ -135,7 +134,7 @@ WHERE dfsa.id = :abstract_id", array(
 		return FALSE;
 	} //!$abstract_data
 	/* deleting abstract files */
-	$query = db_select('dwsim_flowsheet_submitted_abstracts_file');
+	/*$query = db_select('dwsim_flowsheet_submitted_abstracts_file');
 	$query->fields('dwsim_flowsheet_submitted_abstracts_file');
 	$query->condition('submitted_abstract_id', $abstract_id);
 	$abstract_f_q = $query->execute();
@@ -150,14 +149,14 @@ WHERE dfsa.id = :abstract_id", array(
 			continue;
 		} //!file_exists($root_path . $abstract_data->directory_name . '/' . $abstract_f_data->filepath)
 		/* removing solution file */
-		if (!unlink($root_path . $abstract_data->directory_name . '/' . $abstract_f_data->filepath))
+	/*	if (!unlink($root_path . $abstract_data->directory_name . '/' . $abstract_f_data->filepath))
 		{
 			$status = FALSE;
 			drupal_set_message(t('Error deleting !file', array(
 				'!file' => $abstract_data->directory_name . '/' . $abstract_f_data->filepath
 			)), 'error');
 			/* sending email to admins */
-			$from = variable_get('dwsim_flowsheet_from_email', '');
+	/*		$from = variable_get('dwsim_flowsheet_from_email', '');
 			$bcc = variable_get('dwsim_flowsheet_emails', '');
 			$cc = variable_get('dwsim_flowsheet_cc_emails', '');
 			$params['standard']['subject'] = "[ERROR] Error deleting example file";
@@ -179,8 +178,8 @@ WHERE dfsa.id = :abstract_id", array(
 		else
 		{
 			/* deleting example files database entries */
-			db_delete('dwsim_flowsheet_submitted_abstracts_file')->condition('id', $abstract_f_data->id)->execute();
-		}
+			//db_delete('dwsim_flowsheet_submitted_abstracts_file')->condition('id', $abstract_f_data->id)->execute();
+/*		}
 	} //$abstract_f_data = $abstract_f_q->fetchObject()
 	if (!$status)
 	{
