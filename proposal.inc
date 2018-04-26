@@ -103,10 +103,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#default_value' => '',
 		'#date_format' => 'M-Y',
 		'#date_increment' => 0,
-		'#date_year_range' => '1960:+0',
-		'#datepicker_options' => array(
-			'maxDate' => 0
-		),
+		'#date_year_range' => '1960: +22',
+		
 		'#required' => TRUE
 	);
 	$form['contributor_email_id'] = array(
@@ -115,6 +113,16 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#size' => 30,
 		'#value' => $user->mail,
 		'#disabled' => TRUE
+	);
+	$form['university'] = array(
+		'#type' => 'textfield',
+		'#title' => t('University/ Institute'),
+		'#size' => 80,
+		'#maxlength' => 200,
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => 'Insert full name of your institute/ university.... '
+		)
 	);
 	$form['project_guide_name'] = array(
 		'#type' => 'textfield',
@@ -130,14 +138,13 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 		'#title' => t('Project guide email'),
 		'#size' => 30
 	);
-	$form['university'] = array(
+	$form['project_guide_university'] = array(
 		'#type' => 'textfield',
-		'#title' => t('University/ Institute'),
+		'#title' => t('Project Guide University/ Institute'),
 		'#size' => 80,
 		'#maxlength' => 200,
-		'#required' => TRUE,
 		'#attributes' => array(
-			'placeholder' => 'Insert full name of your institute/ university.... '
+			'placeholder' => 'Insert full name of the institute/ university of your project guide.... '
 		)
 	);
 	$form['country'] = array(
@@ -514,7 +521,11 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 		else if (strlen($form_state['values']['project_title']) < 10)
 		{
 			form_set_error('project_title', t('Minimum charater limit is 10 charaters, please check the length of the project title'));
-		} //strlen($form_state['values']['project_title']) < 10
+			
+		}
+		else if(preg_match('/[\/^£$%&*()}{@#~?><>,|=_+¬]/', $form_state['values']['project_title']))
+			form_set_error('project_title', t('Special characters aree not allowed for project title'));
+	 //strlen($form_state['values']['project_title']) < 10
 	} //$form_state['values']['project_title'] != ''
 	else
 	{
@@ -637,6 +648,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     version, 
     project_guide_name,
     project_guide_email_id,
+    project_guide_university,
     project_title, 
     process_development_compound_name, 
     process_development_compound_cas_number,
@@ -666,6 +678,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
     :version, 
     :project_guide_name,
     :project_guide_email_id,
+    :project_guide_university,
     :project_title, 
     :process_development_compound_name, 
     :process_development_compound_cas_number,
@@ -695,6 +708,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":version" => $v['version'],
 		":project_guide_name" => _df_sentence_case($v['project_guide_name']),
 		":project_guide_email_id" => trim($v['project_guide_email_id']),
+		":project_guide_university" => trim($v['project_guide_university']),
 		":project_title" => _df_sentence_case($v['project_title']),
 		":process_development_compound_name" => _df_sentence_case($v['process_development_compound_name']),
 		":process_development_compound_cas_number" => $v['process_development_compound_cas_no'],
@@ -747,6 +761,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		$dest_path2 = 'user_defined_compound/';
 		$dest_path = $dest_path1 . 'user_defined_compound/';
 		$db_path = 'user_defined_compound/';
+		//var_dump($root_path . $dest_path1);die;
 		if (!is_dir($root_path . $dest_path1))
 			mkdir($root_path . $dest_path1);
 		if (!is_dir($root_path . $dest_path))

@@ -803,6 +803,12 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#title' => t('Email'),
 		'#markup' => $user_data->mail
 	);
+	$form['contributor_contact_no'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Contact No.'),
+		'#size' => 10,
+		'#default_value' => $proposal_data->contact_no
+	);
 	$form['month_year_of_degree'] = array(
 		'#type' => 'date_popup',
 		'#title' => t('Month and year of award of degree'),
@@ -811,19 +817,33 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#default_value' => $proposal_data->month_year_of_degree,
 		'#date_format' => 'M-Y',
 		'#date_increment' => 0,
-		'#date_year_range' => '1960:+0',
-		'#datepicker_options' => array(
-			'maxDate' => 0
-		),
-		'#required' => TRUE
+		'#date_year_range' => '1960:+22',
 	);
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/Institute'),
 		'#size' => 80,
 		'#maxlength' => 200,
-		'#required' => TRUE,
 		'#default_value' => $proposal_data->university
+	);
+	$form['project_guide_name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Project guide'),
+		'#size' => 250,
+		'#default_value' => $proposal_data->project_guide_name
+	);
+	$form['project_guide_email_id'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Project guide email'),
+		'#size' => 30,
+		'#default_value' => $proposal_data->project_guide_email_id
+	);
+	$form['project_guide_university'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Project Guide University/ Institute'),
+		'#size' => 80,
+		'#maxlength' => 200,
+		'#default_value' => $proposal_data->project_guide_university
 	);
 	$form['country'] = array(
 		'#type' => 'select',
@@ -935,8 +955,20 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#title' => t('Reference of the Flowsheet Project'),
 		'#size' => 300,
 		'#maxlength' => 350,
-		'#required' => TRUE,
 		'#default_value' => $proposal_data->reference
+	);
+	$form['process_development_compound_name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Name of compound for which process development is carried out'),
+		'#size' => 50,
+		'#default_value' => $proposal_data->process_development_compound_name 
+	);
+	$form['process_development_compound_cas_no'] = array(
+		'#type' => 'textfield',
+		'#title' => t('CAS number for compound which process development is carried out'),
+		'#size' => 50,
+		'#default_value' => $proposal_data->process_development_compound_cas_number
+		
 	);
 	$form['delete_proposal'] = array(
 		'#type' => 'checkbox',
@@ -1012,12 +1044,12 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	if ($form_state['values']['delete_proposal'] == 1)
 	{
 		/* sending email */
-		$email_to = $user->mail;
+		$email_to = $user_data->mail;
 		$from = variable_get('dwsim_flowsheet_from_email', '');
 		$bcc = variable_get('dwsim_flowsheet_emails', '');
 		$cc = variable_get('dwsim_flowsheet_cc_emails', '');
 		$params['dwsim_flowsheet_proposal_deleted']['proposal_id'] = $proposal_id;
-		$params['dwsim_flowsheet_proposal_deleted']['user_id'] = $user->uid;
+		$params['dwsim_flowsheet_proposal_deleted']['user_id'] = $proposal_data->uid;
 		//$params['dwsim_flowsheet_proposal_deleted']['file_name'] = $_FILES['files']['name'][$file_form_name];
 		$params['dwsim_flowsheet_proposal_deleted']['headers'] = array(
 			'From' => $from,
@@ -1069,7 +1101,13 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 				state=:state,
 				project_title=:project_title,
 				reference=:reference,
-				directory_name=:directory_name 
+				directory_name=:directory_name,
+				project_guide_university=:project_guide_university,
+				project_guide_email_id=:project_guide_email_id,
+				project_guide_name=:project_guide_name,
+				month_year_of_degree=:month_year_of_degree,
+				process_development_compound_name=:process_development_compound_name,
+				process_development_compound_cas_number=:process_development_compound_cas_number
 				WHERE id=:proposal_id";
 	$args = array(
 		':name_title' => $v['name_title'],
@@ -1082,6 +1120,12 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 		':project_title' => $project_title,
 		':reference' => $v['reference'],
 		':directory_name' => $directory_name,
+		':project_guide_university' => $v['project_guide_university'],
+		':project_guide_email_id' => $v['project_guide_email_id'],
+		':project_guide_name' => $v['project_guide_name'],
+		':month_year_of_degree' => $v['month_year_of_degree'],
+		':process_development_compound_name' => $v['process_development_compound_name'],
+		':process_development_compound_cas_number' => $v['process_development_compound_cas_no'],
 		':proposal_id' => $proposal_id
 	);
 	$result = db_query($query, $args);

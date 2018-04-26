@@ -2,23 +2,15 @@
 function generate_pdf()
 {
 	$mpath = drupal_get_path('module', 'dwsim_flowsheet');
-	//var_dump($mpath);die;
 	require($mpath . '/pdf/fpdf/fpdf.php');
 	require($mpath . '/pdf/phpqrcode/qrlib.php');
 	global $user;
 	$x                 = $user->uid;
 	$proposal_id       = arg(3);
-	$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND uid= :uid AND id=:proposal_id", array(
-		':uid' => $user->uid,
+	$query3 = db_query("SELECT * FROM dwsim_flowsheet_proposal WHERE approval_status=3 AND id=:proposal_id", array(
 		':proposal_id'=>$proposal_id
 	));
-	$data3 = $query3->fetchObject();
-	if($data3){
-	if($data3->uid != $x){
-		drupal_set_message('Certificate is not available','error');
-		return;
-	}
-	}
+	$data3             = $query3->fetchObject();
 	$gender            = array(
 		'salutation' => 'Mr. /Ms.',
 		'gender' => 'He/She'
@@ -52,20 +44,22 @@ function generate_pdf()
 	$pdf->Ln(26);
 	$pdf->SetFont('Arial', 'BI', 12);
 	$pdf->SetTextColor(0, 0, 0);
-	$pdf->Cell(240, 20, 'This is to certify that', '0', '1', 'C');
+	$pdf->Cell(240, 20, 'This certificate recognizes the valuable mentorship of', '0', '1', 'C');
 	$pdf->Ln(-6);
 	$pdf->SetFont('Arial', 'BI', 25);
 	$pdf->SetTextColor(139, 69, 19);
-	$pdf->Cell(240, 8, $data3->contributor_name, '0', '1', 'C');
+	$pdf->Cell(240, 8, $data3->project_guide_name, '0', '1', 'C');
 	$pdf->Ln(0);
 	$pdf->SetFont('Arial', 'I', 12);
 	if (strtolower($data3->branch) != "others") {
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->MultiCell(240, 8, 'from ' . $data3->university . ' has successfully', '0','C');
+		$pdf->MultiCell(240, 8, 'from ' . $data3->project_guide_university, '0','C');
 		$pdf->Ln(0);
-		$pdf->Cell(240, 8, 'completed Internship under DWSIM Flowsheeting Project.', '0', '1', 'C');
+		$pdf->Cell(240, 8, 'who has mentored', '0', '1', 'C');
 		$pdf->Ln(0);
-		$pdf->Cell(240, 8, 'He/she has created a flowsheet titled ', '0', '1', 'C');
+		$pdf->Cell(240, 8, $data3->contributor_name, '0', '1', 'C');
+		$pdf->Ln(0);
+		$pdf->Cell(240, 8, 'for successfully completing internship under the DWSIM Flowsheeting project. The intern(s) has created a flowsheet titled', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetTextColor(139, 69, 19);
 		$pdf->Cell(240, 8, $data3->project_title, '0', '1', 'C');
@@ -78,10 +72,10 @@ function generate_pdf()
 		$pdf->SetTextColor(139, 69, 19);
 		$pdf->write(0, 'https://dwsim.fossee.in/', 'https://dwsim.fossee.in/');
 		$pdf->Ln(0);
-	} //strtolower($data3->branch) != "others"
+	} 
 	else {
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->Cell(240, 8, 'from ' . $data3->university . ' has successfully', '0', '1', 'C');
+		$pdf->Cell(240, 8, 'from ' . $data3->project_guide_university . ' has successfully', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, 'completed Internship under DWSIM Flowsheeting Project', '0', '1', 'C');
 		$pdf->Ln(0);
@@ -94,20 +88,15 @@ function generate_pdf()
 	$query->condition('proposal_id', $proposal_id);
 	$result          = $query->execute();
 	$data            = $result->fetchObject();
-	$DBString        = $data->qr_code;
+	$DBString        = $data->custom_qr_code;
+	$qrstring        = $data->qr_code;
 	$proposal_get_id = $data->proposal_id;
 	if ($DBString == "" || $DBString == "null") {
 		$UniqueString = generateRandomString();
-		$query        = "
-				INSERT INTO dwsim_flowsheet_qr_code
-				(proposal_id,qr_code,custom_qr_code)
-				VALUES
-				(:proposal_id,:qr_code,:custom_qr_code)
-				";
+		$query        = "UPDATE dwsim_flowsheet_qr_code SET custom_qr_code = :custom_qr_code WHERE proposal_id = :proposal_id";
 		$args         = array(
 			":proposal_id" => $proposal_id,
-			":qr_code" => $UniqueString,
-			":custom_qr_code" => NULL
+			":custom_qr_code" => $UniqueString
 		);
 		$result       = db_query($query, $args, array(
 			'return' => Database::RETURN_INSERT_ID
@@ -116,7 +105,7 @@ function generate_pdf()
 	else {
 		$UniqueString = $DBString;
 	}
-	$codeContents        = "https://dwsim.fossee.in/flowsheeting-project/certificates/verify/" . $UniqueString;
+	$codeContents        = 'http://dwsim.fossee-dell/flowsheeting-project/certificates/verify/' . $qrstring;
 	$fileName            = 'generated_qrcode.png';
 	$pngAbsoluteFilePath = $tempDir . $fileName;
 	$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
@@ -143,12 +132,11 @@ function generate_pdf()
 	$pdf->Cell(0, 0, $UniqueString, 0, 0, 'C');
 	$pdf->SetX(29);
 	$pdf->SetY(-50);
-	$image4 = $path . "/pdf/images/bottom_line.png";
+	$image4 = $path . "/pdf/images/verify_content.png";
 	$pdf->SetY(-50);
 	$pdf->SetX(80);
 	$image3 = $path . "/pdf/images/iitb.png";
 	$image2 = $path . "/pdf/images/fossee.png"; 
-	
 	$pdf->Ln(8);
 	$pdf->Image($image2, $pdf->GetX() +15, $pdf->GetY() + 7, 40, 0);
 	$pdf->Ln(6);
