@@ -88,10 +88,9 @@ function generate_pdf()
 	$query->condition('proposal_id', $proposal_id);
 	$result          = $query->execute();
 	$data            = $result->fetchObject();
-	$DBString        = $data->custom_qr_code;
-	$qrstring        = $data->qr_code;
+	//$DBString        = $data->custom_qr_code;
 	$proposal_get_id = $data->proposal_id;
-	if ($DBString == "" || $DBString == "null") {
+	/*if ($DBString == "" || $DBString == "null") {
 		$UniqueString = generateRandomString();
 		$query        = "UPDATE dwsim_flowsheet_qr_code SET custom_qr_code = :custom_qr_code WHERE proposal_id = :proposal_id";
 		$args         = array(
@@ -104,8 +103,9 @@ function generate_pdf()
 	} //$DBString == "" || $DBString == "null"
 	else {
 		$UniqueString = $DBString;
-	}
-	$codeContents        = 'http://dwsim.fossee-dell/flowsheeting-project/certificates/verify/' . $qrstring;
+	}*/
+	$qrstring        = $data->qr_code;
+	$codeContents        = 'https://dwsim.fossee.in/flowsheeting-project/certificates/verify/' . $qrstring;
 	$fileName            = 'generated_qrcode.png';
 	$pngAbsoluteFilePath = $tempDir . $fileName;
 	$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
@@ -129,7 +129,7 @@ function generate_pdf()
 	$pdf->SetY(-58);
 	$pdf->Ln(14);
 	$pdf->SetX(10);
-	$pdf->Cell(0, 0, $UniqueString, 0, 0, 'C');
+	$pdf->Cell(0, 0, $qrstring, 0, 0, 'C');
 	$pdf->SetX(29);
 	$pdf->SetY(-50);
 	$image4 = $path . "/pdf/images/verify_content.png";

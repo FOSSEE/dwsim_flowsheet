@@ -197,6 +197,7 @@ function dwsim_flowsheet_proposal_approval_form($form, &$form_state)
 	$form['contributor_name'] = array(
 		'#type' => 'item',
 		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->contributor_name, 'user/' . $proposal_data->uid),
+		'#size' => 250,
 		'#title' => t('Student name')
 	);
 	$form['student_email_id'] = array(
@@ -496,6 +497,7 @@ function dwsim_flowsheet_proposal_status_form($form, &$form_state)
 	$form['contributor_name'] = array(
 		'#type' => 'item',
 		'#markup' => l($proposal_data->name_title . ' ' . $proposal_data->contributor_name, 'user/' . $proposal_data->uid),
+		'#size' => 250,
 		'#title' => t('Student name')
 	);
 	$form['student_email_id'] = array(
@@ -787,7 +789,7 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#type' => 'textfield',
 		'#title' => t('Name of the Proposer'),
 		'#size' => 30,
-		'#maxlength' => 50,
+		'#maxlength' => 250,
 		'#required' => TRUE,
 		'#default_value' => $proposal_data->contributor_name
 	);
@@ -1044,6 +1046,7 @@ function dwsim_flowsheet_proposal_edit_form_submit($form, &$form_state)
 	if ($form_state['values']['delete_proposal'] == 1)
 	{
 		/* sending email */
+		$user_data = user_load($proposal_data->uid);
 		$email_to = $user_data->mail;
 		$from = variable_get('dwsim_flowsheet_from_email', '');
 		$bcc = variable_get('dwsim_flowsheet_emails', '');

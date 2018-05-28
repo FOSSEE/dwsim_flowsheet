@@ -77,10 +77,7 @@ function verify_qrcode_fromdb($qr_code)
 		':uid' => $proposal_id
 	));
 	$data3 = $query3->fetchObject();
-		/*$query3 = db_query("SELECT * FROM {dwsim_flowsheet_proposal} WHERE approval_status=3 AND uid= :uid", array(
-		':uid' => $user->uid
-		));
-		$data3 = $query3->fetchObject();**/
+		if($data3->project_guide_name){
 		$page_content = "";
 		$page_content .= "<h4>Participation Details</h4><table><tr><td>Name</td>";
 		$page_content .= "<td>" . $data3->contributor_name . "</td></tr>";
@@ -88,9 +85,20 @@ function verify_qrcode_fromdb($qr_code)
 		$page_content .= "<td>DWSIM Flowsheeting Project</td></tr>";
 		$page_content .= "<tr><td>Flowsheets completed</td>";
 		$page_content .= "<td>" . $data3->project_title . "</td></tr>";
-		//$page_content .= "<tr><td>Book Author</td>";
-		//$page_content .= "<td>" . $data2->author . "</td></tr>";
+		$page_content .= "<tr><td>Project Guide</td>";
+		$page_content .= "<td>" . $data3->project_guide_name . "</td></tr>";
 		$page_content .= "</table>";
+		}
+		else{
+		$page_content = "";
+		$page_content .= "<h4>Participation Details</h4><table><tr><td>Name</td>";
+		$page_content .= "<td>" . $data3->contributor_name . "</td></tr>";
+		$page_content .= "<tr><td>Project</td>";
+		$page_content .= "<td>DWSIM Flowsheeting Project</td></tr>";
+		$page_content .= "<tr><td>Flowsheets completed</td>";
+		$page_content .= "<td>" . $data3->project_title . "</td></tr>";
+		$page_content .= "</table>";
+	}
 	} //$proposal_id
 	else
 	{
