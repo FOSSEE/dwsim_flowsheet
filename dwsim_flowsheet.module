@@ -173,16 +173,6 @@ function dwsim_flowsheet_menu()
 		'weight' => 2,
 		'file' => 'bulk_approval.inc'
 	);
-	/*$items['dwsim_flowsheet/code_approval/dependency'] = array(
-	'title' => 'Dependency',
-	'description' => 'Dependency Mangage',
-	'page callback' => 'drupal_get_form',
-	'page arguments' => array('dwsim_flowsheet_dependency_approval_form'),
-	'access arguments' => array('dwsim flowsheet bulk manage abstract'),
-	'type' => MENU_LOCAL_TASK,
-	'weight' => 3,
-	'file' => 'dependency_approval.inc',
-	);*/
 	$items['flowsheeting-project/code-approval/upload'] = array(
 		'title' => 'Upload Code',
 		'description' => 'Admin Upload',
@@ -247,16 +237,6 @@ function dwsim_flowsheet_menu()
 		'file' => 'upload_code.inc',
 		'weight' => 2
 	);
-	/* $items['dwsim_flowsheet/code/upload_dep'] = array(
-	'title' => 'Upload Dependency',
-	'description' => 'Upload Dependency Files',
-	'page callback' => 'drupal_get_form',
-	'page arguments' => array('dwsim_flowsheet_upload_dependency_form'),
-	'access arguments' => array('dwsim flowsheet upload code'),
-	'type' => MENU_LOCAL_TASK,
-	'file' => 'dependency.inc',
-	'weight' => 3,
-	);*/
 	$items['flowsheeting-project/abstract-code/delete'] = array(
 		'title' => 'Delete Solution',
 		'description' => 'Delete Solution',
@@ -278,14 +258,6 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'download.inc'
 	);
-	/*$items['dwsim_flowsheet/download/dependency'] = array(
-	'title' => 'Code Download',
-	'description' => 'Code Download', 
-	'page callback' => 'dwsim_flowsheet_download_dependency_file',
-	'access arguments' => array('dwsim flowsheet download code'),
-	'type' => MENU_CALLBACK,
-	'file' => 'download.inc',
-	);*/
 	$items['flowsheeting-project/download/solution'] = array(
 		'title' => 'Code Download',
 		'description' => 'Code Download',
@@ -377,27 +349,6 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'download.inc'
 	);
-	/*$items['dwsim_flowsheet_run'] = array(
-	'title' => 'Download Codes',
-	'page callback' => 'drupal_get_form',
-	'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
-	'access arguments' => array('access content'),
-	'type' => MENU_NORMAL_ITEM,
-	'file' => 'run.inc',
-	);
-	$items['dwsim_flowsheet_run_ajax'] = array(
-	'page callback' => 'dwsim_flowsheet_run_ajax',
-	'access callback' => TRUE,
-	'file' => 'run.inc',
-	);
-	$items['download_codes'] = array(
-	'title' => 'Download Codes',
-	'page callback' => 'drupal_get_form',
-	'page arguments' => array('dwsim_flowsheet_run_form_ajax'),
-	'access arguments' => array('access content'),
-	'type' => MENU_NORMAL_ITEM,
-	'file' => 'run.inc',
-	);*/
 	/* LATEX SCRIPT */
 	$items['flowsheeting-project/generate-lab'] = array(
 		'title' => 'Generate Lab',
@@ -465,7 +416,7 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/cert_new.inc'
 	);
-	$items['flowsheeting-project/certificates_custom'] = array(
+	$items['flowsheeting-project/certificates-custom'] = array(
 		'title' => 'List of Flowsheet Custom Certificates',
 		'description' => 'List of flowsheet Custom Certificates',
 		'page callback' => '_list_flowsheet_custom_certificates',
@@ -474,7 +425,7 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/list_mentor_certificates.inc'
 	);
-	$items['flowsheeting-project/certificates_custom/pdf'] = array(
+	$items['flowsheeting-project/certificates-custom/pdf'] = array(
 		'title' => 'Download Certificate',
 		'description' => 'Download Certificate',
 		'page callback' => 'drupal_get_form',
@@ -496,22 +447,6 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'pdf/verify_certificates.inc'
 	);
-	/*$items["flowsheeting-project/certificates_custom/verify"] = array(
-		"title" => "Certificate Verification",
-		"page callback" => "verify_custom_certificates",
-		"access arguments" => array(
-			"verify certificates"
-		),
-		'type' => MENU_CALLBACK,
-		'file' => 'pdf/verify_certificates.inc'
-	);
-	/*  $items["dwsim_flowsheet/code_approval/dependency/ajax"] = array(
-	"title" => "Ajax callbacks",
-	"page callback" => "dwsim_flowsheet_dependency_approval_ajax",
-	"access arguments" => array("dwsim flowsheet bulk manage abstract"),
-	"type" => MENU_CALLBACK,
-	'file' => 'dependency_approval.inc',
-	);*/
 	return $items;
 }
 /**
@@ -868,9 +803,8 @@ function _df_dir_name($project, $proposar_name)
 	$project_title = ucname($project);
 	$proposar_name = ucname($proposar_name);
 	$dir_name = $project_title . ' By ' . $proposar_name;
-	$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
+	$directory_name = str_replace("__", "_", str_replace(" ", "_", str_replace("/", " ", $dir_name)));
 	return $directory_name;
-	//return $directory_name;
 }
 function dwsim_flowsheet_document_path()
 {

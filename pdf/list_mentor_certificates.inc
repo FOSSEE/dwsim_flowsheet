@@ -14,7 +14,8 @@ function _list_flowsheet_custom_certificates()
 			$search_rows = array();
 			global $output;
 			$output = '';
-			$query3 = db_query("SELECT id,project_guide_name,project_title FROM dwsim_flowsheet_proposal WHERE project_guide_name != '' AND approval_status=3");
+			$query3 = db_query("SELECT id,project_guide_name,project_guide_university,project_title FROM 
+dwsim_flowsheet_proposal WHERE project_guide_name != '' AND project_guide_university != '' AND approval_status=3");
 			$i = 1;
 			while ($search_data3 = $query3->fetchObject()) {
 					$search_rows[] = array(

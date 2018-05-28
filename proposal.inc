@@ -254,7 +254,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 	$form['reference'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Reference'),
-		'#size' => 250,
+		'#maxsize' => 250,
 		'#required' => TRUE,
 		'#attributes' => array(
 			'placeholder' => 'Enter reference'
@@ -523,8 +523,8 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 			form_set_error('project_title', t('Minimum charater limit is 10 charaters, please check the length of the project title'));
 			
 		}
-		else if(preg_match('/[\/^£$%&*()}{@#~?><>,|=_+¬]/', $form_state['values']['project_title']))
-			form_set_error('project_title', t('Special characters aree not allowed for project title'));
+		else if(preg_match('/[\^£$%&*()}{@#~?><>.:;`|=_+¬]/', $form_state['values']['project_title']))
+			form_set_error('project_title', t('Special characters are not allowed for project title'));
 	 //strlen($form_state['values']['project_title']) < 10
 	} //$form_state['values']['project_title'] != ''
 	else
