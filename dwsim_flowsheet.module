@@ -416,7 +416,7 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/cert_new.inc'
 	);
-	$items['flowsheeting-project/certificates_custom'] = array(
+	$items['flowsheeting-project/certificates-custom'] = array(
 		'title' => 'List of Flowsheet Custom Certificates',
 		'description' => 'List of flowsheet Custom Certificates',
 		'page callback' => '_list_flowsheet_custom_certificates',
@@ -425,7 +425,7 @@ function dwsim_flowsheet_menu()
 		),
 		'file' => 'pdf/list_mentor_certificates.inc'
 	);
-	$items['flowsheeting-project/certificates_custom/pdf'] = array(
+	$items['flowsheeting-project/certificates-custom/pdf'] = array(
 		'title' => 'Download Certificate',
 		'description' => 'Download Certificate',
 		'page callback' => 'drupal_get_form',
