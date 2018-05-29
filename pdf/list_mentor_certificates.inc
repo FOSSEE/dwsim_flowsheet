@@ -22,7 +22,7 @@ dwsim_flowsheet_proposal WHERE project_guide_name != '' AND project_guide_univer
 						$i,
 						$search_data3->project_title,
 						$search_data3->project_guide_name,
-						l('Download Certificate', 'flowsheeting-project/certificates_custom/pdf/' . $search_data3->id)
+						l('Download Certificate', 'flowsheeting-project/certificates-custom/pdf/' . $search_data3->id)
 					);
 					$i++;
 				 //$search_data3->id
