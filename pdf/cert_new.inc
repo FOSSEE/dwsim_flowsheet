@@ -130,11 +130,11 @@ function generate_pdf()
 	$pdf->SetX(200);
 	$pdf->Ln(16);
 	$pdf->Cell(240, 8, 'Prof. Kannan M. Moudgalya', 0, 1, 'R');
-	$pdf->SetX(199);
+	$pdf->Ln(-2);
 	$pdf->SetFont('Arial', '', 10);
-	$pdf->Cell(0, 7, 'Principal Investigator - FOSSEE', 0, 1, 'L');
-	$pdf->SetX(190);
-	$pdf->Cell(0, 7, ' Dept. of Chemical Engineering, IIT Bombay.', 0, 1, 'L');
+	$pdf->Cell(240, 8, 'Principal Investigator - FOSSEE', 0, 1, 'R');
+	$pdf->Ln(-2);
+	$pdf->Cell(240, 8, ' Dept. of Chemical Engineering, IIT Bombay.', 0, 1, 'R');
 	$pdf->SetX(29);
 	$pdf->SetFont('Arial', 'B', 10);
 	$pdf->SetY(-58);
