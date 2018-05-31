@@ -96,43 +96,13 @@ function generate_pdf()
 	$query->condition('proposal_id', $proposal_id);
 	$result          = $query->execute();
 	$data            = $result->fetchObject();
-	//$DBString        = $data->custom_qr_code;
 	$proposal_get_id = $data->proposal_id;
-	/*if ($DBString == "" || $DBString == "null") {
-		$UniqueString = generateRandomString();
-		$query        = "UPDATE dwsim_flowsheet_qr_code SET custom_qr_code = :custom_qr_code WHERE proposal_id = :proposal_id";
-		$args         = array(
-			":proposal_id" => $proposal_id,
-			":custom_qr_code" => $UniqueString
-		);
-		$result       = db_query($query, $args, array(
-			'return' => Database::RETURN_INSERT_ID
-		));
-	} //$DBString == "" || $DBString == "null"
-	else {
-		$UniqueString = $DBString;
-	}*/
 	$qrstring        = $data->qr_code;
 	$codeContents        = 'https://dwsim.fossee.in/flowsheeting-project/certificates/verify/' . $qrstring;
 	$fileName            = 'generated_qrcode.png';
 	$pngAbsoluteFilePath = $tempDir . $fileName;
 	$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
 	QRcode::png($codeContents, $pngAbsoluteFilePath);
-	/*$pdf->SetTextColor(0, 0, 0);
-	$pdf->Ln(35);
-	$pdf->SetX(198);
-	$pdf->SetFont('', '');
-	$pdf->SetTextColor(0, 0, 0);
-	$pdf->SetY(-85);
-	$pdf->SetX(200);
-	$pdf->Ln(20);
-	$pdf->Cell(240, 8, 'Prof. Kannan M. Moudgalya', 0, 1, 'R');
-	$pdf->SetX(199);
-	$pdf->SetFont('Times', '', 10);
-	$pdf->Cell(0, 7, 'Co - Principal Investigator - FOSSEE', 0, 1, 'L');
-	$pdf->SetX(190);
-	$pdf->Cell(0, 7, ' Dept. of Chemical Engineering, IIT Bombay.', 0, 1, 'L');
-	$pdf->SetX(29);*/
 	$pdf->SetFont('Times', 'B', 12);
 	$pdf->SetY(-58);
 	$pdf->Ln(13);
@@ -140,19 +110,8 @@ function generate_pdf()
 	$pdf->Cell(0, 0, $qrstring, 0, 0, 'C');
 	$pdf->SetX(29);
 	$pdf->SetY(-50);
-	/*$image4 = $path . "/pdf/images/bottom_line.png";
-	$pdf->SetY(-50);
-	$pdf->SetX(80);
-	$image3 = $path . "/pdf/images/iitb.png";
-	$image2 = $path . "/pdf/images/fossee.png"; 
-	$pdf->Ln(15);
-	$pdf->Image($image2, $pdf->GetX() +30, $pdf->GetY() + 7, 40, 0);*/
 	$pdf->Ln(13);
-	$pdf->Image($pngAbsoluteFilePath, $pdf->GetX() + 102, $pdf->GetY() - 5, 30, 0);/*
-	$pdf->Image($image3, $pdf->GetX() + 200, $pdf->GetY() -3, 15, 0);
-	$pdf->Image($image4, $pdf->GetX() +50, $pdf->GetY() + 28, 150, 0);
-	$pdf->SetFont('Times', 'I', 8);
-	$pdf->SetTextColor(0, 0, 0);*/
+	$pdf->Image($pngAbsoluteFilePath, $pdf->GetX() + 102, $pdf->GetY() - 5, 30, 0);
 	$filename = str_replace(' ', '-', $data3->contributor_name) . '-DWSIM-Flowsheet-Certificate.pdf';
 	$file     = $path . '/pdf/temp_certificate/' . $proposal_id . '_' . $filename;
 	$pdf->Output($file, 'F');
