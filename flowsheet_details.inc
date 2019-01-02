@@ -21,13 +21,13 @@ function dwsim_flowsheet_completed_proposals_all()
 		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$approval_date = date("Y", $row->approval_date);
+			$completion_date = date("Y", $row->actual_completion_date);
 			$preference_rows[] = array(
 				$i,
 				l($row->project_title, "flowsheeting-project/dwsim-flowsheet-run/" . $row->id, array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))),
 				$row->contributor_name,
 				$row->university,
-				$approval_date
+				$completion_date
 			);
 			$i++;
 		} //$row = $result->fetchObject()
