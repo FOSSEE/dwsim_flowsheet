@@ -51,6 +51,7 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 			return;
 		} //$proposal_data->approval_status == 0 || $proposal_data->approval_status == 1
 	} //$proposal_data
+	$imp = t('<span style="color: red;">*This is a mandatory field</span>');
 	$form['#attributes'] = array(
 		'enctype' => "multipart/form-data"
 	);
@@ -171,7 +172,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 					'value' => 'Others'
 				)
 			)
-		)
+		),
+		'#description' => $imp,
 	);
 	$form['other_state'] = array(
 		'#type' => 'textfield',
@@ -186,7 +188,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 					'value' => 'Others'
 				)
 			)
-		)
+		),
+		'#description' => $imp,
 	);
 	$form['other_city'] = array(
 		'#type' => 'textfield',
@@ -201,7 +204,8 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 					'value' => 'Others'
 				)
 			)
-		)
+		),
+		'#description' => $imp,
 	);
 	$form['all_state'] = array(
 		'#type' => 'select',
@@ -214,19 +218,22 @@ function dwsim_flowsheet_proposal_form($form, &$form_state, $no_js_use = FALSE)
 					'value' => 'India'
 				)
 			)
-		)
+		),
+		'#description' => $imp
 	);
 	$form['city'] = array(
-		'#type' => 'select',
-		'#title' => t('City'),
-		'#options' => _df_list_of_cities(),
-		'#states' => array(
-			'visible' => array(
-				':input[name="country"]' => array(
-					'value' => 'India'
-				)
-			)
-		)
+            '#type' => 'select',
+            '#title' => t('City'),
+            '#options' => _df_list_of_cities(),
+            '#validated' => TRUE,
+            '#states' => array(
+                'visible' => array(
+                    ':input[name="country"]' => array(
+                        'value' => 'India'
+                    )
+                )
+            ),
+            '#description' => $imp,
 	);
 	$form['pincode'] = array(
 		'#type' => 'textfield',
@@ -457,6 +464,16 @@ function udc_compound_add_more_callback($form, &$form_state)
 /***************************************/
 function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 {
+	$project_title = $form_state['values']['project_title'];
+	$query = db_select('om_pssp_proposal');
+	$query->fields('om_pssp_proposal');
+	$query->condition('project_title', $project_title);
+	$result = $query->execute()->rowCount();
+	if ($result >= 1)
+	{
+		form_set_error('project_title', t('Project title name already exists'));
+		return;
+	}
 	if ($form_state['values']['term_condition'] == '1')
 	{
 		form_set_error('term_condition', t('Please check the terms and conditions'));
@@ -709,7 +726,7 @@ function dwsim_flowsheet_proposal_form_submit($form, &$form_state)
 		":project_guide_name" => _df_sentence_case($v['project_guide_name']),
 		":project_guide_email_id" => trim($v['project_guide_email_id']),
 		":project_guide_university" => trim($v['project_guide_university']),
-		":project_title" => _df_sentence_case($v['project_title']),
+		":project_title" => $v['project_title'],
 		":process_development_compound_name" => _df_sentence_case($v['process_development_compound_name']),
 		":process_development_compound_cas_number" => $v['process_development_compound_cas_no'],
 		":dwsim_database_compound_name" => trim($v['dwsim_database_compound_name']),

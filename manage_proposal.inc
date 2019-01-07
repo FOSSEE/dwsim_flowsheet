@@ -847,6 +847,7 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#maxlength' => 200,
 		'#default_value' => $proposal_data->project_guide_university
 	);
+	if($proposal_data->country == 'India'){
 	$form['country'] = array(
 		'#type' => 'select',
 		'#title' => t('Country'),
@@ -858,54 +859,6 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 		'#required' => TRUE,
 		'#tree' => TRUE,
 		'#validated' => TRUE
-	);
-	$form['other_country'] = array(
-		'#type' => 'textfield',
-		'#title' => t('Other than India'),
-		'#size' => 100,
-		'#default_value' => $proposal_data->country,
-		'#attributes' => array(
-			'placeholder' => t('Enter your country name')
-		),
-		'#states' => array(
-			'visible' => array(
-				':input[name="country"]' => array(
-					'value' => 'Others'
-				)
-			)
-		)
-	);
-	$form['other_state'] = array(
-		'#type' => 'textfield',
-		'#title' => t('State other than India'),
-		'#size' => 100,
-		'#attributes' => array(
-			'placeholder' => t('Enter your state/region name')
-		),
-		'#default_value' => $proposal_data->state,
-		'#states' => array(
-			'visible' => array(
-				':input[name="country"]' => array(
-					'value' => 'Others'
-				)
-			)
-		)
-	);
-	$form['other_city'] = array(
-		'#type' => 'textfield',
-		'#title' => t('City other than India'),
-		'#size' => 100,
-		'#attributes' => array(
-			'placeholder' => t('Enter your city name')
-		),
-		'#default_value' => $proposal_data->city,
-		'#states' => array(
-			'visible' => array(
-				':input[name="country"]' => array(
-					'value' => 'Others'
-				)
-			)
-		)
 	);
 	$form['all_state'] = array(
 		'#type' => 'select',
@@ -934,6 +887,57 @@ function dwsim_flowsheet_proposal_edit_form($form, &$form_state)
 			)
 		)
 	);
+}
+else{ 
+	$form['other_country'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Country(Other than India)'),
+		'#size' => 100,
+		'#default_value' => $proposal_data->country,
+		'#attributes' => array(
+			'placeholder' => t('Enter your country name')
+		),
+		'#states' => array(
+			'visible' => array(
+				':input[name="country"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
+	);
+	$form['other_state'] = array(
+		'#type' => 'textfield',
+		'#title' => t('State(Other than India)'),
+		'#size' => 100,
+		'#attributes' => array(
+			'placeholder' => t('Enter your state/region name')
+		),
+		'#default_value' => $proposal_data->state,
+		'#states' => array(
+			'visible' => array(
+				':input[name="country"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
+	);
+	$form['other_city'] = array(
+		'#type' => 'textfield',
+		'#title' => t('City(Other than India)'),
+		'#size' => 100,
+		'#attributes' => array(
+			'placeholder' => t('Enter your city name')
+		),
+		'#default_value' => $proposal_data->city,
+		'#states' => array(
+			'visible' => array(
+				':input[name="country"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
+	);
+}
 	$form['pincode'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Pincode'),
