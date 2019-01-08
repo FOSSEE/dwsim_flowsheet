@@ -468,13 +468,23 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	$query = db_select('dwsim_flowsheet_proposal');
 	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('project_title', $project_title);
-	$query->condition('approval_status',1);
+	$query->condition(db_or()->condition('approval_status',1)->condition('approval_status',3)); 
 	$result = $query->execute()->rowCount();
-	if ($result >= 1)
+	if ($result > 0)
 	{
 		form_set_error('project_title', t('Project title name already exists'));
 		return;
 	}
+	/*$query = db_select('dwsim_flowsheet_proposal');
+	$query->fields('dwsim_flowsheet_proposal');
+	$query->condition('project_title', $project_title);
+	$query->condition('approval_status',3); 
+	$result1 = $query->execute()->rowCount();
+	if ($result1 > 0)
+	{
+		form_set_error('project_title', t('Project title name already exists'));
+		return;
+	}*/
 	if ($form_state['values']['term_condition'] == '1')
 	{
 		form_set_error('term_condition', t('Please check the terms and conditions'));
