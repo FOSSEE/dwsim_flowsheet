@@ -468,6 +468,7 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	$query = db_select('dwsim_flowsheet_proposal');
 	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('project_title', $project_title);
+	$query->condition('approval_status',1)
 	$result = $query->execute()->rowCount();
 	if ($result >= 1)
 	{
