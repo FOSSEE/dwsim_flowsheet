@@ -465,8 +465,8 @@ function udc_compound_add_more_callback($form, &$form_state)
 function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 {
 	$project_title = $form_state['values']['project_title'];
-	$query = db_select('om_pssp_proposal');
-	$query->fields('om_pssp_proposal');
+	$query = db_select('dwsim_flowsheet_proposal');
+	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('project_title', $project_title);
 	$result = $query->execute()->rowCount();
 	if ($result >= 1)
