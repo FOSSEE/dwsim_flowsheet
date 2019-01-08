@@ -511,17 +511,17 @@ function dwsim_flowsheet_proposal_form_validate($form, &$form_state)
 	} //$form_state['values']['country'] == 'Others'
 	else
 	{
-		if ($form_state['values']['country'] == '')
+		if ($form_state['values']['country'] == '0')
 		{
 			form_set_error('country', t('Select country name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['country'] == ''
-		if ($form_state['values']['all_state'] == '')
+		if ($form_state['values']['all_state'] == '0')
 		{
 			form_set_error('all_state', t('Select state name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
 		} //$form_state['values']['all_state'] == ''
-		if ($form_state['values']['city'] == '')
+		if ($form_state['values']['city'] == '0')
 		{
 			form_set_error('city', t('Select city name'));
 			// $form_state['values']['country'] = $form_state['values']['other_country'];
