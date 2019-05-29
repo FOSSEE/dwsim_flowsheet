@@ -43,7 +43,7 @@ function dwsim_flowsheet_mail($key, &$message, $params)
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 Thank you for submitting proposal for the DWSIM Flowsheeting Project. The details of your proposal are as below.
 
@@ -59,8 +59,8 @@ Your proposal is under review. You will be notified via email about the approval
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
@@ -101,7 +101,7 @@ FOSSEE,IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 We regret to inform you that your DWSIM Flowsheeting Project proposal with following details have been disapproved.
 
@@ -117,8 +117,8 @@ Thank you for participating in the DWSIM Flowsheeting Project. You are welcome t
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
@@ -159,7 +159,7 @@ FOSSEE,IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 Congratulations! Your proposal for DWSIM Flowsheeting Project with the following details is approved.
 
@@ -173,8 +173,8 @@ You can upload your abstract using abstract submission interface.
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
@@ -214,7 +214,7 @@ FOSSEE,IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 Your DWSIM flowsheet and abstract on the following process have been published successfully.
 
@@ -231,8 +231,8 @@ Thank you for participating in the DWSIM Flowsheeting Project. You are welcome t
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
@@ -273,7 +273,7 @@ FOSSEE,IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 Your DWSIM Flowsheeting Project proposal with the following details has been deleted :
 
@@ -300,8 +300,8 @@ You can propose a new flowsheet project.
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
@@ -327,7 +327,7 @@ FOSSEE,IIT Bombay', array(
 			$message['headers'] = $params['abstract_uploaded']['headers'];
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->contributor_name . ',
 
 You have successfully uploaded your DWSIM flowsheet and abstract with the following details.
 
@@ -339,8 +339,8 @@ You shall be notified via email after the flowsheet and abstract are reviewed an
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 					'!site_name' => variable_get('site_name', ''),
 					'!user_name' => $user_data->name
 				), array(
