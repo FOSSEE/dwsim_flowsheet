@@ -132,7 +132,7 @@ function dwsim_flowsheet_abstract_bulk_approval_form_submit($form, &$form_state)
 					$email_body = array(
 						0 => t('
 
-Dear !user_name,
+Dear ' . $user_info->contributor_name . ',
 
 Congratulations!
 Your DWSIM flowsheet and abstract with the following details have been approved.
@@ -148,8 +148,8 @@ Note: It will take upto 30 days from the time we receive your forms, to process 
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 							'!site_name' => variable_get('site_name', ''),
 							'!user_name' => $user_data->name
 						))
@@ -202,7 +202,7 @@ FOSSEE,IIT Bombay', array(
 					$email_body = array(
 						0 => t('
 
-Dear !user_name,
+Dear ' . $user_info->contributor_name . ',
 
 Your all the uploaded flowsheeting project with Title : ' . $user_info->project_title . ' have been marked as pending to be reviewed.
  
@@ -210,8 +210,8 @@ You will be able to see the flowsheeting project after approved by one of our re
 
 Best Wishes,
 
-!site_name Team,
-FOSSEE,IIT Bombay', array(
+!site_name Team
+FOSSEE, IIT Bombay', array(
 							'!site_name' => variable_get('site_name', ''),
 							'!user_name' => $user_data->name
 						))
@@ -259,23 +259,23 @@ FOSSEE,IIT Bombay', array(
 						$email_body = array(
 						0 => t('
 
-						Dear !user_name,
+Dear ' . $user_info->contributor_name . ',
 
-						We regret to inform you that your DWSIM flowsheet and abstract with the following details have been disapproved:
+We regret to inform you that your DWSIM flowsheet and abstract with the following details have been disapproved:
 
-						Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
-						Project Title: ' . $user_info->project_title . '
-						Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
-						Reason for dis-approval: ' . $form_state['values']['message'] . '
+Full Name: ' . $user_info->name_title . ' ' . $user_info->contributor_name . '
+Project Title: ' . $user_info->project_title . '
+Name of compound for which process development is carried out  : ' . $user_info->process_development_compound_name . '
+Reason for dis-approval: ' . $form_state['values']['message'] . '
 
-						Best Wishes,
+Best Wishes,
 
-						!site_name Team,
-						FOSSEE,IIT Bombay', array(
-													'!site_name' => variable_get('site_name', ''),
-													'!user_name' => $user_data->name
-												))
-											);
+!site_name Team
+FOSSEE, IIT Bombay', array(
+					'!site_name' => variable_get('site_name', ''),
+					'!user_name' => $user_data->name
+					))
+						);
 						$email_to = $user_data->mail;
 					$from = variable_get('dwsim_flowsheet_from_email', '');
 					$bcc = variable_get('dwsim_flowsheet_emails', '');
