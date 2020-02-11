@@ -6,7 +6,7 @@ function dwsim_flowsheet_completed_proposals_all()
 	$query = db_select('dwsim_flowsheet_proposal');
 	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('approval_status', 3);
-	$query->orderBy('actual_completion_date', 'ASC');
+	$query->orderBy('actual_completion_date', 'DESC');
 	//$query->condition('is_completed', 1);
 	$result = $query->execute();
 	if ($result->rowCount() == 0)
@@ -35,8 +35,8 @@ function dwsim_flowsheet_completed_proposals_all()
 			'No',
 			'Flowsheet Project',
 			'Contributor Name',
-			'Institution',
-			'Year'
+			'University / Institute',
+			'Year of Completion'
 		);
 		$output .= theme('table', array(
 			'header' => $preference_header,
@@ -79,7 +79,7 @@ function dwsim_flowsheet_progress_all()
 			'No',
 			'Flowsheet Project',
 			'Contributor Name',
-			'Institution',
+			'University / Institute',
 			'Year'
 		);
 		$page_content .= theme('table', array(

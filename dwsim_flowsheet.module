@@ -258,6 +258,16 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'download.inc'
 	);
+	$items['flowsheeting-project/download/project-file'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'dwsim_flowsheet_download_abstract',
+		'access arguments' => array(
+			'dwsim flowsheet download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
 	$items['flowsheeting-project/download/solution'] = array(
 		'title' => 'Code Download',
 		'description' => 'Code Download',
