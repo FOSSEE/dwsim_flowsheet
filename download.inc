@@ -17,6 +17,41 @@ function dwsim_flowsheet_download_user_defined_compound()
 	ob_clean();
 	readfile($root_path . $dwsim_flowsheet_user_compund_data->directory_name . '/' . $dwsim_flowsheet_user_compund_data->user_defined_compound_filepath);
 }
+function dwsim_flowsheet_download_abstract() {
+	$proposal_id = arg(3);
+	$root_path = dwsim_flowsheet_path();
+	//var_dump($proposal_id);die;
+	$query = db_select('dwsim_flowsheet_submitted_abstracts_file');
+	$query->fields('dwsim_flowsheet_submitted_abstracts_file');
+	$query->condition('proposal_id', $proposal_id);
+	$query->condition('filetype', A);
+	$result = $query->execute();
+	$flowsheet_project_files = $result->fetchObject();
+	//var_dump($custom_model_project_files);die;
+	$query1 = db_select('dwsim_flowsheet_proposal');
+	$query1->fields('dwsim_flowsheet_proposal');
+	$query1->condition('id', $proposal_id);
+	$result1 = $query1->execute();
+	$flowsheet = $result1->fetchObject();
+	$directory_name = $flowsheet->directory_name;
+	$samplecodename = $flowsheet_project_files->filename;
+	ob_clean();
+	header("Pragma: public");
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Cache-Control: public");
+	header("Content-Description: File Transfer");
+	header("Content-Type: application/pdf");
+	header('Content-disposition: attachment; filename="' . $samplecodename . '"');
+	header("Content-Length: " . filesize($root_path . $directory_name . $samplecodename));
+	header("Content-Transfer-Encoding: binary");
+	header("Expires: 0");
+	header("Pragma: no-cache");
+	ob_clean();
+	readfile($root_path . $directory_name . '/' . $samplecodename);
+	//ob_end_flush();
+	//ob_clean();
+}
 function dwsim_flowsheet_download_solution_file()
 {
 	$solution_file_id = arg(3);
