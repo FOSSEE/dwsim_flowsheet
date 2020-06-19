@@ -16,6 +16,7 @@ function dwsim_flowsheet_completed_proposals_all()
 	} //$result->rowCount() == 0
 	else
 	{
+		$output .= "Total number of completed flowsheets: " . $result->rowCount() . "<br>";
 		$output .= "Work has been completed for the following flow sheets. We welcome your contributions. For more details, please visit ".l("https://dwsim.fossee.in/flowsheeting-project","https://dwsim.fossee.in/flowsheeting-project", array('attributes' => array('target' => '_blank')))."<br>"."<h4>"."If you are looking for flowsheeting project ideas, ".l("click here","https://dwsim.fossee.in/flowsheeting-ideas",array('attributes' => array('class' => array('flash_content'), 'target' => '_blank')))."</h4>"."<hr>";
 		$preference_rows = array();
 		$i = 1;
