@@ -121,7 +121,7 @@ function generate_pdf()
 	$pngAbsoluteFilePath = $tempDir . $fileName;
 	$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
 	QRcode::png($codeContents, $pngAbsoluteFilePath);
-	$pdf->SetTextColor(0, 0, 0);
+	/*$pdf->SetTextColor(0, 0, 0);
 	$pdf->Ln(30);
 	$pdf->SetX(198);
 	$pdf->SetFont('', '');
@@ -134,11 +134,16 @@ function generate_pdf()
 	$pdf->SetFont('Arial', '', 10);
 	$pdf->Cell(240, 8, 'Principal Investigator - FOSSEE', 0, 1, 'R');
 	$pdf->Ln(-2);
-	$pdf->Cell(240, 8, ' Dept. of Chemical Engineering, IIT Bombay.', 0, 1, 'R');
+	$pdf->Cell(240, 8, ' Dept. of Chemical Engineering, IIT Bombay.', 0, 1, 'R');*/
+	$pdf->Ln(30);
+	$pdf->SetX(29);
+	$pdf->SetY(-58);
+	$sign = $path . "/pdf/images/sign.png";
+	$pdf->Image($sign, $pdf->GetX() + 170, $pdf->GetY() - 15, 80, 0);
 	$pdf->SetX(29);
 	$pdf->SetFont('Arial', 'B', 10);
 	$pdf->SetY(-58);
-	$pdf->Ln(14);
+	$pdf->Ln(8);
 	$pdf->SetX(10);
 	$pdf->Cell(0, 0, $UniqueString, 0, 0, 'C');
 	$pdf->SetX(29);
@@ -146,15 +151,15 @@ function generate_pdf()
 	$image4 = $path . "/pdf/images/bottom_line.png";
 	$pdf->SetY(-50);
 	$pdf->SetX(80);
-	//$image3 = $path . "/pdf/images/iitb.png";
+	$image3 = $path . "/pdf/images/mhrd.png";
 	$image2 = $path . "/pdf/images/fossee.png"; 
 	
 	$pdf->Ln(8);
 	$pdf->Image($image2, $pdf->GetX() +15, $pdf->GetY() + 7, 40, 0);
 	$pdf->Ln(6);
-	$pdf->Image($pngAbsoluteFilePath, $pdf->GetX() + 102, $pdf->GetY() - 5, 30, 0);
-	//$pdf->Image($image3, $pdf->GetX() + 200, $pdf->GetY() -3, 15, 0);
-	$pdf->Image($image4, $pdf->GetX() +50, $pdf->GetY() + 28, 150, 0);
+	$pdf->Image($pngAbsoluteFilePath, $pdf->GetX() + 102, $pdf->GetY() - 10, 30, 0);
+	$pdf->Image($image3, $pdf->GetX() + 200, $pdf->GetY() -3, 40, 0);
+	$pdf->Image($image4, $pdf->GetX() +50, $pdf->GetY() + 22, 120, 0);
 	$pdf->SetFont('Arial', 'I', 8);
 	$pdf->SetTextColor(0, 0, 0);
 	$filename = str_replace(' ', '-', $data3->contributor_name) . '-DWSIM-Flowsheet-Certificate.pdf';
