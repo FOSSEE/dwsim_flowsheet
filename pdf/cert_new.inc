@@ -165,12 +165,21 @@ function generate_pdf()
 	$filename = str_replace(' ', '-', $data3->contributor_name) . '-DWSIM-Flowsheet-Certificate.pdf';
 	$file     = $path . '/pdf/temp_certificate/' . $proposal_id . '_' . $filename;
 	$pdf->Output($file, 'F');
+	ob_clean();
+	header("Pragma: public");
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Cache-Control: public");
 	header("Content-Type: application/octet-stream");
 	header("Content-Disposition: attachment; filename=" . $filename);
 	header("Content-Type: application/octet-stream");
 	header("Content-Type: application/download");
 	header("Content-Description: File Transfer");
 	header("Content-Length: " . filesize($file));
+	header("Content-Transfer-Encoding: binary");
+	header("Expires: 0");
+	header("Pragma: no-cache");
+	ob_clean();
 	flush();
 	$fp = fopen($file, "r");
 	while (!feof($fp)) {

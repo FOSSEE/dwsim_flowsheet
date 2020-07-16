@@ -24,7 +24,7 @@ function dwsim_flowsheet_download_abstract() {
 	$query = db_select('dwsim_flowsheet_submitted_abstracts_file');
 	$query->fields('dwsim_flowsheet_submitted_abstracts_file');
 	$query->condition('proposal_id', $proposal_id);
-	$query->condition('filetype', A);
+	$query->condition('filetype', 'A');
 	$result = $query->execute();
 	$flowsheet_project_files = $result->fetchObject();
 	//var_dump($custom_model_project_files);die;
@@ -43,7 +43,7 @@ function dwsim_flowsheet_download_abstract() {
 	header("Content-Description: File Transfer");
 	header("Content-Type: application/pdf");
 	header('Content-disposition: attachment; filename="' . $samplecodename . '"');
-	header("Content-Length: " . filesize($root_path . $directory_name . $samplecodename));
+	header("Content-Length: " . filesize($root_path . $directory_name . '/' . $samplecodename));
 	header("Content-Transfer-Encoding: binary");
 	header("Expires: 0");
 	header("Pragma: no-cache");
