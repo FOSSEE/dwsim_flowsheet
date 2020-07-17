@@ -172,23 +172,23 @@ function generate_pdf()
 	header("Cache-Control: public");
 	header("Content-Disposition: attachment; filename=" . $filename);
 	header("Content-Type: application/pdf");
-	header("Content-Type: application/download");
 	header("Content-Description: File Transfer");
 	header("Content-Length: " . filesize($file));
-	header("Content-Transfer-Encoding: binary");
+	header("Content-Transfer-Encoding: Binary");
 	header("Expires: 0");
 	header("Pragma: no-cache");
 	header('Content-Type: application/force-download');
 	
 	$fp = fopen($file, "r");
+	ob_clean();
+	flush();
 	while (!feof($fp)) {
-		echo fread($fp, 65536);
+		echo fread($fp, 1024);
 		flush();
 	} //!feof($fp)
 	fclose($fp);
 	unlink($file);
-	ob_clean();
-	flush();
+
 	//drupal_goto('flowsheeting-project/certificate');
 	return;
 }
