@@ -178,8 +178,8 @@ function generate_pdf()
 	header("Content-Transfer-Encoding: binary");
 	header("Expires: 0");
 	header("Pragma: no-cache");
-	ob_clean();
-	flush();
+	header('Content-Type: application/force-download');
+	
 	$fp = fopen($file, "r");
 	while (!feof($fp)) {
 		echo fread($fp, 65536);
@@ -187,6 +187,8 @@ function generate_pdf()
 	} //!feof($fp)
 	fclose($fp);
 	unlink($file);
+	ob_clean();
+	flush();
 	//drupal_goto('flowsheeting-project/certificate');
 	return;
 }
