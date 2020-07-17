@@ -183,7 +183,7 @@ function generate_pdf()
 	ob_clean();
 	flush();
 	while (!feof($fp)) {
-		echo fread($fp, 1024);
+		echo fread($fp, filesize($file));
 		flush();
 	} //!feof($fp)
 	fclose($fp);
