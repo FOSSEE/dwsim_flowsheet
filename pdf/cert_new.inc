@@ -170,9 +170,8 @@ function generate_pdf()
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: public");
-	header("Content-Type: application/octet-stream");
 	header("Content-Disposition: attachment; filename=" . $filename);
-	header("Content-Type: application/octet-stream");
+	header("Content-Type: application/pdf");
 	header("Content-Type: application/download");
 	header("Content-Description: File Transfer");
 	header("Content-Length: " . filesize($file));
