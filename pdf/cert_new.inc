@@ -170,21 +170,20 @@ function generate_pdf()
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: public");
-	header("Content-Disposition: attachment; filename=" . $filename);
-	header("Content-Type: application/pdf");
 	header("Content-Description: File Transfer");
+	header("Content-Type: application/pdf");
+	header("Content-Disposition: attachment; filename=" . $filename);
 	header("Content-Length: " . filesize($file));
-	header("Content-Transfer-Encoding: Binary");
+	header("Content-Transfer-Encoding: binary");
 	header("Expires: 0");
 	header("Pragma: no-cache");
-	header('Content-Type: application/force-download');
-	
-	$fp = fopen($file, "r");
-	ob_clean();
 	flush();
+	$fp = fopen($file, "r");
 	while (!feof($fp)) {
-		echo fread($fp, filesize($file));
+		echo fread($fp, 65536);
 		flush();
+		ob_end_flush();
+		ob_clean();
 	} //!feof($fp)
 	fclose($fp);
 	unlink($file);
