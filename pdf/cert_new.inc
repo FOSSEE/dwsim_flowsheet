@@ -43,7 +43,7 @@ function generate_pdf()
 	} //!$pdf
 	$pdf->AddPage();
 	$image_bg = $mpath . "/pdf/images/bg_cert.png";
-	$pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
+	$pdf->Image($image_bg, 0, 0, $pdf->GetPageWidth(), $pdf->GetPageHeight());
 	$pdf->SetMargins(18, 1, 18);
 	$path   = drupal_get_path('module', 'dwsim_flowsheet');
 	$pdf->Ln(15);
