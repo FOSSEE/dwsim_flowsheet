@@ -43,7 +43,7 @@ function generate_pdf()
 	} //!$pdf
 	$pdf->AddPage();
 	$image_bg = $mpath . "/pdf/images/bg_cert.png";
-	$pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
+	$pdf->Image($image_bg, 0, 0, $pdf->GetPageWidth(), $pdf->GetPageHeight());
 	$pdf->SetMargins(18, 1, 18);
 	$path   = drupal_get_path('module', 'dwsim_flowsheet');
 	$pdf->Ln(15);
@@ -170,22 +170,21 @@ function generate_pdf()
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: public");
-	header("Content-Disposition: attachment; filename=" . $filename);
-	header("Content-Type: application/pdf");
 	header("Content-Description: File Transfer");
+	header("Content-Type: application/pdf");
+	header("Content-Disposition: attachment; filename=" . $filename);
 	header("Content-Length: " . filesize($file));
-	header("Content-Transfer-Encoding: Binary");
+	header("Content-Transfer-Encoding: binary");
 	header("Expires: 0");
 	header("Pragma: no-cache");
-	header('Content-Type: application/force-download');
-	
-	$fp = fopen($file, "r");
-	ob_clean();
 	flush();
+	$fp = fopen($file, "r");
 	while (!feof($fp)) {
 		echo fread($fp, filesize($file));
 		flush();
 	} //!feof($fp)
+	ob_end_flush();
+	ob_clean();
 	fclose($fp);
 	unlink($file);
 
