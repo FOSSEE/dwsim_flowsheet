@@ -180,11 +180,11 @@ function generate_pdf()
 	flush();
 	$fp = fopen($file, "r");
 	while (!feof($fp)) {
-		echo fread($fp, 65536);
+		echo fread($fp, filesize($file));
 		flush();
-		ob_end_flush();
-		ob_clean();
 	} //!feof($fp)
+	ob_end_flush();
+	ob_clean();
 	fclose($fp);
 	unlink($file);
 
