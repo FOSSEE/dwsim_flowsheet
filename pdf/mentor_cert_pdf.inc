@@ -35,7 +35,7 @@ function generate_pdf()
 	} //!$pdf
 	$pdf->AddPage();
 	$image_bg = $mpath . "/pdf/images/bg_cert_mentor.png";
-	$pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
+	$pdf->Image($image_bg, 0, 0, $pdf->GetPageWidth(), $pdf->GetPageHeight());
 	$pdf->SetMargins(18, 1, 18);
 	$path   = drupal_get_path('module', 'dwsim_flowsheet');
 	$pdf->Ln(15);
@@ -46,7 +46,7 @@ function generate_pdf()
 	$pdf->Ln(-6);
 	$pdf->SetFont('Times', 'BI', 16);
 	$pdf->SetTextColor(13, 5, 130);
-	$pdf->Cell(240, 8, $data3->project_guide_name, '0', '1', 'C');
+	$pdf->Cell(240, 8, utf8_decode($data3->project_guide_name), '0', '1', 'C');
 	$pdf->Ln(0);
 	$pdf->SetFont('Times', 'I', 12);
 	if (strtolower($data3->branch) != "others") {
@@ -55,20 +55,20 @@ function generate_pdf()
 		$pdf->Cell(240, 8, 'from', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetFont('Times','BI',16);
-		$pdf->Cell(240, 8, $data3->project_guide_university, '0','1','C');
+		$pdf->Cell(240, 8, utf8_decode($data3->project_guide_university), '0','1','C');
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', 'I', 12);
 		$pdf->Cell(240, 8, 'who has mentored', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', 'BI', 16);
-		$pdf->Cell(240, 8, $data3->contributor_name, '0', '1', 'C');
+		$pdf->Cell(240, 8, utf8_decode($data3->contributor_name), '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', 'I', 12);
 		$pdf->Cell(240, 8, 'for successfully completing internship under the DWSIM Flowsheeting project. The intern(s) has created a flowsheet titled', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', 'BI', 16);
 		$pdf->SetTextColor(13, 5, 130);
-		$pdf->Cell(240, 8, $data3->project_title, '0', '1', 'C');
+		$pdf->Cell(240, 8, utf8_decode($data3->project_title), '0', '1', 'C');
 		$pdf->SetTextColor(13, 5, 130);
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', 'I', 12);

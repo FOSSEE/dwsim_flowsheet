@@ -56,19 +56,19 @@ function generate_pdf()
 	$pdf->Ln(-6);
 	$pdf->SetFont('Arial', 'BI', 25);
 	$pdf->SetTextColor(139, 69, 19);
-	$pdf->Cell(240, 8, $data3->contributor_name, '0', '1', 'C');
+	$pdf->Cell(240, 8, utf8_decode($data3->contributor_name), '0', '1', 'C');
 	$pdf->Ln(0);
 	$pdf->SetFont('Arial', 'I', 12);
 	if (strtolower($data3->branch) != "others") {
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->MultiCell(240, 8, 'from ' . $data3->university . ' has successfully', '0','C');
+		$pdf->MultiCell(240, 8, 'from ' . utf8_decode($data3->university) . ' has successfully', '0','C');
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, 'completed Internship under DWSIM Flowsheeting Project.', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, 'He/she has created a flowsheet titled ', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetTextColor(139, 69, 19);
-		$pdf->Cell(240, 8, $data3->project_title, '0', '1', 'C');
+		$pdf->Cell(240, 8, utf8_decode($data3->project_title), '0', '1', 'C');
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->Ln(0);
 		$pdf->Cell(240, 8, ' using DWSIM .The work done is available at', '0', '1', 'C');
