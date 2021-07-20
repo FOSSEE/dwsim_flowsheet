@@ -80,7 +80,7 @@ function dwsim_flowsheet_menu()
 		'weight' => 4,
 		'file' => 'tabs.inc'
 	);
-	$items['flowsheeting-project/manage-proposal/completed'] = array(
+	/*$items['flowsheeting-project/manage-proposal/completed'] = array(
 		'title' => 'Completed Proposals',
 		'description' => 'Completed Proposals',
 		'page callback' => 'drupal_get_form',
@@ -92,7 +92,7 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 5,
 		'file' => 'tabs.inc'
-	);
+	);*/
 	$items['flowsheeting-project/manage-proposal/approve'] = array(
 		'title' => 'Approve Proposal',
 		'description' => 'Approve Proposal',
