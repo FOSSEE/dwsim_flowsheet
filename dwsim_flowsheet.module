@@ -56,7 +56,7 @@ function dwsim_flowsheet_menu()
 		'weight' => 2,
 		'file' => 'manage_proposal.inc'
 	);
-	$items['flowsheeting-project/manage-proposal/approved'] = array(
+	$items['flowsheeting-project/manage-proposal/approved_proposals'] = array(
 		'title' => 'Approved Proposals',
 		'description' => 'Approved Proposals',
 		'page callback' => 'dwsim_flowsheet_progress_tab',
@@ -66,9 +66,9 @@ function dwsim_flowsheet_menu()
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 3,
-		'file' => 'tabs.inc'
+		'file' => 'additional_tabs.inc'
 	);
-	$items['flowsheeting-project/manage-proposal/uploaded'] = array(
+	$items['flowsheeting-project/manage-proposal/uploaded_proposals'] = array(
 		'title' => 'Uploaded Proposals',
 		'description' => 'Uploaded Proposals',
 		'page callback' => 'dwsim_flowsheet_uploaded_tab',
@@ -78,9 +78,9 @@ function dwsim_flowsheet_menu()
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 4,
-		'file' => 'tabs.inc'
+		'file' => 'additional_tabs.inc'
 	);
-	/*$items['flowsheeting-project/manage-proposal/completed'] = array(
+	/*$items['flowsheeting-project/manage-proposal/completed_proposals'] = array(
 		'title' => 'Completed Proposals',
 		'description' => 'Completed Proposals',
 		'page callback' => 'drupal_get_form',
@@ -91,7 +91,7 @@ function dwsim_flowsheet_menu()
 		),
 		'type' => MENU_LOCAL_TASK,
 		'weight' => 5,
-		'file' => 'tabs.inc'
+		'file' => 'additional_tabs.inc'
 	);*/
 	$items['flowsheeting-project/manage-proposal/approve'] = array(
 		'title' => 'Approve Proposal',
