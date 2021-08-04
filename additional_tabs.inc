@@ -20,7 +20,7 @@ function dwsim_flowsheet_progress_tab()
 		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$approval_date = date("Y", $row->approval_date);
+			$approval_date = date("d-M-Y", $row->approval_date);
 			$preference_rows[] = array(
 				$i,
 				$row->project_title,
@@ -72,7 +72,7 @@ function dwsim_flowsheet_uploaded_tab()
 		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$approval_date = date("Y", $row->approval_date);
+			$approval_date = date("d-M-Y", $row->approval_date);
 			$preference_rows[] = array(
 				$i,
 				$row->project_title,
@@ -103,38 +103,44 @@ function dwsim_flowsheet_uploaded_tab()
 /////////////////////////////////////////////////////////////////////
 
 
-function dwsim_flowsheet_completed_tab_form($form, $form_state){
-	/*$options_first = _list_of_flowsheet_project();
-	$selected = isset($form_state['values']['howmany_select']) ? $form_state['values']['howmany_select'] : key($options_first);*/
+function dwsim_flowsheet_completed_tab_form($form, $form_state)
+{
+
 	$form['howmany_select'] = array(
     '#title' => t('Sorting projects according to year:'),
     '#type' => 'select',
-    '#options' => array(2017 => 2017, 2018 => 2018, 2019 => 2019, 2020 => 2020, 2021 => 2021),
-    //'#default_value' => $selected,
+    '#options' => array(
+    	'Please select...' => 'Please select...',
+    	'2017' => '2017',
+    	'2018' => '2018', 
+    	'2019' => '2019', 
+    	'2020' => '2020', 
+    	'2021' => '2021'),
+    //'#default_value' => 'Please select...',
     '#ajax' => array(
       'callback' => 'ajax_example_autocheckboxes_callback',
-      //'wrapper' => 'checkboxes-div',
-      /*'method' => 'replace',
-      'effect' => 'fade',*/
     ),
-    '#suffix' => '<div id="ajax_selected_flowsheet"></div>'
+    '#suffix' => '<div id="ajax-selected-flowsheet"></div>'
 
 	  );
 	return $form;
 }
 
+
 function ajax_example_autocheckboxes_callback($form, $form_state)
 {
 	$commands = array();
 	$flowsheet_project_default_value = $form_state['values']['howmany_select'];
-	//var_dump($flowsheet_project_default_value);die;
 	if ($flowsheet_project_default_value != 0)
 	{
-		$commands[] = ajax_command_replace('#ajax_selected_flowsheet', _flowsheet_details($flowsheet_project_default_value));
-	} //$flowsheet_project_default_value != 0
+		$form['howmany_select']['#options'] =  array('Please select...' => 'Please select...');
+		$commands[] = ajax_command_html('#ajax-selected-flowsheet', _flowsheet_details($flowsheet_project_default_value));
+		$commands[] = ajax_command_replace('#ajax_selected_flowsheet_action', drupal_render($form['howmany_select']));
+		
+	} 
 	else
 	{
-		$commands[] = ajax_command_replace('#ajax_selected_flowsheet', '');
+		$form['howmany_select']['#options'] =  array('Please select...' => 'Please select...');
 		$commands[] = ajax_command_data('#ajax_selected_flowsheet', 'form_state_value_select', $form_state['values']['howmany_select']);
 	}
 	return array(
@@ -144,18 +150,19 @@ function ajax_example_autocheckboxes_callback($form, $form_state)
 }
 
 
-function _flowsheet_details($flowsheet_proposal_id){
-	//var_dump($flowsheet_proposal_id);die;
+function _flowsheet_details($flowsheet_proposal_id)
+{
 	$output = "";
-	$result = db_query("SELECT * from {dwsim_flowsheet_proposal} WHERE approval_status = 3 and from_unixtime(actual_completion_date, '%Y') = :year", array(
-							':year' => $flowsheet_proposal_id));
-	//$sql = $result->execute();
-	//var_dump($result);die;
+	$result = db_query("SELECT * from {dwsim_flowsheet_proposal} WHERE approval_status = 3 and from_unixtime(actual_completion_date, '%Y') = :year",
+		array(
+							':year' => $flowsheet_proposal_id)
+						);
+	
 	if ($result->rowCount() == 0)
 	{
 		$output .= "Work has been completed for the following flow sheets.";
 
-	} //$result->rowCount() == 0
+	} 
 	else
 	{
 		$output .= "Work has been completed for the following flow sheets";
@@ -172,7 +179,7 @@ function _flowsheet_details($flowsheet_proposal_id){
 				$completion_date
 			);
 			$i++;
-		} //$row = $result->fetchObject()
+		} 
 		$preference_header = array(
 			'No',
 			'Flowsheet Project',
@@ -186,24 +193,4 @@ function _flowsheet_details($flowsheet_proposal_id){
 		));
 	}
 	return $output;
-}
-
-function _list_of_flowsheet_project()
-{
-	$options_first = array(
-		'0' => 'Please select...'
-	);
-	if(isset($form_state['values']['howmany_select'])) {
-    		$rows = db_select('dwsim_flowsheet_proposal', 'actual_completion_date')
-     		->fields('actual_completion_date')
-      		->condition('approval_status', $form_state['values']['howmany_select'])
-      		->execute()
-      		->fetchAll();
-
-    		$header = array();
-    		$form['results']['#markup'] = theme('table', array('header' => $header, 'rows' => $rows));
-			  }
-			  else {
-			    $form['results']['#markup'] = '<p>The results will appear here when you change the dropdown option.</p>';
-			  }
 }
