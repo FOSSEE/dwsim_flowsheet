@@ -4,11 +4,6 @@
 function dwsim_flowsheet_approved_tab()
 {
 	$page_content = "";
-	/*$query = db_select('dwsim_flowsheet_proposal');
-	$query->fields('dwsim_flowsheet_proposal');
-	$query->condition('approval_status', 1);
-	$query->orderBy('approval_date', 'DESC');
-	$result = $query->execute();*/
 	$result = db_query("SELECT * from dwsim_flowsheet_proposal where id not in (select proposal_id from dwsim_flowsheet_submitted_abstracts) AND approval_status = 1 order by approval_date desc");
 	if ($result->rowCount() == 0)
 	{
@@ -30,7 +25,7 @@ function dwsim_flowsheet_approved_tab()
 				$approval_date
 			);
 			$i++;
-		} //$row = $result->fetchObject()
+		} 
 		$preference_header = array(
 			'No',
 			'Flowsheet Project',
@@ -56,18 +51,12 @@ function dwsim_flowsheet_approved_tab()
 function dwsim_flowsheet_uploaded_tab()
 {
 	$page_content = "";
+	$result = db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.id, dfp.university, dfa.abstract_upload_date, dfa.abstract_approval_status from dwsim_flowsheet_proposal as dfp JOIN dwsim_flowsheet_submitted_abstracts as dfa on dfa.proposal_id = dfp.id where dfp.id in (select proposal_id from dwsim_flowsheet_submitted_abstracts) AND approval_status = 1");
 
-	/*$result =  db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.university, dfp.approval_date , dfsa.abstract_upload_date FROM dwsim_flowsheet_proposal dfp LEFT JOIN dwsim_flowsheet_submitted_abstracts dfsa 
-			   ON dfp.id= dfsa.proposal_id WHERE dfp.approval_status = 1 ORDER BY dfsa.abstract_upload_date DESC");*/
-
-		$result = db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.id, dfp.university, dfa.abstract_upload_date, dfa.abstract_approval_status from dwsim_flowsheet_proposal as dfp JOIN dwsim_flowsheet_submitted_abstracts as dfa on dfa.proposal_id = dfp.id where dfp.id in (select proposal_id from dwsim_flowsheet_submitted_abstracts) AND approval_status = 1");
-	//var_dump($result);die;
-
-	//$result = $query->execute();
 	if ($result->rowCount() == 0)
 	{
 		$page_content .= "Uploaded Proposals under Flowsheeting Project<hr>";
-	} //$result->rowCount() == 0
+	}
 	else
 	{
 		$page_content .= "Uploaded Proposals under Flowsheeting Project: " . $result->rowCount() . "<hr>";
@@ -84,7 +73,7 @@ function dwsim_flowsheet_uploaded_tab()
 				$abstract_upload_date
 			);
 			$i++;
-		} //$row = $result->fetchObject()
+		}
 		$preference_header = array(
 			'No',
 			'Flowsheet Project',
