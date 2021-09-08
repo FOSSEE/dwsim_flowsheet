@@ -59,7 +59,7 @@ function dwsim_flowsheet_menu()
 	$items['flowsheeting-project/manage-proposal/approved_proposals'] = array(
 		'title' => 'Approved Proposals',
 		'description' => 'Approved Proposals',
-		'page callback' => 'dwsim_flowsheet_progress_tab',
+		'page callback' => 'dwsim_flowsheet_approved_tab',
 		'access callback' => 'user_access',
 		'access arguments' => array(
 			'dwsim flowsheet manage proposal'

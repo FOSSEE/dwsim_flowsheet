@@ -1,21 +1,21 @@
 <?php
 
-function dwsim_flowsheet_progress_tab()
+function dwsim_flowsheet_approved_tab()
 {
 	$page_content = "";
-	$query = db_select('dwsim_flowsheet_proposal');
+	/*$query = db_select('dwsim_flowsheet_proposal');
 	$query->fields('dwsim_flowsheet_proposal');
 	$query->condition('approval_status', 1);
-	$query->condition('is_completed', 0);
 	$query->orderBy('approval_date', 'DESC');
-	$result = $query->execute();
+	$result = $query->execute();*/
+	$result = db_query("SELECT * from dwsim_flowsheet_proposal where id not in (select proposal_id from dwsim_flowsheet_submitted_abstracts) AND approval_status = 1 order by approval_date desc");
 	if ($result->rowCount() == 0)
 	{
 		$page_content .= "Approved Proposals under Flowsheeting Project<hr>";
 	} //$result->rowCount() == 0
 	else
 	{
-		$page_content .= "Approved Proposals under Flowsheeting Project<hr>";;
+		$page_content .= "Approved Proposals under Flowsheeting Project: " . $result->rowCount() . "<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
@@ -35,7 +35,7 @@ function dwsim_flowsheet_progress_tab()
 			'Flowsheet Project',
 			'Contributor Name',
 			'University / Institute',
-			'Year'
+			'Date of Approval'
 		);
 		$page_content .= theme('table', array(
 			'header' => $preference_header,
@@ -54,10 +54,11 @@ function dwsim_flowsheet_progress_tab()
 function dwsim_flowsheet_uploaded_tab()
 {
 	$page_content = "";
-	$result =  db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.university, dfp.approval_date
-			   FROM dwsim_flowsheet_proposal dfp LEFT JOIN dwsim_flowsheet_submitted_abstracts dfsa 
-			   ON dfp.id= dfsa.proposal_id WHERE approval_status = 1 
-			   AND user_defined_compound_filepath = 'NULL' ORDER BY dfsa.abstract_upload_date DESC");
+
+	/*$result =  db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.university, dfp.approval_date , dfsa.abstract_upload_date FROM dwsim_flowsheet_proposal dfp LEFT JOIN dwsim_flowsheet_submitted_abstracts dfsa 
+			   ON dfp.id= dfsa.proposal_id WHERE dfp.approval_status = 1 ORDER BY dfsa.abstract_upload_date DESC");*/
+
+		$result = db_query("SELECT dfp.project_title, dfp.contributor_name, dfp.id, dfp.university, dfa.abstract_upload_date, dfa.abstract_approval_status from dwsim_flowsheet_proposal as dfp JOIN dwsim_flowsheet_submitted_abstracts as dfa on dfa.proposal_id = dfp.id where dfp.id in (select proposal_id from dwsim_flowsheet_submitted_abstracts) AND approval_status = 1");
 	//var_dump($result);die;
 
 	//$result = $query->execute();
@@ -67,18 +68,18 @@ function dwsim_flowsheet_uploaded_tab()
 	} //$result->rowCount() == 0
 	else
 	{
-		$page_content .= "Uploaded Proposals under Flowsheeting Project<hr>";;
+		$page_content .= "Uploaded Proposals under Flowsheeting Project: " . $result->rowCount() . "<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$approval_date = date("d-M-Y", $row->approval_date);
+			$abstract_upload_date = date("d-M-Y", $row->abstract_upload_date);
 			$preference_rows[] = array(
 				$i,
 				$row->project_title,
 				$row->contributor_name,
 				$row->university,
-				$approval_date
+				$abstract_upload_date
 			);
 			$i++;
 		} //$row = $result->fetchObject()
@@ -87,7 +88,7 @@ function dwsim_flowsheet_uploaded_tab()
 			'Flowsheet Project',
 			'Contributor Name',
 			'University / Institute',
-			'Year'
+			'Date of submission'
 		);
 		$page_content .= theme('table', array(
 			'header' => $preference_header,
@@ -156,7 +157,7 @@ function _flowsheet_details($flowsheet_proposal_id)
 	$result = db_query("SELECT * from {dwsim_flowsheet_proposal} WHERE approval_status = 3 and from_unixtime(actual_completion_date, '%Y') = :year",
 		array(
 							':year' => $flowsheet_proposal_id)
-						);
+				 );
 	
 	if ($result->rowCount() == 0)
 	{
@@ -165,12 +166,12 @@ function _flowsheet_details($flowsheet_proposal_id)
 	} 
 	else
 	{
-		$output .= "Work has been completed for the following flow sheets";
+		$output .= "Work has been completed for the following flow sheets: " . $result->rowCount() . "<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
 		{
-			$completion_date = date("Y", $row->actual_completion_date);
+			$completion_date = date("d-M-Y", $row->actual_completion_date);
 			$preference_rows[] = array(
 				$i,
 				l($row->project_title, "flowsheeting-project/dwsim-flowsheet-run/" . $row->id, array('attributes' => array('title' => 'This is a zip file containing a pdf (abstract) and a dwxml/dwxmz file which is the DWSIM flow sheet which is to be viewed by right clicking on the file and opening with DWSIM.'))),
@@ -185,7 +186,7 @@ function _flowsheet_details($flowsheet_proposal_id)
 			'Flowsheet Project',
 			'Contributor Name',
 			'University / Institute',
-			'Year of Completion'
+			'Date of Completion'
 		);
 		$output .= theme('table', array(
 			'header' => $preference_header,
