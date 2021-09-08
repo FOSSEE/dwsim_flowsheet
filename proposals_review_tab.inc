@@ -1,6 +1,6 @@
 <?php
 
-//Proposal tab for approved proposals
+//Proposal tab for reviewing approved proposals
 function dwsim_flowsheet_approved_tab()
 {
 	$page_content = "";
@@ -46,7 +46,7 @@ function dwsim_flowsheet_approved_tab()
 //////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
-//Proposal tab for Uploaded proposals
+//Proposal tab for reviewing Code submission of the uploaded proposals  
 
 function dwsim_flowsheet_uploaded_tab()
 {
@@ -94,7 +94,7 @@ function dwsim_flowsheet_uploaded_tab()
 //////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
-//Proposal tab for Completed proposals
+//Proposal tab for reviewing Completed proposals
 
 function dwsim_flowsheet_completed_tab_form($form, $form_state)
 {
