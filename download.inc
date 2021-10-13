@@ -303,3 +303,54 @@ function dwsim_flowsheet_download_lab()
 		drupal_goto('lab-migration/lab-migration-run');
 	}
 }
+
+function dwsim_flowsheet_download_proposals()
+{
+	$output = "";
+	//$output = "<p>Click <a href='download-proposals'>here</a> to download the Proposals of the participants";
+
+	$root_path = dwsim_flowsheet_path();
+	$result = db_query("SELECT e.contributor_name as Contirbutor_Name, u.mail as Email_ID, e.project_title as 					Title, e.contact_no as Contact, from_unixtime(actual_completion_date,'%Y') as Year FROM 					dwsim_flowsheet_proposal as e JOIN users as u ON e.uid = u.uid WHERE e.approval_status=3                ORDER BY actual_completion_date DESC");
+
+	 //$all_proposals_q = $result->execute();
+	 $participants_proposal_id_file = $root_path . "participants-proposals.csv";
+	 $fp = fopen($participants_proposal_id_file, "w");
+            /* making the first row */
+            $items = array(
+                'Contirbutor_Name',
+                 'Email_ID',
+                 'Title',
+                 'Contact', 
+                 'Year'
+                 );
+            fputcsv($fp, $items);
+            while($row = $result->fetchObject()) {
+                $items = array(
+                    '$row->contributor_name',
+                    '$row->mail',
+                    '$row->project_title',
+                    '$row->contact_no',
+                    '$row->actual_completion_date'
+                );
+                fputcsv($fp, $items);
+            }
+            fclose($fp);
+            if($participants_proposal_id_file){
+        		ob_clean();
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header('Content-Type: application/csv');
+            header('Content-disposition: attachment; filename=participants-proposals.csv');
+            header('Content-Length:' . filesize($participants_proposal_id_file));
+            header("Content-Transfer-Encoding: binary");
+            header('Expires: 0');
+            header('Pragma: no-cache');
+            readfile($participants_proposal_id_file);
+            /*ob_end_flush();
+            ob_clean();
+            flush();*/
+        }
+}
