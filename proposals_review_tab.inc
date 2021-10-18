@@ -100,8 +100,9 @@ function dwsim_flowsheet_completed_tab_form($form, $form_state)
 {
 	$options_first = _flowsheet_details_year_wise();
 	$selected = isset($form_state['values']['howmany_select']) ? $form_state['values']['howmany_select'] : key($options_first);
+	$form = array();
 	$form['howmany_select'] = array(
-    '#title' => t('Sorting projects according to year:'),
+	'#title' => t('Sorting projects according to year:'),
     '#type' => 'select',
     '#options' => _flowsheet_details_year_wise(),
     /*'#options' => array(
@@ -144,12 +145,13 @@ function ajax_example_autocheckboxes_callback($form, $form_state)
 	);
 }
 
+
 function _flowsheet_details_year_wise()
   {
     $flowsheet_years = array(
 		'0' => 'Please select...'
 	);
-    $result = db_query("SELECT from_unixtime(actual_completion_date, '%Y ') from dwsim_flowsheet_proposal WHERE approval_status = 3");
+    $result = db_query("SELECT from_unixtime(actual_completion_date, '%Y ') as Year from dwsim_flowsheet_proposal WHERE approval_status = 3");
     
     /*$query = db_select('dwsim_flowsheet_proposal');
     $query->fields('dwsim_flowsheet_proposal');
@@ -159,7 +161,7 @@ function _flowsheet_details_year_wise()
     //$year_wise_list = $query->execute();
     while ($year_wise_list_data = $result->fetchObject())
       {
-        $flowsheet_years[$year_wise_list_data->id] = $year_wise_list_data->actual_completion_date;
+        $flowsheet_years[$year_wise_list_data->Year] = $year_wise_list_data->Year;
       }
     return $flowsheet_years;
   }
@@ -168,22 +170,20 @@ function _flowsheet_details_year_wise()
 function _flowsheet_details($flowsheet_proposal_id)
 {
 	$output = "";
-	$output = "Click <a href='/flowsheeting-project/download-proposals'>here</a> to download the Proposals of the participants <br>";
+	//$output = "Click <a href='/flowsheeting-project/download-proposals'>here</a> to download the Proposals of the participants <br>";
 	$result = db_query("SELECT * from {dwsim_flowsheet_proposal} WHERE approval_status = 3 and from_unixtime(actual_completion_date, '%Y') = :year",
 		array(
 							':year' => $flowsheet_proposal_id)
 				 );
 	
 	if ($result->rowCount() == 0)
-	{	
-		// $output = "Click <a href='/flowsheeting-project/download-proposals/'>here</a> to download the Proposals of the participants";
+	{
 		$output .= "Work has been completed for the following flow sheets.";
 
 	} 
 	else
 	{
-		
-		$output .= "Work has been completed for the following flow sheets: " . $result->rowCount() ;
+		$output .= "Work has been completed for the following flow sheets: " . $result->rowCount() . "<hr>";
 		$preference_rows = array();
 		$i = 1;
 		while ($row = $result->fetchObject())
@@ -211,18 +211,4 @@ function _flowsheet_details($flowsheet_proposal_id)
 		));
 	}
 	return $output;
-}
-
-
-///////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-
-//Proposal tab for Downloading proposals
-
-function dwsim_flowsheet_download_proposals_tab()
-{
-		$output= "";
-		
-
 }

@@ -370,7 +370,7 @@ function dwsim_flowsheet_menu()
 		'description' => 'Download Proposals',
 		'page callback' => 'dwsim_flowsheet_download_proposals',
 		'access arguments' => array(
-			'dwsim flowsheet download code'
+			'dwsim flowsheet download proposals'
 		),
 		'type' => MENU_CALLBACK,
 		'file' => 'download.inc'
@@ -560,6 +560,10 @@ function dwsim_flowsheet_permission()
 		),
 		'dwsim flowsheet download abstract' => array(
 			'title' => t('dwsim flowsheet download code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet download proposals' => array(
+			'title' => t('dwsim flowsheet download proposals'),
 			'restrict access' => TRUE
 		),
 		'administer dwsim flowsheet' => array(
