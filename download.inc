@@ -307,27 +307,43 @@ function dwsim_flowsheet_download_lab()
 function dwsim_flowsheet_download_proposals()
 {
 	$root_path = dwsim_flowsheet_path();
-	$result = db_query("SELECT e.contributor_name as Contirbutor_Name, u.mail as Email_ID, e.project_title as Title, e.contact_no as Contact, from_unixtime(actual_completion_date,'%Y') as Year FROM dwsim_flowsheet_proposal as e JOIN users as u ON e.uid = u.uid WHERE e.approval_status=3 ORDER BY actual_completion_date DESC");
+
+	$result = db_query("SELECT e.contributor_name as Contirbutor_Name, u.mail as Email_ID, e.project_title as Title, e.contact_no as Contact, e.university as University, from_unixtime(creation_date,'%d-%m-%Y') as creation, from_unixtime(approval_date,'%d-%m-%Y') as approval, from_unixtime(actual_completion_date,'%d-%m-%Y') as Year, e.approval_status as Status FROM dwsim_flowsheet_proposal as e JOIN users as u ON e.uid = u.uid WHERE e.approval_status=3 ORDER BY actual_completion_date DESC");
+
 //var_dump($result->rowCount());die();
 	 //$all_proposals_q = $result->execute();
 	 $participants_proposal_id_file = $root_path . "participants-proposals.csv";
 	 $fp = fopen($participants_proposal_id_file, "w");
             /* making the first row */
             $items = array(
-                'Contirbutor_Name',
-                 'Email_ID',
-                 'Title',
+                'Contirbutor Name',
+                 'Email ID',
+                 'Flowsheet Title',
+                 'University',
                  'Contact', 
-                 'Year'
+                 'Date of Creation',
+                 'Date of Approval',
+                 'Date of Completion',
+                 'Status of the proposal'
                  );
             fputcsv($fp, $items);
             while($row = $result->fetchObject()) {
+            	if($row->Status == 3){
+                $Status = "Completed";
+              	}
+             	else{
+                $Status = "Proposal In Progress";
+              	}
                 $items = array(
                     $row->Contirbutor_Name,
                     $row->Email_ID,
                     $row->Title,
+                    $row->University,
                     $row->Contact,
-                    $row->Year
+                    $row->creation,
+                    $row->approval,
+                    $row->Year,
+                    $Status
                 );
                 fputcsv($fp, $items);
             }
