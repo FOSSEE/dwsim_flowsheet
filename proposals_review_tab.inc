@@ -151,7 +151,7 @@ function _flowsheet_details_year_wise()
     $flowsheet_years = array(
 		'0' => 'Please select...'
 	);
-    $result = db_query("SELECT from_unixtime(actual_completion_date, '%Y ') as Year from dwsim_flowsheet_proposal WHERE approval_status = 3");
+    $result = db_query("SELECT from_unixtime(actual_completion_date, '%Y ') as Year from dwsim_flowsheet_proposal WHERE approval_status = 3 ORDER BY Year ASC");
     
     /*$query = db_select('dwsim_flowsheet_proposal');
     $query->fields('dwsim_flowsheet_proposal');

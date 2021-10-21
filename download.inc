@@ -308,7 +308,7 @@ function dwsim_flowsheet_download_proposals()
 {
 	$root_path = dwsim_flowsheet_path();
 
-	$result = db_query("SELECT e.contributor_name as Contirbutor_Name, u.mail as Email_ID, e.project_title as Title, e.contact_no as Contact, e.university as University, from_unixtime(creation_date,'%d-%m-%Y') as creation, from_unixtime(approval_date,'%d-%m-%Y') as approval, from_unixtime(actual_completion_date,'%d-%m-%Y') as Year, e.approval_status as Status FROM dwsim_flowsheet_proposal as e JOIN users as u ON e.uid = u.uid WHERE e.approval_status=3 ORDER BY actual_completion_date DESC");
+	$result = db_query("SELECT e.contributor_name as contirbutor_name, u.mail as email_id, e.project_title as title, e.contact_no as contact, e.university as university, from_unixtime(creation_date,'%d-%m-%Y') as creation, from_unixtime(approval_date,'%d-%m-%Y') as approval, from_unixtime(actual_completion_date,'%d-%m-%Y') as year, e.approval_status as status FROM dwsim_flowsheet_proposal as e JOIN users as u ON e.uid = u.uid ORDER BY actual_completion_date DESC");
 
 //var_dump($result->rowCount());die();
 	 //$all_proposals_q = $result->execute();
@@ -327,23 +327,46 @@ function dwsim_flowsheet_download_proposals()
                  'Status of the proposal'
                  );
             fputcsv($fp, $items);
-            while($row = $result->fetchObject()) {
-            	if($row->Status == 3){
-                $Status = "Completed";
-              	}
-             	else{
-                $Status = "Proposal In Progress";
-              	}
+            while($row = $result->fetchObject()) 
+            {	
+            	$status = '';
+				switch ($row->status)
+				{
+					case 0:
+						$status = 'Pending';
+						break;
+					case 1:
+						$status = 'Approved';
+						break;
+					case 2:
+						$status = 'Dis-approved';
+						break;
+					case 3:
+						$status = 'Completed';
+						break;
+					default:
+						$status = 'Unknown';
+						break;
+				} //$row->status
+				if ($row->year == 0)
+				{
+					$year = "Not Completed";
+				} //$row->year == 0
+				else
+				{	
+					$year = date('d-m-Y', $row->year);
+				}
+            	
                 $items = array(
-                    $row->Contirbutor_Name,
-                    $row->Email_ID,
-                    $row->Title,
-                    $row->University,
-                    $row->Contact,
+                    $row->contirbutor_name,
+                    $row->email_id,
+                    $row->title,
+                    $row->university,
+                    $row->contact,
                     $row->creation,
                     $row->approval,
-                    $row->Year,
-                    $Status
+                    $row->year,
+                    $status
                 );
                 fputcsv($fp, $items);
             }
