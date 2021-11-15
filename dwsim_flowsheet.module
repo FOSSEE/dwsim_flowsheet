@@ -365,6 +365,15 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'full_download.inc'
 	);
+	$items['flowsheeting-project/download-completed-proposals'] = array(
+		'title' => 'Download Completed Proposals',
+		'description' => 'Download Completed Proposals',
+		'page callback' => 'dwsim_flowsheet_download_completed_proposals',
+		'access arguments' => array(
+			'dwsim flowsheet download proposals'
+		),
+		'file' => 'download_proposals.inc'
+	);
 	$items['flowsheeting-project/download-proposals'] = array(
 		'title' => 'Download Proposals',
 		'description' => 'Download Proposals',
