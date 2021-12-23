@@ -93,6 +93,16 @@ function dwsim_flowsheet_menu()
 		'weight' => 5,
 		'file' => 'proposals_review_tab.inc'
 	);
+	/*$items['flowsheeting-project/download'] = array(
+		'title' => 'Flowsheet Download Proposals',
+		'description' => 'Flowsheet Download Proposals',
+		'page callback' => 'dwsim_flowsheet_download_proposals_tab',
+		'access callback' => 'user_access',
+		'access arguments' => array(
+			'dwsim flowsheet manage proposal'
+		),
+		'file' => 'proposals_review_tab.inc'
+	);*/
 	$items['flowsheeting-project/manage-proposal/approve'] = array(
 		'title' => 'Approve Proposal',
 		'description' => 'Approve Proposal',
@@ -355,6 +365,25 @@ function dwsim_flowsheet_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'full_download.inc'
 	);
+	$items['flowsheeting-project/download-proposals'] = array(
+		'title' => 'Download Proposals',
+		'description' => 'Download Proposals',
+		'page callback' => 'dwsim_flowsheet_download_completed_proposals',
+		'access arguments' => array(
+			'dwsim flowsheet download proposals'
+		),
+		'file' => 'download_proposals.inc'
+	);
+	$items['flowsheeting-project/download-proposals-all'] = array(
+		'title' => 'Download Proposals',
+		'description' => 'Download Proposals',
+		'page callback' => 'dwsim_flowsheet_download_proposals',
+		'access arguments' => array(
+			'dwsim flowsheet download proposals'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
 	/* COMPLETED dwsim flowsheetS */
 	$items['flowsheeting-project/completed-flowsheet'] = array(
 		'title' => 'Completed Flowsheets',
@@ -540,6 +569,10 @@ function dwsim_flowsheet_permission()
 		),
 		'dwsim flowsheet download abstract' => array(
 			'title' => t('dwsim flowsheet download code'),
+			'restrict access' => TRUE
+		),
+		'dwsim flowsheet download proposals' => array(
+			'title' => t('dwsim flowsheet download proposals'),
 			'restrict access' => TRUE
 		),
 		'administer dwsim flowsheet' => array(
