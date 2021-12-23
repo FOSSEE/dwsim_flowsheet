@@ -170,7 +170,7 @@ function _flowsheet_details_year_wise()
 function _flowsheet_details($flowsheet_proposal_id)
 {
 	$output = "";
-	//$output = "Click <a href='/flowsheeting-project/download-proposals'>here</a> to download the Proposals of the participants <br>";
+	//$output = "Click <a href='/flowsheeting-project/download-proposals-all'>here</a> to download the Proposals of the participants <br>";
 	$result = db_query("SELECT * from {dwsim_flowsheet_proposal} WHERE approval_status = 3 and from_unixtime(actual_completion_date, '%Y') = :year",
 		array(
 							':year' => $flowsheet_proposal_id)
